@@ -35,3 +35,9 @@ __pycache__/
 .venv/
 venv/
 *.pyc
+
+# Superpowers brainstorm prototypes
+.superpowers/
+
+# Git worktrees
+.worktrees/
