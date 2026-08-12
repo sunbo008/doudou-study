@@ -164,6 +164,151 @@ L1
 
         self.assertIn("example-section-missing", rules)
 
+    def test_example_subsection_without_content_is_rejected(self) -> None:
+        self.write_kp(
+            "kp_s01_empty_answer.md",
+            status="draft",
+            example_body="""#### 题目
+
+1 + 1 等于多少？
+
+#### 难度
+
+L1
+
+#### 解题技巧
+
+直接计算。
+
+#### 步骤要点
+
+1. 相加。
+
+#### 避坑思路
+
+不要漏写结果。
+
+#### 答案
+
+### 例题 2
+
+#### 题目
+
+2 + 2 等于多少？
+
+#### 难度
+
+L2
+
+#### 解题技巧
+
+直接计算。
+
+#### 步骤要点
+
+1. 相加。
+
+#### 避坑思路
+
+不要漏写结果。
+
+#### 答案
+
+4""",
+        )
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("example-section-empty", rules)
+
+    def test_example_difficulty_must_be_l1_through_l4(self) -> None:
+        self.write_kp(
+            "kp_s01_invalid_difficulty.md",
+            status="draft",
+            example_body="""#### 题目
+
+1 + 1 等于多少？
+
+#### 难度
+
+L5
+
+#### 解题技巧
+
+直接计算。
+
+#### 步骤要点
+
+1. 相加。
+
+#### 避坑思路
+
+不要漏写结果。
+
+#### 答案
+
+2""",
+        )
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("invalid-example-difficulty", rules)
+
+    def test_active_l1_l2_must_come_from_actual_examples(self) -> None:
+        self.write_kp(
+            "kp_s01_wrong_levels.md",
+            example_body="""#### 题目
+
+1 + 1 等于多少？
+
+#### 难度
+
+L5
+
+#### 解题技巧
+
+直接计算。
+
+#### 步骤要点
+
+1. 相加。
+
+#### 避坑思路
+
+不要漏写结果。
+
+#### 答案
+
+2
+
+#### 难度
+
+L1
+
+#### 难度
+
+L2""",
+        )
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("active-missing-required-levels", rules)
+
+    def test_missing_root_is_rejected(self) -> None:
+        missing_root = self.root / "missing"
+
+        issues = validate(missing_root)
+
+        self.assertEqual([issue.rule for issue in issues], ["invalid-root"])
+
+    def test_file_root_is_rejected(self) -> None:
+        file_root = self.root / "not-a-directory.md"
+        file_root.write_text("not a map directory\n", encoding="utf-8")
+
+        issues = validate(file_root)
+
+        self.assertEqual([issue.rule for issue in issues], ["invalid-root"])
+
     def test_broken_markdown_link_is_rejected(self) -> None:
         self.write_kp("kp_s01_valid.md")
         (self.root / "README.md").write_text(
@@ -186,6 +331,15 @@ L1
 
         self.assertEqual(status, 1)
         self.assertIn("README.md: broken-link:", output.getvalue())
+
+    def test_cli_rejects_missing_root(self) -> None:
+        output = io.StringIO()
+
+        with contextlib.redirect_stdout(output):
+            status = main([str(self.root / "missing")])
+
+        self.assertEqual(status, 1)
+        self.assertIn("missing: invalid-root:", output.getvalue())
 
 
 if __name__ == "__main__":

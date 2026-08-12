@@ -30,6 +30,8 @@ VALID_STATUSES = {"draft", "active", "deprecated"}
 VALID_SOURCE_VERIFICATIONS = {"verified_book", "verified_public", "pending"}
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)")
 EXAMPLE_HEADING = re.compile(r"^### 例题(?:\s|$)", re.MULTILINE)
+SECTION_HEADING = re.compile(r"^#### (.+?)\s*$", re.MULTILINE)
+ANY_HEADING = re.compile(r"^#{1,4}\s", re.MULTILINE)
 
 
 def _split_inline_values(value: str) -> list[str]:
@@ -128,14 +130,35 @@ def scan_markdown_links(text: str) -> list[str]:
     return links
 
 
-def _has_example_level(text: str, level: str) -> bool:
-    return bool(re.search(rf"^#### 难度\s*$\n(?:\s*\n)*{level}\s*$", text, re.MULTILINE))
+def _section_content(section: str) -> str:
+    return "\n".join(
+        line for line in section.splitlines() if line.strip() and line.strip() != "---"
+    ).strip()
 
 
-def validate_kp(path: Path) -> list[Issue]:
+def _example_sections(example: str) -> dict[str, str]:
+    sections: dict[str, str] = {}
+    headings = list(SECTION_HEADING.finditer(example))
+    for index, match in enumerate(headings):
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(example)
+        next_heading = ANY_HEADING.search(example, match.end())
+        if next_heading is not None and next_heading.start() < end:
+            end = next_heading.start()
+        sections.setdefault(match.group(1), example[match.end() : end])
+    return sections
+
+
+def validate_kp(
+    path: Path,
+    *,
+    text: str | None = None,
+    frontmatter: dict[str, Any] | None = None,
+) -> list[Issue]:
     """Validate one knowledge-point document except global duplicate checks."""
-    text = path.read_text(encoding="utf-8")
-    frontmatter = parse_frontmatter(text)
+    if text is None:
+        text = path.read_text(encoding="utf-8")
+    if frontmatter is None:
+        frontmatter = parse_frontmatter(text)
     issues: list[Issue] = []
 
     for field in ("kp_id", "specialty_id", "grades", "pep_units", "status", "source_verification"):
@@ -185,18 +208,12 @@ def validate_kp(path: Path) -> list[Issue]:
     if status == "active" and source == "pending":
         issues.append(Issue(path, "active-pending-source", "pending 条目不得标为 active"))
 
-    if status == "active" and not all(_has_example_level(text, level) for level in ("L1", "L2")):
-        issues.append(Issue(path, "active-missing-required-levels", "active 条目至少需要 L1 和 L2 例题"))
-
     examples = list(EXAMPLE_HEADING.finditer(text))
+    actual_levels: set[str] = set()
     for number, match in enumerate(examples, 1):
         end = examples[number].start() if number < len(examples) else len(text)
-        example = text[match.end() : end]
-        missing = [
-            heading
-            for heading in REQUIRED_EXAMPLE_HEADINGS
-            if not re.search(rf"^#### {re.escape(heading)}\s*$", example, re.MULTILINE)
-        ]
+        sections = _example_sections(text[match.end() : end])
+        missing = [heading for heading in REQUIRED_EXAMPLE_HEADINGS if heading not in sections]
         if missing:
             issues.append(
                 Issue(
@@ -205,6 +222,34 @@ def validate_kp(path: Path) -> list[Issue]:
                     f"例题 {number} 缺少子块：{'、'.join(missing)}",
                 )
             )
+        empty = [
+            heading
+            for heading in REQUIRED_EXAMPLE_HEADINGS
+            if heading in sections and not _section_content(sections[heading])
+        ]
+        if empty:
+            issues.append(
+                Issue(
+                    path,
+                    "example-section-empty",
+                    f"例题 {number} 子块内容为空：{'、'.join(empty)}",
+                )
+            )
+        difficulty = _section_content(sections.get("难度", ""))
+        if difficulty:
+            if difficulty not in {"L1", "L2", "L3", "L4"}:
+                issues.append(
+                    Issue(
+                        path,
+                        "invalid-example-difficulty",
+                        f"例题 {number} 难度必须是 L1、L2、L3 或 L4",
+                    )
+                )
+            else:
+                actual_levels.add(difficulty)
+
+    if status == "active" and not {"L1", "L2"}.issubset(actual_levels):
+        issues.append(Issue(path, "active-missing-required-levels", "active 条目至少需要 L1 和 L2 例题"))
     return issues
 
 
@@ -215,13 +260,17 @@ def _is_external_link(target: str) -> bool:
 def validate(root: Path) -> list[Issue]:
     """Validate a math-map directory and return all detected issues."""
     root = root.resolve()
+    if not root.is_dir():
+        return [Issue(root, "invalid-root", "地图根目录不存在或不是目录")]
     issues: list[Issue] = []
     kp_paths = sorted(root.rglob("kp_*.md"))
     kp_ids: dict[str, list[Path]] = {}
 
     for path in kp_paths:
-        issues.extend(validate_kp(path))
-        kp_id = parse_frontmatter(path.read_text(encoding="utf-8")).get("kp_id")
+        text = path.read_text(encoding="utf-8")
+        frontmatter = parse_frontmatter(text)
+        issues.extend(validate_kp(path, text=text, frontmatter=frontmatter))
+        kp_id = frontmatter.get("kp_id")
         if isinstance(kp_id, str) and kp_id:
             kp_ids.setdefault(kp_id, []).append(path)
 
