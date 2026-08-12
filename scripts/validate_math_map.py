@@ -30,6 +30,9 @@ VALID_STATUSES = {"draft", "active", "deprecated"}
 VALID_SOURCE_VERIFICATIONS = {"verified_book", "verified_public", "pending"}
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)")
 EXAMPLE_HEADING = re.compile(r"^### 例题(?:\s|$)", re.MULTILINE)
+EXAMPLE_END_HEADING = re.compile(
+    r"^(?:#{1,2}\s|### (?!例题(?:\s|$)))", re.MULTILINE
+)
 SECTION_HEADING = re.compile(r"^#### (.+?)\s*$", re.MULTILINE)
 ANY_HEADING = re.compile(r"^#{1,4}\s", re.MULTILINE)
 
@@ -212,6 +215,9 @@ def validate_kp(
     actual_levels: set[str] = set()
     for number, match in enumerate(examples, 1):
         end = examples[number].start() if number < len(examples) else len(text)
+        next_non_example_heading = EXAMPLE_END_HEADING.search(text, match.end())
+        if next_non_example_heading is not None:
+            end = min(end, next_non_example_heading.start())
         sections = _example_sections(text[match.end() : end])
         missing = [heading for heading in REQUIRED_EXAMPLE_HEADINGS if heading not in sections]
         if missing:

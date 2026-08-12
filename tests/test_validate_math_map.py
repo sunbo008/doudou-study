@@ -164,6 +164,68 @@ L1
 
         self.assertIn("example-section-missing", rules)
 
+    def test_example_does_not_borrow_answer_from_later_level_two_section(self) -> None:
+        path = self.write_kp(
+            "kp_s01_missing_answer_before_common_pitfalls.md",
+            status="draft",
+            example_body="""#### 题目
+
+1 + 1 等于多少？
+
+#### 难度
+
+L1
+
+#### 解题技巧
+
+直接计算。
+
+#### 步骤要点
+
+1. 相加。
+
+#### 避坑思路
+
+不要漏写结果。""",
+        )
+        with path.open("a", encoding="utf-8") as file:
+            file.write("\n\n## 常见坑\n\n#### 答案\n\n不能借给例题。\n")
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("example-section-missing", rules)
+
+    def test_example_does_not_borrow_difficulty_from_later_non_example(self) -> None:
+        path = self.write_kp(
+            "kp_s01_missing_difficulty_before_note.md",
+            status="draft",
+            example_body="""#### 题目
+
+1 + 1 等于多少？
+
+#### 解题技巧
+
+直接计算。
+
+#### 步骤要点
+
+1. 相加。
+
+#### 避坑思路
+
+不要漏写结果。
+
+#### 答案
+
+2""",
+        )
+        with path.open("a", encoding="utf-8") as file:
+            file.write("\n\n### 补充说明\n\n#### 难度\n\nL1\n")
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("example-section-missing", rules)
+
     def test_example_subsection_without_content_is_rejected(self) -> None:
         self.write_kp(
             "kp_s01_empty_answer.md",
