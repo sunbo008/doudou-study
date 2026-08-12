@@ -173,5 +173,5 @@ L4 的关键不是扩大运算范围，而是先识别 `□+3` 与 `3+□` 表�
 
 ## 关联
 
-- **相近知识点**：[`kp_s06_same_structure_factor`](./kp_s06_same_structure_factor.md)
+- **分班扩展草稿**：[`kp_s06_same_structure_factor`](./kp_s06_same_structure_factor.md)（非 active）
 - **跨专项连接**：[`kp_s01_integer_operation_structure`](../S01-整数与运算/kp_s01_integer_operation_structure.md)

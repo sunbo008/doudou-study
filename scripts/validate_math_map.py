@@ -300,7 +300,7 @@ def validate_kp(
                         f"例题 {number} 难度必须是 L1、L2、L3 或 L4",
                     )
                 )
-            else:
+            elif not missing and not empty:
                 actual_levels.add(difficulty)
 
     if status == "active" and not {"L1", "L2"}.issubset(actual_levels):
@@ -529,6 +529,27 @@ def _declared_advanced_levels(path: Path, text: str) -> dict[str, bool]:
     return declarations
 
 
+def _complete_example_levels(text: str) -> set[str]:
+    """Return levels backed by one complete six-block example."""
+    levels: set[str] = set()
+    examples = list(EXAMPLE_HEADING.finditer(text))
+    for number, match in enumerate(examples, 1):
+        end = examples[number].start() if number < len(examples) else len(text)
+        next_non_example_heading = EXAMPLE_END_HEADING.search(text, match.end())
+        if next_non_example_heading is not None:
+            end = min(end, next_non_example_heading.start())
+        sections = _example_sections(text[match.end() : end])
+        if any(
+            heading not in sections or not _section_content(sections[heading])
+            for heading in REQUIRED_EXAMPLE_HEADINGS
+        ):
+            continue
+        difficulty = _section_content(sections["难度"])
+        if difficulty in {"L1", "L2", "L3", "L4"}:
+            levels.add(difficulty)
+    return levels
+
+
 def validate_global_contract(
     root: Path,
     entries: list[tuple[Path, str, dict[str, Any]]],
@@ -550,11 +571,30 @@ def validate_global_contract(
     }
     titles: dict[str, list[Path]] = {}
     bodies: dict[str, list[Path]] = {}
+    map_layout_present = (
+        (root / "specialties").is_dir()
+        or specialty_index.is_file()
+        or grade_index.is_file()
+    )
 
     for path, text, frontmatter in entries:
         specialty_id = frontmatter.get("specialty_id")
-        parent_match = re.match(r"^(S(?:0[1-9]|1[0-4]))(?:-|$)", path.parent.name)
-        if parent_match and specialty_id != parent_match.group(1):
+        relative_parts = path.relative_to(root).parts
+        valid_location = (
+            len(relative_parts) == 3
+            and relative_parts[0] == "specialties"
+            and re.fullmatch(r"S(?:0[1-9]|1[0-4])-.+", relative_parts[1]) is not None
+        )
+        if map_layout_present and not valid_location:
+            issues.append(
+                Issue(
+                    path,
+                    "kp-outside-specialties",
+                    "kp_*.md 必须直接位于 specialties/Sxx-*/ 目录",
+                )
+            )
+        directory_specialty = relative_parts[1].split("-", 1)[0] if valid_location else None
+        if directory_specialty is not None and specialty_id != directory_specialty:
             issues.append(
                 Issue(path, "specialty-directory-mismatch", "specialty_id 与专项目录不一致")
             )
@@ -614,12 +654,7 @@ def validate_global_contract(
                             )
                         )
 
-        actual_levels = {
-            level
-            for level in re.findall(
-                r"^#### 难度\s*\n\s*(L[1-4])\s*$", text, re.MULTILINE
-            )
-        }
+        actual_levels = _complete_example_levels(text)
         for level, valid_reference in _declared_advanced_levels(path, text).items():
             if level not in actual_levels and not valid_reference:
                 issues.append(
@@ -630,7 +665,7 @@ def validate_global_contract(
                     )
                 )
 
-        if frontmatter.get("status") != "active" or not parent_match:
+        if frontmatter.get("status") != "active" or not valid_location:
             continue
         readme = path.parent / "README.md"
         if path.resolve() not in _linked_paths(readme):

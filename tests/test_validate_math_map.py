@@ -662,6 +662,19 @@ class FinalAcceptanceContractTests(unittest.TestCase):
 
         self.assertIn("specialty-directory-mismatch", self.rules())
 
+    def test_knowledge_point_outside_specialties_is_rejected(self) -> None:
+        source = (
+            self.root
+            / "specialties"
+            / "S01-整数与运算"
+            / "kp_s01_integer_operation_structure.md"
+        )
+        misplaced = self.root / "misplaced" / source.name
+        misplaced.parent.mkdir()
+        shutil.move(source, misplaced)
+
+        self.assertIn("kp-outside-specialties", self.rules())
+
     def test_catalog_target_must_be_active(self) -> None:
         path = (
             self.root
@@ -747,6 +760,22 @@ class FinalAcceptanceContractTests(unittest.TestCase):
         level_four = text.index("### 例题 4")
         common_pitfalls = text.index("## 常见坑", level_four)
         path.write_text(text[:level_four] + text[common_pitfalls:], encoding="utf-8")
+
+        self.assertIn("declared-level-missing-example", self.rules())
+
+    def test_isolated_difficulty_heading_cannot_replace_a_complete_level_four_example(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S01-整数与运算"
+            / "kp_s01_integer_operation_structure.md"
+        )
+        text = path.read_text(encoding="utf-8")
+        level_four = text.index("### 例题 4")
+        common_pitfalls = text.index("## 常见坑", level_four)
+        text = text[:level_four] + text[common_pitfalls:]
+        text += "\n\n## 校验陷阱\n\n#### 难度\n\nL4\n"
+        path.write_text(text, encoding="utf-8")
 
         self.assertIn("declared-level-missing-example", self.rules())
 
@@ -859,6 +888,25 @@ class FinalAcceptanceContractTests(unittest.TestCase):
         for example, answer in zip(examples, ("2500", "12", "10", "17")):
             answer_block = example.split("#### 答案", 1)[1]
             self.assertIn(answer, answer_block)
+
+    def test_only_primary_math_s06_entry_remains_active_and_indexed(self) -> None:
+        s06 = self.root / "specialties" / "S06-简易方程与代数结构"
+        active_ids: set[str] = set()
+        for path in s06.glob("kp_*.md"):
+            frontmatter = parse_frontmatter(path.read_text(encoding="utf-8"))
+            if frontmatter.get("status") == "active":
+                active_ids.add(frontmatter["kp_id"])
+
+        extension = s06 / "kp_s06_same_structure_factor.md"
+        extension_frontmatter = parse_frontmatter(extension.read_text(encoding="utf-8"))
+        grade_index = (self.root / "年级索引.md").read_text(encoding="utf-8")
+        specialty_index = (self.root / "专项索引.md").read_text(encoding="utf-8")
+
+        self.assertSetEqual(active_ids, {"kp_s06_same_core_rewrite"})
+        self.assertEqual(extension_frontmatter.get("status"), "draft")
+        self.assertEqual(extension_frontmatter.get("source_verification"), "pending")
+        self.assertNotIn("kp_s06_same_structure_factor", grade_index)
+        self.assertNotIn("kp_s06_same_structure_factor", specialty_index)
 
 
 class CoverageTests(unittest.TestCase):

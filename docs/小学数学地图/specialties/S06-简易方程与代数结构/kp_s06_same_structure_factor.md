@@ -5,14 +5,14 @@ specialty_id: S06
 grades: [6]
 pep_units:
   - { grade: 6, volume: 上, unit: "数学广角——数与形 / 分班衔接" }
-status: active
-source_verification: verified_book
+status: draft
+source_verification: pending
 practice: practice/W2-代数方程变形/
 weak_ref: W2
 lateral_tags: [同构提因式]
 ---
 
-# 同构方程移项提公因式
+# 同构方程移项提公因式（分班扩展草稿）
 
 ## 一句话
 
@@ -133,7 +133,7 @@ L3
 
 ## 年级与单元
 
-- 本题挂在「数学广角——数与形 / 分班衔接」，**不是六上课内方程单元**；用于初一分班前的代数结构衔接。
+- 本条含初中阶段的代数方法，仅作为分班扩展草稿保存，不属于六上实书课内知识，不进入 active 导航；待后续建立独立的超纲边界与教学说明后再评估。
 
 ## 思维横向题（L4）
 
