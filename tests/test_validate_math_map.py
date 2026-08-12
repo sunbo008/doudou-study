@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import io
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
@@ -662,9 +663,19 @@ class CoverageTests(unittest.TestCase):
         for number in (2, 3):
             with self.subTest(example=number):
                 example = examples[number - 1]
-                self.assertIn("扇形统计图", example)
-                self.assertIn("°", example)
-                self.assertIn("÷360", example)
+                question = example.split("#### 难度", 1)[0]
+                chart = re.search(
+                    r"\`\`\`mermaid\s+pie(?:\s+showData)?\s+.*?\`\`\`",
+                    question,
+                    flags=re.DOTALL,
+                )
+                self.assertIsNotNone(chart, "L2/L3 题目必须内嵌 Mermaid pie 图")
+                labels = re.findall(
+                    r'^\s*"[^"]+"\s*:\s*\d+(?:\.\d+)?\s*$',
+                    chart.group(0),
+                    flags=re.MULTILINE,
+                )
+                self.assertGreaterEqual(len(labels), 3, "饼图必须有多个可读类别标签")
 
     def test_cross_chart_level_one_uses_two_sources_for_one_inference(self) -> None:
         level_one = self.read_task_four_entry("kp_s10_chart_data_inference").split(
