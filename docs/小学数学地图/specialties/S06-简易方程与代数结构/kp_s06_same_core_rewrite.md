@@ -4,8 +4,9 @@ title: 变形同核后提公因式
 specialty_id: S06
 grades: [6]
 pep_units:
-  - { grade: 6, volume: 上, unit: "方程" }
+  - { grade: 6, volume: 上, unit: "数学广角——数与形 / 分班衔接" }
 status: active
+source_verification: verified_book
 practice: practice/W2b-变形提公因式/
 weak_ref: W2b
 lateral_tags: [同核改写, 提公因式, 思维横向]
@@ -158,7 +159,7 @@ L4
 
 ## 年级与单元
 
-- 六上方程 / 衔接变形；属分班高频 L4。`unit` 可按实书微调。
+- 本题属于「数学广角——数与形」的结构观察延伸与分班衔接，**不是六上课内方程单元**；属分班高频 L4。
 
 ## 关联
 

@@ -6,6 +6,7 @@ grades: [5, 6]
 pep_units:
   - { grade: 6, volume: 上, unit: "百分数（一）" }
 status: active
+source_verification: verified_book
 practice: practice/W1-小数乘除/
 weak_ref: W1
 lateral_tags: []

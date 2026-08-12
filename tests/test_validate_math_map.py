@@ -404,5 +404,52 @@ L2""",
         self.assertIn("missing: invalid-root:", output.getvalue())
 
 
+class CatalogTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp_dir.name)
+        meta = self.root / "_meta"
+        meta.mkdir()
+        self.catalog = meta / "教材目录基线.md"
+
+    def write_catalog(self, entry_type: str, coverage: str) -> None:
+        self.catalog.write_text(
+            """# 教材目录基线
+
+| 年级 | 册次 | 顺序 | 单元 | 类型 | 核验 | 证据 | 覆盖入口 |
+|---|---|---:|---|---|---|---|---|
+| 6 | 上 | 1 | 分数乘法 | %s | verified_book | [目录](https://example.test/6-目录1.jpg) | %s |
+""" % (entry_type, coverage),
+            encoding="utf-8",
+        )
+
+    def tearDown(self) -> None:
+        self.temp_dir.cleanup()
+
+    def test_catalog_entry_uncovered_rejects_required_unit_without_coverage(self) -> None:
+        self.write_catalog("正式单元", "")
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("catalog-entry-uncovered", rules)
+
+    def test_catalog_entry_uncovered_rejects_placeholder_or_broken_coverage(self) -> None:
+        for coverage in ("占位", "[待建条目](../missing.md)"):
+            with self.subTest(coverage=coverage):
+                self.write_catalog("综合实践", coverage)
+
+                rules = {issue.rule for issue in validate(self.root)}
+
+                self.assertIn("catalog-entry-uncovered", rules)
+
+    def test_review_aggregate_may_link_to_grade_index_anchor(self) -> None:
+        (self.root / "年级索引.md").write_text("# 六年级\n", encoding="utf-8")
+        self.write_catalog("复习聚合", "[六年级索引](../年级索引.md#六年级)")
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertNotIn("catalog-entry-uncovered", rules)
+
+
 if __name__ == "__main__":
     unittest.main()

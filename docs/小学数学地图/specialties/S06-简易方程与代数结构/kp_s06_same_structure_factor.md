@@ -4,8 +4,9 @@ title: 同构方程移项提公因式
 specialty_id: S06
 grades: [6]
 pep_units:
-  - { grade: 6, volume: 上, unit: "方程" }
+  - { grade: 6, volume: 上, unit: "数学广角——数与形 / 分班衔接" }
 status: active
+source_verification: verified_book
 practice: practice/W2-代数方程变形/
 weak_ref: W2
 lateral_tags: [同构提因式]
@@ -132,7 +133,7 @@ L3
 
 ## 年级与单元
 
-- 六上方程相关单元；`unit` 暂记「方程」，可按实书微调。本知识点也含初一分班衔接变形。
+- 本题挂在「数学广角——数与形 / 分班衔接」，**不是六上课内方程单元**；用于初一分班前的代数结构衔接。
 
 ## 思维横向题（L4）
 

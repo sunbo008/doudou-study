@@ -35,6 +35,21 @@ EXAMPLE_END_HEADING = re.compile(
 )
 SECTION_HEADING = re.compile(r"^#### (.+?)\s*$", re.MULTILINE)
 ANY_HEADING = re.compile(r"^#{1,4}\s", re.MULTILINE)
+CATALOG_COLUMNS = ("年级", "册次", "顺序", "单元", "类型", "核验", "证据", "覆盖入口")
+CATALOG_COVERED_TYPES = {"正式单元", "综合实践"}
+CATALOG_PATH = Path("_meta/教材目录基线.md")
+
+
+@dataclass(frozen=True)
+class CatalogEntry:
+    grade: str
+    volume: str
+    order: str
+    unit: str
+    entry_type: str
+    verification: str
+    evidence: str
+    coverage: str
 
 
 def _split_inline_values(value: str) -> list[str]:
@@ -131,6 +146,29 @@ def scan_markdown_links(text: str) -> list[str]:
             target = target[1:-1]
         links.append(target.split(maxsplit=1)[0])
     return links
+
+
+def parse_catalog(path: Path) -> list[CatalogEntry]:
+    """Parse the fixed-column curriculum catalog table when it is present."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    entries: list[CatalogEntry] = []
+    header_found = False
+    for line in lines:
+        if not line.startswith("|"):
+            if header_found:
+                break
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if not header_found:
+            if tuple(cells) == CATALOG_COLUMNS:
+                header_found = True
+            continue
+        if all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
+            continue
+        if len(cells) != len(CATALOG_COLUMNS):
+            continue
+        entries.append(CatalogEntry(*cells))
+    return entries
 
 
 def _section_content(section: str) -> str:
@@ -263,12 +301,48 @@ def _is_external_link(target: str) -> bool:
     return target.startswith(("http://", "https://", "mailto:", "tel:", "#"))
 
 
+def _catalog_coverage_is_valid(catalog_path: Path, coverage: str) -> bool:
+    if not coverage.strip() or re.search(r"占位|待建|待补", coverage):
+        return False
+    targets = scan_markdown_links(coverage)
+    if not targets:
+        return False
+    for target in targets:
+        if _is_external_link(target):
+            continue
+        local_target = unquote(target.split("#", 1)[0].split("?", 1)[0])
+        if local_target and (catalog_path.parent / local_target).resolve().exists():
+            return True
+    return False
+
+
+def validate_catalog(root: Path) -> list[Issue]:
+    """Ensure required curriculum catalog entries lead to real content."""
+    catalog_path = root / CATALOG_PATH
+    if not catalog_path.is_file():
+        return []
+    issues: list[Issue] = []
+    for entry in parse_catalog(catalog_path):
+        if entry.entry_type not in CATALOG_COVERED_TYPES:
+            continue
+        if not _catalog_coverage_is_valid(catalog_path, entry.coverage):
+            issues.append(
+                Issue(
+                    catalog_path,
+                    "catalog-entry-uncovered",
+                    f"{entry.grade}年级{entry.volume}册《{entry.unit}》的覆盖入口为空、占位或断链",
+                )
+            )
+    return issues
+
+
 def validate(root: Path) -> list[Issue]:
     """Validate a math-map directory and return all detected issues."""
     root = root.resolve()
     if not root.is_dir():
         return [Issue(root, "invalid-root", "地图根目录不存在或不是目录")]
     issues: list[Issue] = []
+    issues.extend(validate_catalog(root))
     kp_paths = sorted(root.rglob("kp_*.md"))
     kp_ids: dict[str, list[Path]] = {}
 
@@ -286,6 +360,8 @@ def validate(root: Path) -> list[Issue]:
                 issues.append(Issue(path, "duplicate-kp-id", f"kp_id 重复：{kp_id}"))
 
     for path in sorted(root.rglob("*.md")):
+        if path.resolve() == (root / CATALOG_PATH).resolve():
+            continue
         for target in scan_markdown_links(path.read_text(encoding="utf-8")):
             if _is_external_link(target):
                 continue
