@@ -10,10 +10,10 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单（二期 active + 后续占位）
 
-| 计划 kp_id | 标题 | 年级 | 状态 |
+| kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
+| [kp_s01_integer_operation_structure](./kp_s01_integer_operation_structure.md) | 整数运算结构与简算 | 6 | active |
 | kp_s01_four_ops_mixed | 四则混合运算 | 3～4 | 占位 |
-| kp_s01_operation_laws | 运算定律 | 4 | 占位 |
 | kp_s01_estimation | 估算 | 2～4 | 占位 |

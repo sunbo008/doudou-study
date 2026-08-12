@@ -18,7 +18,7 @@
 | [kp_s09_water_saving_model](./kp_s09_water_saving_model.md) | 节约用水建模 | 6 | active |
 | [kp_s09_pigeonhole_principle](./kp_s09_pigeonhole_principle.md) | 鸽巢问题与最不利原则 | 6 | active |
 | [kp_s09_bicycle_gearing](./kp_s09_bicycle_gearing.md) | 自行车齿轮与路程 | 6 | active |
+| [kp_s09_travel](./kp_s09_travel.md) | 行程问题的速度与时间轴 | 6 | active |
+| [kp_s09_work](./kp_s09_work.md) | 工程问题的效率模型 | 6 | active |
 | kp_s09_sum_diff_multiple | 和差倍问题 | 3～5 | 占位 |
-| kp_s09_travel | 行程问题 | 4～6 | 占位 |
-| kp_s09_work | 工程问题 | 5～6 | 占位 |
 | kp_s09_planting_cycle | 植树与周期策略 | 4～6 | 占位 |

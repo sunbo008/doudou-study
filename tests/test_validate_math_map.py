@@ -1085,5 +1085,222 @@ class CoverageTests(unittest.TestCase):
         self.assertLess(max(positions["分数除法"]), min(positions["比"]))
 
 
+class L4AuditTests(unittest.TestCase):
+    MAP_ROOT = Path(__file__).resolve().parents[1] / "docs" / "小学数学地图"
+    AUDIT = MAP_ROOT / "_meta" / "L4横向题审计.md"
+    SPECIALTY_INDEX = MAP_ROOT / "专项索引.md"
+    COLUMNS = (
+        "专项",
+        "主条目",
+        "定位",
+        "L3",
+        "L4标题",
+        "横向标签",
+        "适龄说明",
+        "引用条目",
+    )
+    POSITIONS = {"核心", "分班高频", "基础横向"}
+
+    @staticmethod
+    def table_cells(line: str) -> list[str]:
+        return [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+    def setUp(self) -> None:
+        self.audit_text = (
+            self.AUDIT.read_text(encoding="utf-8") if self.AUDIT.is_file() else ""
+        )
+
+    def audit_rows(self) -> list[list[str]]:
+        lines = self.audit_text.splitlines()
+        header = "| " + " | ".join(self.COLUMNS) + " |"
+        self.assertIn(header, lines, "L4 审计表缺少固定的 8 列表头")
+        start = lines.index(header)
+        rows: list[list[str]] = []
+        for line in lines[start + 2 :]:
+            if not line.startswith("|"):
+                break
+            cells = self.table_cells(line)
+            self.assertEqual(len(cells), len(self.COLUMNS), f"审计行列数错误：{line}")
+            rows.append(cells)
+        return rows
+
+    @staticmethod
+    def local_link(base: Path, cell: str) -> Path:
+        targets = scan_markdown_links(cell)
+        if len(targets) != 1:
+            raise AssertionError(f"单元格必须恰有一个 Markdown 链接：{cell}")
+        target = targets[0].split("#", 1)[0].split("?", 1)[0]
+        return (base / target).resolve()
+
+    def test_l4_audit_file_exists(self) -> None:
+        self.assertTrue(self.AUDIT.is_file(), f"缺失 L4 审计文件：{self.AUDIT}")
+
+    def test_each_specialty_has_exactly_one_machine_readable_conclusion(self) -> None:
+        if not self.AUDIT.is_file():
+            self.skipTest("审计文件尚未创建")
+        rows = self.audit_rows()
+        specialty_ids = [row[0].split(maxsplit=1)[0] for row in rows]
+
+        self.assertEqual(len(rows), 14)
+        self.assertEqual(
+            specialty_ids,
+            [f"S{number:02d}" for number in range(1, 15)],
+        )
+        self.assertTrue(all(row[2] in self.POSITIONS for row in rows))
+
+    def test_main_l3_and_l4_links_share_one_active_grade_six_entry(self) -> None:
+        if not self.AUDIT.is_file():
+            self.skipTest("审计文件尚未创建")
+
+        for row in self.audit_rows():
+            specialty_id = row[0].split(maxsplit=1)[0]
+            with self.subTest(specialty_id=specialty_id):
+                main = self.local_link(self.AUDIT.parent, row[1])
+                level_three = self.local_link(self.AUDIT.parent, row[3])
+                level_four = self.local_link(self.AUDIT.parent, row[4])
+                self.assertEqual(main, level_three)
+                self.assertEqual(main, level_four)
+                self.assertTrue(main.is_file(), f"主条目链接失效：{main}")
+
+                text = main.read_text(encoding="utf-8")
+                frontmatter = parse_frontmatter(text)
+                self.assertEqual(frontmatter.get("status"), "active")
+                self.assertEqual(frontmatter.get("specialty_id"), specialty_id)
+                self.assertIn(6, frontmatter.get("grades", []))
+
+    def test_core_and_placement_frequent_rows_have_real_l3_and_l4_examples(self) -> None:
+        if not self.AUDIT.is_file():
+            self.skipTest("审计文件尚未创建")
+
+        marked_rows = [
+            row for row in self.audit_rows() if row[2] in {"核心", "分班高频"}
+        ]
+        self.assertGreater(len(marked_rows), 0)
+        for row in marked_rows:
+            specialty_id = row[0].split(maxsplit=1)[0]
+            with self.subTest(specialty_id=specialty_id, positioning=row[2]):
+                main = self.local_link(self.AUDIT.parent, row[1])
+                levels = re.findall(
+                    r"^#### 难度\s*\n\s*(L[1-4])\s*$",
+                    main.read_text(encoding="utf-8"),
+                    re.MULTILINE,
+                )
+                self.assertIn("L3", levels)
+                self.assertIn("L4", levels)
+
+    def test_references_are_active_or_age_reason_is_explicit(self) -> None:
+        if not self.AUDIT.is_file():
+            self.skipTest("审计文件尚未创建")
+
+        for row in self.audit_rows():
+            specialty_id, age_note, reference = row[0].split(maxsplit=1)[0], row[6], row[7]
+            with self.subTest(specialty_id=specialty_id):
+                if reference == "暂不设置":
+                    self.assertTrue(
+                        age_note.startswith("适龄：") and len(age_note) > len("适龄："),
+                        "暂不设置引用时必须在适龄说明中给出原因",
+                    )
+                    continue
+
+                self.assertIn("引用", reference)
+                target = self.local_link(self.AUDIT.parent, reference)
+                self.assertTrue(target.is_file(), f"引用条目链接失效：{target}")
+                frontmatter = parse_frontmatter(target.read_text(encoding="utf-8"))
+                self.assertEqual(frontmatter.get("status"), "active")
+
+    def test_specialty_index_reports_actual_active_and_l4_counts(self) -> None:
+        index_text = self.SPECIALTY_INDEX.read_text(encoding="utf-8")
+        summary_rows = {
+            cells[0].split(maxsplit=1)[0]: cells
+            for line in index_text.splitlines()
+            if line.startswith("| S")
+            and (cells := self.table_cells(line))
+            and re.fullmatch(r"S(?:0[1-9]|1[0-4])", cells[0].split(maxsplit=1)[0])
+        }
+        self.assertEqual(set(summary_rows), {f"S{number:02d}" for number in range(1, 15)})
+
+        for specialty_id, cells in summary_rows.items():
+            with self.subTest(specialty_id=specialty_id):
+                reported = re.search(r"(\d+) active / (\d+) L4", cells[-1])
+                self.assertIsNotNone(reported, "专项索引必须报告 active / L4 数量")
+                paths = sorted(
+                    self.MAP_ROOT.glob(f"specialties/{specialty_id}-*/kp_*.md")
+                )
+                actual_active = 0
+                actual_l4 = 0
+                for path in paths:
+                    text = path.read_text(encoding="utf-8")
+                    if parse_frontmatter(text).get("status") != "active":
+                        continue
+                    actual_active += 1
+                    levels = re.findall(
+                        r"^#### 难度\s*\n\s*(L[1-4])\s*$", text, re.MULTILINE
+                    )
+                    actual_l4 += "L4" in levels
+                self.assertEqual(
+                    tuple(map(int, reported.groups())),
+                    (actual_active, actual_l4),
+                )
+
+    def test_specialty_index_has_no_task_number_placeholder(self) -> None:
+        index_text = self.SPECIALTY_INDEX.read_text(encoding="utf-8")
+
+        self.assertIsNone(re.search(r"待任务|任务\s*[4-7]|任务[4-7]", index_text))
+
+    def test_audit_main_entries_do_not_claim_review_aggregate_as_unit(self) -> None:
+        for row in self.audit_rows():
+            specialty_id = row[0].split(maxsplit=1)[0]
+            with self.subTest(specialty_id=specialty_id):
+                main = self.local_link(self.AUDIT.parent, row[1])
+                frontmatter = parse_frontmatter(main.read_text(encoding="utf-8"))
+                units = [unit.get("unit") for unit in frontmatter.get("pep_units", [])]
+                self.assertTrue(set(units).isdisjoint({"总复习", "整理和复习"}))
+
+    def test_s09_audit_main_is_one_progressive_travel_skill(self) -> None:
+        s09 = next(row for row in self.audit_rows() if row[0].startswith("S09 "))
+        main = self.local_link(self.AUDIT.parent, s09[1])
+        text = main.read_text(encoding="utf-8")
+        frontmatter = parse_frontmatter(text)
+        questions = CoverageTests.example_questions(text)
+
+        self.assertIn("行程", frontmatter.get("title", ""))
+        self.assertNotIn("工程", frontmatter.get("title", ""))
+        self.assertEqual(len(questions), 4)
+        self.assertTrue(
+            all(re.search(r"速度|行驶|相遇|追赶|路程", question) for question in questions)
+        )
+        self.assertTrue(all("工程" not in question for question in questions))
+
+    def test_s14_audit_main_keeps_unit_conversion_as_primary_skill(self) -> None:
+        s14 = next(row for row in self.audit_rows() if row[0].startswith("S14 "))
+        main = self.local_link(self.AUDIT.parent, s14[1])
+        questions = CoverageTests.example_questions(
+            main.read_text(encoding="utf-8")
+        )
+        unit_markers = (
+            "m",
+            "cm",
+            "厘米",
+            "小时",
+            "分钟",
+            "L",
+            "mL",
+            "m³",
+            "升",
+            "毫升",
+            "立方米",
+        )
+
+        self.assertEqual(len(questions), 4)
+        for question in questions:
+            self.assertGreaterEqual(
+                sum(marker in question for marker in unit_markers),
+                2,
+                f"单位专项题必须显式提供至少两种待统一单位：{question}",
+            )
+        joined = "\n".join(questions)
+        self.assertNotRegex(joined, r"追上|追赶|相遇|速度")
+
+
 if __name__ == "__main__":
     unittest.main()

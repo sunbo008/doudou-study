@@ -10,10 +10,11 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单（二期 active + 后续占位）
 
-| 计划 kp_id | 标题 | 年级 | 状态 |
+| kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
+| [kp_s04_divisibility_constraints](./kp_s04_divisibility_constraints.md) | 整除条件与余数约束 | 6 | active |
 | kp_s04_factor_multiple | 因数与倍数 | 5 | 占位 |
 | kp_s04_prime_composite | 质数与合数 | 5 | 占位 |
 | kp_s04_greatest_common_factor | 最大公因数 | 5 | 占位 |
