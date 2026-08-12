@@ -13,6 +13,7 @@ grades: []
 pep_units:
   - { grade: , volume: , unit: "" }
 status: draft   # draft | active | deprecated
+source_verification: pending  # verified_book | verified_public | pending
 practice: 
 weak_ref: 
 lateral_tags: []
