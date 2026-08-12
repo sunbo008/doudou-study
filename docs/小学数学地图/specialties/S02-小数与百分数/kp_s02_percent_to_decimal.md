@@ -2,7 +2,7 @@
 kp_id: kp_s02_percent_to_decimal
 title: 百分数与小数互化
 specialty_id: S02
-grades: [5, 6]
+grades: [6]
 pep_units:
   - { grade: 6, volume: 上, unit: "百分数（一）" }
 status: active
@@ -130,7 +130,7 @@ L3
 
 ## 年级与单元
 
-- 五下 / 六上：百分数相关单元；frontmatter 暂记六上「百分数（一）」，可按实书微调 `unit`。
+- 六上「百分数（一）」；六年级归属已由实书目录核验。一至五年级归属须待三期取得可靠公开目录后另行补充。
 
 ## 思维横向题（L4）
 

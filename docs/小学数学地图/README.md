@@ -78,4 +78,4 @@ docs/小学数学地图/
 2. 从 [`kp-template.md`](./_meta/kp-template.md) 复制 frontmatter 与正文结构。
 3. 填写 `pep_units`、`grades`；有练习则填 `practice` / `weak_ref`。
 4. 每道例题写全：题目、难度、解题技巧、步骤要点、避坑思路、答案。
-5. 在专项索引与年级索引中补上链接（后续任务维护索引文件）。
+5. 创建正文后立即同步专项 README、专项索引与年级索引，不把索引同步留给后续任务。

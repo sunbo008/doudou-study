@@ -2,7 +2,7 @@
 
 ## 范围
 
-**含什么：** 用字母表示数、等量关系与简易方程、等式性质、解一元一次方程、同结构变形、提公因式与核心式改写（代数结构感知）。
+**含什么：** 用字母表示数、等量关系与简易方程、等式性质、同结构观察，以及用小学运算定律完成同核心算式的整体改写。
 
 **不含什么：** 复杂多元方程组；纯算术四则（归 S01）；比比例建模（归 S05，可交叉引用）；应用题数量关系叙述（归 S09，方程解法在本专项）。
 
@@ -18,4 +18,4 @@
 | kp_s06_letter_representation | 用字母表示数 | 5 | 占位 |
 | kp_s06_simple_equation | 简易方程 | 5 | 占位 |
 | [kp_s06_same_structure_factor](./kp_s06_same_structure_factor.md) | 同结构提公因式 | 6 | active |
-| [kp_s06_same_core_rewrite](./kp_s06_same_core_rewrite.md) | 同核心式改写 | 6 | active |
+| [kp_s06_same_core_rewrite](./kp_s06_same_core_rewrite.md) | 同核心算式的整体改写 | 6 | active |

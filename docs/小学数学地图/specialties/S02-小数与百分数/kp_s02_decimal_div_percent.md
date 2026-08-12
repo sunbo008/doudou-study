@@ -2,7 +2,7 @@
 kp_id: kp_s02_decimal_div_percent
 title: 小数除以百分数
 specialty_id: S02
-grades: [5, 6]
+grades: [6]
 pep_units:
   - { grade: 6, volume: 上, unit: "百分数（一）" }
 status: active

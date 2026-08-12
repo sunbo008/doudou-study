@@ -4,6 +4,7 @@ import contextlib
 import io
 from pathlib import Path
 import re
+import shutil
 import tempfile
 import unittest
 
@@ -522,7 +523,7 @@ class CatalogTests(unittest.TestCase):
     def test_catalog_rejects_invalid_entry_metadata_and_evidence(self) -> None:
         cases = (
             ("未知类型", "6", "上", "verified_book", "[目录](../目录.jpg)", "catalog-entry-type-invalid"),
-            ("正式单元", "5", "上", "verified_book", "[目录](../目录.jpg)", "catalog-entry-grade-invalid"),
+            ("正式单元", "7", "上", "verified_book", "[目录](../目录.jpg)", "catalog-entry-grade-invalid"),
             ("正式单元", "6", "中", "verified_book", "[目录](../目录.jpg)", "catalog-entry-volume-invalid"),
             ("正式单元", "6", "上", "pending", "[目录](../目录.jpg)", "catalog-entry-verification-invalid"),
             ("正式单元", "6", "上", "verified_book", "[目录](../missing.jpg)", "catalog-entry-evidence-invalid"),
@@ -555,6 +556,309 @@ class CatalogTests(unittest.TestCase):
                     ),
                     f"目录项目尚未覆盖：{unit}",
                 )
+
+
+class FinalAcceptanceContractTests(unittest.TestCase):
+    """Pressure-test the CLI contract against a real copied map tree."""
+
+    SOURCE_MAP = Path(__file__).resolve().parents[1] / "docs" / "小学数学地图"
+
+    def setUp(self) -> None:
+        self.temp_dir = tempfile.TemporaryDirectory()
+        source_repo = Path(__file__).resolve().parents[1]
+        temp_repo = Path(self.temp_dir.name) / "repo"
+        self.root = temp_repo / "docs" / "小学数学地图"
+        self.root.parent.mkdir(parents=True)
+        shutil.copytree(self.SOURCE_MAP, self.root)
+        shutil.copytree(source_repo / "docs" / "资料", temp_repo / "docs" / "资料")
+        shutil.copytree(source_repo / "practice", temp_repo / "practice")
+        shutil.copytree(
+            source_repo / "docs" / "素质跟踪", temp_repo / "docs" / "素质跟踪"
+        )
+
+    def tearDown(self) -> None:
+        self.temp_dir.cleanup()
+
+    def rules(self) -> set[str]:
+        return {issue.rule for issue in validate(self.root)}
+
+    def test_catalog_is_required_for_a_map_root(self) -> None:
+        (self.root / "_meta" / "教材目录基线.md").unlink()
+
+        self.assertIn("catalog-missing", self.rules())
+
+    def test_grade_five_verified_public_catalog_row_is_allowed(self) -> None:
+        catalog = self.root / "_meta" / "教材目录基线.md"
+        with catalog.open("a", encoding="utf-8") as file:
+            file.write(
+                "| 5 | 上 | 1 | 测试单元 | 正式单元 | verified_public | "
+                "[人教社](https://www.pep.com.cn/test) | "
+                "[测试入口](../specialties/S01-整数与运算/kp_s01_integer_operation_structure.md) |\n"
+            )
+
+        issues = validate(self.root)
+        public_row_rules = {
+            issue.rule for issue in issues if "目录" in issue.path.name
+        }
+
+        self.assertNotIn("catalog-entry-grade-invalid", public_row_rules)
+        self.assertNotIn("catalog-entry-verification-invalid", public_row_rules)
+        self.assertNotIn("catalog-entry-evidence-invalid", public_row_rules)
+
+    def test_grade_five_catalog_rejects_book_verification(self) -> None:
+        catalog = self.root / "_meta" / "教材目录基线.md"
+        with catalog.open("a", encoding="utf-8") as file:
+            file.write(
+                "| 5 | 上 | 1 | 测试单元 | 正式单元 | verified_book | "
+                "[人教社](https://www.pep.com.cn/test) | "
+                "[测试入口](../specialties/S01-整数与运算/kp_s01_integer_operation_structure.md) |\n"
+            )
+
+        self.assertIn("catalog-entry-verification-invalid", self.rules())
+
+    def test_active_entry_must_be_in_its_specialty_readme(self) -> None:
+        readme = self.root / "specialties" / "S01-整数与运算" / "README.md"
+        text = readme.read_text(encoding="utf-8").replace(
+            "[kp_s01_integer_operation_structure](./kp_s01_integer_operation_structure.md)",
+            "kp_s01_integer_operation_structure",
+        )
+        readme.write_text(text, encoding="utf-8")
+
+        self.assertIn("active-missing-specialty-readme", self.rules())
+
+    def test_active_entry_must_be_in_specialty_index(self) -> None:
+        index = self.root / "专项索引.md"
+        text = index.read_text(encoding="utf-8").replace(
+            "(./specialties/S01-整数与运算/kp_s01_integer_operation_structure.md)",
+            "(#s01-整数与运算)",
+        )
+        index.write_text(text, encoding="utf-8")
+
+        self.assertIn("active-missing-specialty-index", self.rules())
+
+    def test_active_entry_must_be_in_grade_index(self) -> None:
+        index = self.root / "年级索引.md"
+        text = index.read_text(encoding="utf-8").replace(
+            "(./specialties/S01-整数与运算/kp_s01_integer_operation_structure.md)",
+            "(#六年级)",
+        )
+        index.write_text(text, encoding="utf-8")
+
+        self.assertIn("active-missing-grade-index", self.rules())
+
+    def test_specialty_id_must_match_parent_directory(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S01-整数与运算"
+            / "kp_s01_integer_operation_structure.md"
+        )
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                "specialty_id: S01", "specialty_id: S02", 1
+            ),
+            encoding="utf-8",
+        )
+
+        self.assertIn("specialty-directory-mismatch", self.rules())
+
+    def test_catalog_target_must_be_active(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S03-分数"
+            / "kp_s03_fraction_multiply_meaning.md"
+        )
+        path.write_text(
+            path.read_text(encoding="utf-8").replace("status: active", "status: draft", 1),
+            encoding="utf-8",
+        )
+
+        self.assertIn("catalog-target-not-active", self.rules())
+
+    def test_catalog_target_pep_unit_must_match_row_exactly(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S03-分数"
+            / "kp_s03_fraction_multiply_meaning.md"
+        )
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                'unit: "分数乘法"', 'unit: "错误单元"', 1
+            ),
+            encoding="utf-8",
+        )
+
+        self.assertIn("catalog-target-pep-unit-mismatch", self.rules())
+
+    def test_active_pep_unit_must_have_a_catalog_record(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S02-小数与百分数"
+            / "kp_s02_percent_change.md"
+        )
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                'unit: "百分数（一）"', 'unit: "不存在的单元"', 1
+            ),
+            encoding="utf-8",
+        )
+
+        self.assertIn("active-pep-unit-not-in-catalog", self.rules())
+
+    def test_grades_must_match_pep_unit_grades(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S02-小数与百分数"
+            / "kp_s02_percent_to_decimal.md"
+        )
+        path.write_text(
+            path.read_text(encoding="utf-8").replace("grades: [6]", "grades: [5, 6]", 1),
+            encoding="utf-8",
+        )
+
+        self.assertIn("grades-pep-units-mismatch", self.rules())
+
+    def test_active_source_verification_must_match_grade_evidence(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S02-小数与百分数"
+            / "kp_s02_percent_to_decimal.md"
+        )
+        text = path.read_text(encoding="utf-8")
+        text = text.replace("grades: [6]", "grades: [5]", 1)
+        text = text.replace("grade: 6", "grade: 5", 1)
+        path.write_text(text, encoding="utf-8")
+
+        self.assertIn("source-verification-grade-mismatch", self.rules())
+
+    def test_declared_level_four_requires_a_real_example(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S01-整数与运算"
+            / "kp_s01_integer_operation_structure.md"
+        )
+        text = path.read_text(encoding="utf-8")
+        level_four = text.index("### 例题 4")
+        common_pitfalls = text.index("## 常见坑", level_four)
+        path.write_text(text[:level_four] + text[common_pitfalls:], encoding="utf-8")
+
+        self.assertIn("declared-level-missing-example", self.rules())
+
+    def test_pending_level_four_is_not_treated_as_written(self) -> None:
+        pending = (
+            self.root
+            / "specialties"
+            / "S02-小数与百分数"
+            / "kp_s02_decimal_div_percent.md"
+        )
+
+        self.assertFalse(
+            any(
+                issue.rule == "declared-level-missing-example"
+                and issue.path.name == pending.name
+                for issue in validate(self.root)
+            )
+        )
+
+    def test_duplicate_stable_title_is_rejected(self) -> None:
+        source = (
+            self.root
+            / "specialties"
+            / "S01-整数与运算"
+            / "kp_s01_integer_operation_structure.md"
+        )
+        duplicate = source.with_name("kp_s01_duplicate_title.md")
+        duplicate.write_text(
+            source.read_text(encoding="utf-8").replace(
+                "kp_s01_integer_operation_structure", "kp_s01_duplicate_title"
+            ),
+            encoding="utf-8",
+        )
+
+        self.assertIn("duplicate-stable-knowledge", self.rules())
+
+    def test_duplicate_normalized_body_is_rejected(self) -> None:
+        source = (
+            self.root
+            / "specialties"
+            / "S01-整数与运算"
+            / "kp_s01_integer_operation_structure.md"
+        )
+        duplicate = source.with_name("kp_s01_duplicate_body.md")
+        text = source.read_text(encoding="utf-8")
+        text = text.replace(
+            "kp_s01_integer_operation_structure", "kp_s01_duplicate_body"
+        ).replace("title: 整数运算结构与简算", "title: 另一个稳定标题")
+        duplicate.write_text(text, encoding="utf-8")
+
+        self.assertIn("duplicate-body", self.rules())
+
+    def test_local_markdown_anchor_must_exist(self) -> None:
+        readme = self.root / "README.md"
+        with readme.open("a", encoding="utf-8") as file:
+            file.write("\n[错误锚点](./年级索引.md#不存在的标题)\n")
+
+        self.assertIn("broken-anchor", self.rules())
+
+    def test_percent_conversion_has_no_unverified_grade_five_claim(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S02-小数与百分数"
+            / "kp_s02_percent_to_decimal.md"
+        )
+        frontmatter = parse_frontmatter(path.read_text(encoding="utf-8"))
+        grade_index = (self.root / "年级索引.md").read_text(encoding="utf-8")
+
+        self.assertEqual(frontmatter.get("grades"), [6])
+        self.assertNotIn(
+            "五下\n\n| 知识点 | 专项 | 状态 |\n|---|---|---|\n| 分数加减法",
+            grade_index.split("百分数与小数互化", 1)[0],
+        )
+        five_lower = grade_index.split("## 五年级", 1)[1].split("## 六年级", 1)[0]
+        self.assertNotIn("kp_s02_percent_to_decimal", five_lower)
+
+    def test_same_core_entry_stays_within_primary_math_symbol_system(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S06-简易方程与代数结构"
+            / "kp_s06_same_core_rewrite.md"
+        )
+        text = path.read_text(encoding="utf-8")
+        forbidden = ("设 `u", "因式分解", "零因式", "u=0", "u = 0", "−5/3", "二次方程")
+
+        for marker in forbidden:
+            with self.subTest(marker=marker):
+                self.assertNotIn(marker, text)
+
+    def test_same_core_entry_has_recomputed_l1_through_l4_answers(self) -> None:
+        path = (
+            self.root
+            / "specialties"
+            / "S06-简易方程与代数结构"
+            / "kp_s06_same_core_rewrite.md"
+        )
+        text = path.read_text(encoding="utf-8")
+        examples = text.split("### 例题 ")[1:]
+
+        self.assertEqual(len(examples), 4)
+        self.assertEqual(
+            [
+                re.search(r"^#### 难度\s*\n\s*(L[1-4])\s*$", item, re.MULTILINE).group(1)
+                for item in examples
+            ],
+            ["L1", "L2", "L3", "L4"],
+        )
+        for example, answer in zip(examples, ("2500", "12", "10", "17")):
+            answer_block = example.split("#### 答案", 1)[1]
+            self.assertIn(answer, answer_block)
 
 
 class CoverageTests(unittest.TestCase):

@@ -25,7 +25,7 @@ lateral_tags: [同构提因式]
 | L1 | 数字桥：`(□)² ÷ □ = □` | 已写 |
 | L2 | `(a−5)² = a−5` 移项提因式 | 已写 |
 | L3 | 对比「两边同除」为何丢解 | 已写 |
-| L4 | 两边核不同、需先改写 | 见 [`kp_s06_same_core_rewrite`](./kp_s06_same_core_rewrite.md) |
+| L4 | 两个算术整体顺序不同、需先对齐 | 见 [`kp_s06_same_core_rewrite`](./kp_s06_same_core_rewrite.md) |
 
 ## 例题
 
@@ -137,7 +137,7 @@ L3
 
 ## 思维横向题（L4）
 
-两边「长得不像」但同核时，见 [`kp_s06_same_core_rewrite`](./kp_s06_same_core_rewrite.md)（例：`(9a+15)² = 10+6a`）。
+需要先用交换律对齐两个算术整体时，见 [`kp_s06_same_core_rewrite`](./kp_s06_same_core_rewrite.md)（例：`24×(□+3)+16×(3+□)=800`）。
 
 ## 关联
 

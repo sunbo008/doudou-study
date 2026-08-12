@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import re
 from typing import Any, Sequence
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse
 
 
 @dataclass(frozen=True)
@@ -41,6 +41,10 @@ CATALOG_ENTRY_TYPES = CATALOG_COVERED_TYPES | {"复习聚合"}
 CATALOG_PATH = Path("_meta/教材目录基线.md")
 CATALOG_IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp"}
 MARKDOWN_HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*$", re.MULTILINE)
+DECLARED_LEVEL_ROW = re.compile(
+    r"^\|\s*(L[34])\s*\|[^\n|]*\|\s*([^|\n]+?)\s*\|\s*$", re.MULTILINE
+)
+PUBLIC_SOURCE_DOMAINS = ("pep.com.cn", "gov.cn", "edu.cn")
 
 
 @dataclass(frozen=True)
@@ -346,15 +350,43 @@ def _catalog_review_anchor_is_valid(catalog_path: Path, coverage: str) -> bool:
     return any(_heading_anchor(match.group(1)) == anchor for match in MARKDOWN_HEADING.finditer(path.read_text(encoding="utf-8")))
 
 
-def _catalog_evidence_is_valid(catalog_path: Path, evidence: str) -> bool:
-    links = _catalog_local_links(catalog_path, evidence)
-    return len(links) == 1 and links[0][0].is_file() and links[0][0].suffix.lower() in CATALOG_IMAGE_SUFFIXES
+def _catalog_evidence_is_valid(catalog_path: Path, entry: CatalogEntry) -> bool:
+    targets = scan_markdown_links(entry.evidence)
+    if len(targets) != 1:
+        return False
+    target = targets[0]
+    if entry.verification == "verified_public":
+        parsed = urlparse(target)
+        hostname = (parsed.hostname or "").lower()
+        return (
+            parsed.scheme == "https"
+            and any(
+                hostname == domain or hostname.endswith(f".{domain}")
+                for domain in PUBLIC_SOURCE_DOMAINS
+            )
+        )
+    links = _catalog_local_links(catalog_path, entry.evidence)
+    return (
+        len(links) == 1
+        and links[0][0].is_file()
+        and links[0][0].suffix.lower() in CATALOG_IMAGE_SUFFIXES
+    )
+
+
+def _catalog_target(catalog_path: Path, coverage: str) -> Path | None:
+    links = _catalog_local_links(catalog_path, coverage)
+    if len(links) != 1:
+        return None
+    path, _ = links[0]
+    return path if path.is_file() and path.name.startswith("kp_") else None
 
 
 def validate_catalog(root: Path) -> list[Issue]:
     """Ensure required curriculum catalog entries lead to real content."""
     catalog_path = root / CATALOG_PATH
     if not catalog_path.is_file():
+        if (root / "specialties").is_dir() or (root / "专项索引.md").is_file():
+            return [Issue(catalog_path, "catalog-missing", "地图缺少教材目录基线")]
         return []
     issues: list[Issue] = []
     lines = catalog_path.read_text(encoding="utf-8").splitlines()
@@ -372,14 +404,31 @@ def validate_catalog(root: Path) -> list[Issue]:
         entry = CatalogEntry(*cells)
         if entry.entry_type not in CATALOG_ENTRY_TYPES:
             issues.append(Issue(catalog_path, "catalog-entry-type-invalid", f"目录第 {number} 行类型非法：{entry.entry_type}"))
-        if entry.grade != "6":
-            issues.append(Issue(catalog_path, "catalog-entry-grade-invalid", f"目录第 {number} 行年级必须为 6"))
+        try:
+            grade = int(entry.grade)
+        except ValueError:
+            grade = 0
+        if grade not in range(1, 7):
+            issues.append(Issue(catalog_path, "catalog-entry-grade-invalid", f"目录第 {number} 行年级必须为 1 到 6"))
         if entry.volume not in {"上", "下"}:
             issues.append(Issue(catalog_path, "catalog-entry-volume-invalid", f"目录第 {number} 行册次必须为 上 或 下"))
-        if entry.verification != "verified_book":
-            issues.append(Issue(catalog_path, "catalog-entry-verification-invalid", f"目录第 {number} 行核验必须为 verified_book"))
-        if not _catalog_evidence_is_valid(catalog_path, entry.evidence):
-            issues.append(Issue(catalog_path, "catalog-entry-evidence-invalid", f"目录第 {number} 行证据必须为存在的本地图片链接"))
+        expected_verification = "verified_book" if grade == 6 else "verified_public"
+        if grade in range(1, 7) and entry.verification != expected_verification:
+            issues.append(
+                Issue(
+                    catalog_path,
+                    "catalog-entry-verification-invalid",
+                    f"目录第 {number} 行核验必须为 {expected_verification}",
+                )
+            )
+        if not _catalog_evidence_is_valid(catalog_path, entry):
+            issues.append(
+                Issue(
+                    catalog_path,
+                    "catalog-entry-evidence-invalid",
+                    f"目录第 {number} 行证据与核验方式不匹配或不可解析",
+                )
+            )
         if entry.entry_type in CATALOG_COVERED_TYPES and not _catalog_coverage_is_valid(catalog_path, entry.coverage):
             issues.append(
                 Issue(
@@ -388,6 +437,27 @@ def validate_catalog(root: Path) -> list[Issue]:
                     f"{entry.grade}年级{entry.volume}册《{entry.unit}》的覆盖入口为空、占位或断链",
                 )
             )
+        if entry.entry_type in CATALOG_COVERED_TYPES:
+            target = _catalog_target(catalog_path, entry.coverage)
+            if target is not None:
+                target_frontmatter = parse_frontmatter(target.read_text(encoding="utf-8"))
+                if target_frontmatter.get("status") != "active":
+                    issues.append(
+                        Issue(
+                            catalog_path,
+                            "catalog-target-not-active",
+                            f"目录第 {number} 行覆盖目标必须是 active 条目",
+                        )
+                    )
+                expected_unit = {"grade": grade, "volume": entry.volume, "unit": entry.unit}
+                if expected_unit not in target_frontmatter.get("pep_units", []):
+                    issues.append(
+                        Issue(
+                            catalog_path,
+                            "catalog-target-pep-unit-mismatch",
+                            f"目录第 {number} 行覆盖目标 pep_units 与目录年级、册次、单元不一致",
+                        )
+                    )
         if entry.entry_type == "复习聚合" and not _catalog_review_anchor_is_valid(catalog_path, entry.coverage):
             issues.append(
                 Issue(
@@ -396,6 +466,196 @@ def validate_catalog(root: Path) -> list[Issue]:
                     f"{entry.grade}年级{entry.volume}册《{entry.unit}》的复习聚合必须链接存在的年级索引锚点",
                 )
             )
+    return issues
+
+
+def _resolved_local_markdown_targets(path: Path, text: str) -> list[tuple[Path, str]]:
+    targets: list[tuple[Path, str]] = []
+    for target in scan_markdown_links(text):
+        if target.startswith(("http://", "https://", "mailto:", "tel:")):
+            continue
+        local_target, _, anchor = unquote(target).partition("#")
+        local_target = local_target.split("?", 1)[0]
+        resolved = (path.parent / local_target).resolve() if local_target else path.resolve()
+        targets.append((resolved, anchor))
+    return targets
+
+
+def _linked_paths(path: Path) -> set[Path]:
+    if not path.is_file():
+        return set()
+    return {
+        target
+        for target, _ in _resolved_local_markdown_targets(
+            path, path.read_text(encoding="utf-8")
+        )
+    }
+
+
+def _normalized_stable_title(value: Any) -> str:
+    if not isinstance(value, str):
+        return ""
+    return re.sub(r"[^\w\u4e00-\u9fff]", "", value).lower()
+
+
+def _normalized_body(text: str) -> str:
+    lines = text.splitlines()
+    if lines and lines[0].strip() == "---":
+        try:
+            end = next(
+                index for index, line in enumerate(lines[1:], 1) if line.strip() == "---"
+            )
+            lines = lines[end + 1 :]
+        except StopIteration:
+            pass
+    return re.sub(r"\s+", "", "\n".join(lines))
+
+
+def _declared_advanced_levels(path: Path, text: str) -> dict[str, bool]:
+    declarations: dict[str, bool] = {}
+    for level, state in DECLARED_LEVEL_ROW.findall(text):
+        if "已写" in state:
+            declarations[level] = False
+            continue
+        links = _resolved_local_markdown_targets(path, state)
+        if not links:
+            continue
+        declarations[level] = any(
+            target.is_file()
+            and parse_frontmatter(target.read_text(encoding="utf-8")).get("status")
+            == "active"
+            for target, _ in links
+        )
+    return declarations
+
+
+def validate_global_contract(
+    root: Path,
+    entries: list[tuple[Path, str, dict[str, Any]]],
+) -> list[Issue]:
+    """Validate cross-file invariants whose source of truth is each kp document."""
+    issues: list[Issue] = []
+    specialty_index = root / "专项索引.md"
+    grade_index = root / "年级索引.md"
+    specialty_links = _linked_paths(specialty_index)
+    grade_links = _linked_paths(grade_index)
+    catalog_path = root / CATALOG_PATH
+    enforce_catalog_contract = catalog_path.is_file() or (root / "specialties").is_dir()
+    catalog_keys = {
+        (int(entry.grade), entry.volume, entry.unit)
+        for entry in (parse_catalog(catalog_path) if catalog_path.is_file() else [])
+        if entry.grade.isdigit()
+        and int(entry.grade) in range(1, 7)
+        and entry.entry_type in CATALOG_COVERED_TYPES
+    }
+    titles: dict[str, list[Path]] = {}
+    bodies: dict[str, list[Path]] = {}
+
+    for path, text, frontmatter in entries:
+        specialty_id = frontmatter.get("specialty_id")
+        parent_match = re.match(r"^(S(?:0[1-9]|1[0-4]))(?:-|$)", path.parent.name)
+        if parent_match and specialty_id != parent_match.group(1):
+            issues.append(
+                Issue(path, "specialty-directory-mismatch", "specialty_id 与专项目录不一致")
+            )
+
+        title_key = _normalized_stable_title(frontmatter.get("title"))
+        if title_key:
+            titles.setdefault(title_key, []).append(path)
+        body_key = _normalized_body(text)
+        if body_key:
+            bodies.setdefault(body_key, []).append(path)
+
+        grades = frontmatter.get("grades")
+        pep_units = frontmatter.get("pep_units")
+        if isinstance(grades, list) and isinstance(pep_units, list):
+            pep_grades = {
+                unit.get("grade") for unit in pep_units if isinstance(unit, dict)
+            }
+            if set(grades) != pep_grades:
+                issues.append(
+                    Issue(
+                        path,
+                        "grades-pep-units-mismatch",
+                        "grades 必须与 pep_units 中实际出现的年级完全一致",
+                    )
+                )
+            if (
+                enforce_catalog_contract
+                and frontmatter.get("status") == "active"
+                and pep_grades
+            ):
+                expected_source = (
+                    "verified_book"
+                    if pep_grades == {6}
+                    else "verified_public"
+                    if all(isinstance(grade, int) and grade in range(1, 6) for grade in pep_grades)
+                    else None
+                )
+                if expected_source is None or frontmatter.get("source_verification") != expected_source:
+                    issues.append(
+                        Issue(
+                            path,
+                            "source-verification-grade-mismatch",
+                            "active 条目的来源核验状态必须与教材年级证据口径一致",
+                        )
+                    )
+                for unit in pep_units:
+                    if not isinstance(unit, dict):
+                        continue
+                    catalog_unit = str(unit.get("unit", "")).split(" / 分班衔接", 1)[0]
+                    key = (unit.get("grade"), unit.get("volume"), catalog_unit)
+                    if key not in catalog_keys:
+                        issues.append(
+                            Issue(
+                                path,
+                                "active-pep-unit-not-in-catalog",
+                                f"active 条目的教材归属未出现在目录基线：{key}",
+                            )
+                        )
+
+        actual_levels = {
+            level
+            for level in re.findall(
+                r"^#### 难度\s*\n\s*(L[1-4])\s*$", text, re.MULTILINE
+            )
+        }
+        for level, valid_reference in _declared_advanced_levels(path, text).items():
+            if level not in actual_levels and not valid_reference:
+                issues.append(
+                    Issue(
+                        path,
+                        "declared-level-missing-example",
+                        f"典型题型声明 {level} 已写，但没有对应例题或 active 跨条目链接",
+                    )
+                )
+
+        if frontmatter.get("status") != "active" or not parent_match:
+            continue
+        readme = path.parent / "README.md"
+        if path.resolve() not in _linked_paths(readme):
+            issues.append(
+                Issue(path, "active-missing-specialty-readme", "active 条目未被专项 README 覆盖")
+            )
+        if path.resolve() not in specialty_links:
+            issues.append(
+                Issue(path, "active-missing-specialty-index", "active 条目未被专项索引覆盖")
+            )
+        if path.resolve() not in grade_links:
+            issues.append(
+                Issue(path, "active-missing-grade-index", "active 条目未被年级索引覆盖")
+            )
+
+    for paths in titles.values():
+        if len(paths) > 1:
+            for path in paths:
+                issues.append(
+                    Issue(path, "duplicate-stable-knowledge", "稳定知识点标题重复维护")
+                )
+    for paths in bodies.values():
+        if len(paths) > 1:
+            for path in paths:
+                issues.append(Issue(path, "duplicate-body", "知识正文重复维护"))
     return issues
 
 
@@ -408,10 +668,12 @@ def validate(root: Path) -> list[Issue]:
     issues.extend(validate_catalog(root))
     kp_paths = sorted(root.rglob("kp_*.md"))
     kp_ids: dict[str, list[Path]] = {}
+    entries: list[tuple[Path, str, dict[str, Any]]] = []
 
     for path in kp_paths:
         text = path.read_text(encoding="utf-8")
         frontmatter = parse_frontmatter(text)
+        entries.append((path, text, frontmatter))
         issues.extend(validate_kp(path, text=text, frontmatter=frontmatter))
         kp_id = frontmatter.get("kp_id")
         if isinstance(kp_id, str) and kp_id:
@@ -422,17 +684,25 @@ def validate(root: Path) -> list[Issue]:
             for path in paths:
                 issues.append(Issue(path, "duplicate-kp-id", f"kp_id 重复：{kp_id}"))
 
+    issues.extend(validate_global_contract(root, entries))
+
     for path in sorted(root.rglob("*.md")):
         if path.resolve() == (root / CATALOG_PATH).resolve():
             continue
-        for target in scan_markdown_links(path.read_text(encoding="utf-8")):
-            if _is_external_link(target):
+        text = path.read_text(encoding="utf-8")
+        for target in scan_markdown_links(text):
+            if target.startswith(("http://", "https://", "mailto:", "tel:")):
                 continue
-            local_target = unquote(target.split("#", 1)[0].split("?", 1)[0])
-            if not local_target:
-                continue
-            if not (path.parent / local_target).resolve().exists():
+            local_target, _, anchor = unquote(target).partition("#")
+            local_target = local_target.split("?", 1)[0]
+            resolved = (path.parent / local_target).resolve() if local_target else path.resolve()
+            if not resolved.exists():
                 issues.append(Issue(path, "broken-link", f"链接目标不存在：{target}"))
+                continue
+            if anchor and resolved.is_file() and resolved.suffix == ".md":
+                headings = MARKDOWN_HEADING.findall(resolved.read_text(encoding="utf-8"))
+                if anchor not in {_heading_anchor(heading) for heading in headings}:
+                    issues.append(Issue(path, "broken-anchor", f"链接锚点不存在：{target}"))
 
     return sorted(issues, key=lambda issue: (str(issue.path), issue.rule, issue.message))
 
