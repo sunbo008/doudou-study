@@ -412,14 +412,25 @@ class CatalogTests(unittest.TestCase):
         meta.mkdir()
         self.catalog = meta / "教材目录基线.md"
 
-    def write_catalog(self, entry_type: str, coverage: str) -> None:
+    def write_catalog(
+        self,
+        entry_type: str,
+        coverage: str,
+        *,
+        header: str = "| 年级 | 册次 | 顺序 | 单元 | 类型 | 核验 | 证据 | 覆盖入口 |",
+        grade: str = "6",
+        volume: str = "上",
+        verification: str = "verified_book",
+        evidence: str = "[目录](../目录.jpg)",
+    ) -> None:
+        (self.root / "目录.jpg").write_bytes(b"catalog evidence")
         self.catalog.write_text(
             """# 教材目录基线
 
-| 年级 | 册次 | 顺序 | 单元 | 类型 | 核验 | 证据 | 覆盖入口 |
+%s
 |---|---|---:|---|---|---|---|---|
-| 6 | 上 | 1 | 分数乘法 | %s | verified_book | [目录](https://example.test/6-目录1.jpg) | %s |
-""" % (entry_type, coverage),
+| %s | %s | 1 | 分数乘法 | %s | %s | %s | %s |
+""" % (header, grade, volume, entry_type, verification, evidence, coverage),
             encoding="utf-8",
         )
 
@@ -449,6 +460,83 @@ class CatalogTests(unittest.TestCase):
         rules = {issue.rule for issue in validate(self.root)}
 
         self.assertNotIn("catalog-entry-uncovered", rules)
+
+    def test_catalog_entry_uncovered_rejects_grade_index_or_readme_as_unit_coverage(self) -> None:
+        for filename in ("年级索引.md", "README.md"):
+            with self.subTest(filename=filename):
+                (self.root / filename).write_text("# 六年级\n", encoding="utf-8")
+                self.write_catalog("正式单元", f"[导航](../{filename})")
+
+                rules = {issue.rule for issue in validate(self.root)}
+
+                self.assertIn("catalog-entry-uncovered", rules)
+
+    def test_catalog_entry_coverage_accepts_an_existing_knowledge_point_document(self) -> None:
+        kp = self.root / "specialties" / "S01" / "kp_s01_valid.md"
+        kp.parent.mkdir(parents=True)
+        kp.write_text("# 知识正文\n", encoding="utf-8")
+        self.write_catalog("正式单元", "[知识正文](../specialties/S01/kp_s01_valid.md)")
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertNotIn("catalog-entry-uncovered", rules)
+
+    def test_review_aggregate_rejects_an_index_link_with_missing_anchor(self) -> None:
+        (self.root / "年级索引.md").write_text("# 五年级\n", encoding="utf-8")
+        self.write_catalog("复习聚合", "[六年级索引](../年级索引.md#六年级)")
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("catalog-review-anchor-invalid", rules)
+
+    def test_catalog_rejects_missing_or_inexact_fixed_header(self) -> None:
+        self.write_catalog(
+            "正式单元",
+            "[知识正文](../specialties/S01/kp_s01_valid.md)",
+            header="| 年级 | 册次 | 单元 | 类型 | 核验 | 证据 | 覆盖入口 |",
+        )
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("catalog-header-invalid", rules)
+
+    def test_catalog_rejects_data_row_with_wrong_column_count(self) -> None:
+        self.catalog.write_text(
+            """# 教材目录基线
+
+| 年级 | 册次 | 顺序 | 单元 | 类型 | 核验 | 证据 | 覆盖入口 |
+|---|---|---:|---|---|---|---|---|
+| 6 | 上 | 1 | 分数乘法 | 正式单元 | verified_book | [目录](../目录.jpg) |
+""",
+            encoding="utf-8",
+        )
+
+        rules = {issue.rule for issue in validate(self.root)}
+
+        self.assertIn("catalog-row-column-count", rules)
+
+    def test_catalog_rejects_invalid_entry_metadata_and_evidence(self) -> None:
+        cases = (
+            ("未知类型", "6", "上", "verified_book", "[目录](../目录.jpg)", "catalog-entry-type-invalid"),
+            ("正式单元", "5", "上", "verified_book", "[目录](../目录.jpg)", "catalog-entry-grade-invalid"),
+            ("正式单元", "6", "中", "verified_book", "[目录](../目录.jpg)", "catalog-entry-volume-invalid"),
+            ("正式单元", "6", "上", "pending", "[目录](../目录.jpg)", "catalog-entry-verification-invalid"),
+            ("正式单元", "6", "上", "verified_book", "[目录](../missing.jpg)", "catalog-entry-evidence-invalid"),
+        )
+        for entry_type, grade, volume, verification, evidence, expected_rule in cases:
+            with self.subTest(expected_rule=expected_rule):
+                self.write_catalog(
+                    entry_type,
+                    "[知识正文](../specialties/S01/kp_s01_valid.md)",
+                    grade=grade,
+                    volume=volume,
+                    verification=verification,
+                    evidence=evidence,
+                )
+
+                rules = {issue.rule for issue in validate(self.root)}
+
+                self.assertIn(expected_rule, rules)
 
 
 if __name__ == "__main__":

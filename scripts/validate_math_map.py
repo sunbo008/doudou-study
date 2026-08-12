@@ -37,7 +37,10 @@ SECTION_HEADING = re.compile(r"^#### (.+?)\s*$", re.MULTILINE)
 ANY_HEADING = re.compile(r"^#{1,4}\s", re.MULTILINE)
 CATALOG_COLUMNS = ("年级", "册次", "顺序", "单元", "类型", "核验", "证据", "覆盖入口")
 CATALOG_COVERED_TYPES = {"正式单元", "综合实践"}
+CATALOG_ENTRY_TYPES = CATALOG_COVERED_TYPES | {"复习聚合"}
 CATALOG_PATH = Path("_meta/教材目录基线.md")
+CATALOG_IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp"}
+MARKDOWN_HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*$", re.MULTILINE)
 
 
 @dataclass(frozen=True)
@@ -148,26 +151,30 @@ def scan_markdown_links(text: str) -> list[str]:
     return links
 
 
+def _table_cells(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+
+def _catalog_table_start(lines: list[str]) -> int | None:
+    for index, line in enumerate(lines):
+        if line.startswith("|") and tuple(_table_cells(line)) == CATALOG_COLUMNS:
+            return index
+    return None
+
+
 def parse_catalog(path: Path) -> list[CatalogEntry]:
-    """Parse the fixed-column curriculum catalog table when it is present."""
+    """Parse valid fixed-column curriculum catalog rows."""
     lines = path.read_text(encoding="utf-8").splitlines()
+    header_index = _catalog_table_start(lines)
+    if header_index is None:
+        return []
     entries: list[CatalogEntry] = []
-    header_found = False
-    for line in lines:
+    for line in lines[header_index + 2 :]:
         if not line.startswith("|"):
-            if header_found:
-                break
-            continue
-        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-        if not header_found:
-            if tuple(cells) == CATALOG_COLUMNS:
-                header_found = True
-            continue
-        if all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
-            continue
-        if len(cells) != len(CATALOG_COLUMNS):
-            continue
-        entries.append(CatalogEntry(*cells))
+            break
+        cells = _table_cells(line)
+        if len(cells) == len(CATALOG_COLUMNS):
+            entries.append(CatalogEntry(*cells))
     return entries
 
 
@@ -301,19 +308,47 @@ def _is_external_link(target: str) -> bool:
     return target.startswith(("http://", "https://", "mailto:", "tel:", "#"))
 
 
+def _catalog_local_links(catalog_path: Path, value: str) -> list[tuple[Path, str]]:
+    links: list[tuple[Path, str]] = []
+    for target in scan_markdown_links(value):
+        if _is_external_link(target):
+            continue
+        local_target, _, anchor = unquote(target).partition("#")
+        local_target = local_target.split("?", 1)[0]
+        if local_target:
+            links.append(((catalog_path.parent / local_target).resolve(), anchor))
+    return links
+
+
 def _catalog_coverage_is_valid(catalog_path: Path, coverage: str) -> bool:
     if not coverage.strip() or re.search(r"占位|待建|待补", coverage):
         return False
-    targets = scan_markdown_links(coverage)
-    if not targets:
+    links = _catalog_local_links(catalog_path, coverage)
+    if len(links) != 1:
         return False
-    for target in targets:
-        if _is_external_link(target):
-            continue
-        local_target = unquote(target.split("#", 1)[0].split("?", 1)[0])
-        if local_target and (catalog_path.parent / local_target).resolve().exists():
-            return True
-    return False
+    path, _ = links[0]
+    return path.is_file() and path.suffix == ".md" and path.name.startswith("kp_")
+
+
+def _heading_anchor(heading: str) -> str:
+    normalized = heading.strip().lower()
+    normalized = re.sub(r"[^\w\u4e00-\u9fff -]", "", normalized)
+    return re.sub(r"[ -]+", "-", normalized).strip("-")
+
+
+def _catalog_review_anchor_is_valid(catalog_path: Path, coverage: str) -> bool:
+    links = _catalog_local_links(catalog_path, coverage)
+    if len(links) != 1:
+        return False
+    path, anchor = links[0]
+    if path.name != "年级索引.md" or not anchor or not path.is_file():
+        return False
+    return any(_heading_anchor(match.group(1)) == anchor for match in MARKDOWN_HEADING.finditer(path.read_text(encoding="utf-8")))
+
+
+def _catalog_evidence_is_valid(catalog_path: Path, evidence: str) -> bool:
+    links = _catalog_local_links(catalog_path, evidence)
+    return len(links) == 1 and links[0][0].is_file() and links[0][0].suffix.lower() in CATALOG_IMAGE_SUFFIXES
 
 
 def validate_catalog(root: Path) -> list[Issue]:
@@ -322,15 +357,43 @@ def validate_catalog(root: Path) -> list[Issue]:
     if not catalog_path.is_file():
         return []
     issues: list[Issue] = []
-    for entry in parse_catalog(catalog_path):
-        if entry.entry_type not in CATALOG_COVERED_TYPES:
+    lines = catalog_path.read_text(encoding="utf-8").splitlines()
+    header_index = _catalog_table_start(lines)
+    if header_index is None:
+        return [Issue(catalog_path, "catalog-header-invalid", "目录表头必须精确为：" + " | ".join(CATALOG_COLUMNS))]
+
+    for number, line in enumerate(lines[header_index + 2 :], header_index + 3):
+        if not line.startswith("|"):
+            break
+        cells = _table_cells(line)
+        if len(cells) != len(CATALOG_COLUMNS):
+            issues.append(Issue(catalog_path, "catalog-row-column-count", f"目录第 {number} 行必须恰有 8 列"))
             continue
-        if not _catalog_coverage_is_valid(catalog_path, entry.coverage):
+        entry = CatalogEntry(*cells)
+        if entry.entry_type not in CATALOG_ENTRY_TYPES:
+            issues.append(Issue(catalog_path, "catalog-entry-type-invalid", f"目录第 {number} 行类型非法：{entry.entry_type}"))
+        if entry.grade != "6":
+            issues.append(Issue(catalog_path, "catalog-entry-grade-invalid", f"目录第 {number} 行年级必须为 6"))
+        if entry.volume not in {"上", "下"}:
+            issues.append(Issue(catalog_path, "catalog-entry-volume-invalid", f"目录第 {number} 行册次必须为 上 或 下"))
+        if entry.verification != "verified_book":
+            issues.append(Issue(catalog_path, "catalog-entry-verification-invalid", f"目录第 {number} 行核验必须为 verified_book"))
+        if not _catalog_evidence_is_valid(catalog_path, entry.evidence):
+            issues.append(Issue(catalog_path, "catalog-entry-evidence-invalid", f"目录第 {number} 行证据必须为存在的本地图片链接"))
+        if entry.entry_type in CATALOG_COVERED_TYPES and not _catalog_coverage_is_valid(catalog_path, entry.coverage):
             issues.append(
                 Issue(
                     catalog_path,
                     "catalog-entry-uncovered",
                     f"{entry.grade}年级{entry.volume}册《{entry.unit}》的覆盖入口为空、占位或断链",
+                )
+            )
+        if entry.entry_type == "复习聚合" and not _catalog_review_anchor_is_valid(catalog_path, entry.coverage):
+            issues.append(
+                Issue(
+                    catalog_path,
+                    "catalog-review-anchor-invalid",
+                    f"{entry.grade}年级{entry.volume}册《{entry.unit}》的复习聚合必须链接存在的年级索引锚点",
                 )
             )
     return issues
