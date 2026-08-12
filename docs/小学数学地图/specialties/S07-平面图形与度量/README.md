@@ -10,11 +10,14 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单
 
 | 计划 kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
 | kp_s07_angle_measure | 角与度量 | 4 | 占位 |
 | kp_s07_rect_perimeter_area | 长方形与正方形周长面积 | 3～4 | 占位 |
-| kp_s07_circle_perimeter_area | 圆的周长与面积 | 6 | 占位 |
+| [圆的基本要素](./kp_s07_circle_parts.md) | 圆的基本要素 | 6 | active |
+| [圆的周长](./kp_s07_circle_circumference.md) | 圆的周长 | 6 | active |
+| [圆的面积](./kp_s07_circle_area.md) | 圆的面积 | 6 | active |
+| [扇形与圆环](./kp_s07_sector_and_ring.md) | 扇形与圆环 | 6 | active |
 | kp_s07_symmetry_transform | 对称、平移与旋转 | 4～5 | 占位 |

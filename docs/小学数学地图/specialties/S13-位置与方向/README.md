@@ -10,9 +10,10 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单
 
 | 计划 kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
-| kp_s13_direction_route | 方位与路线 | 1～4 | 占位 |
+| [方向、距离与角度](./kp_s13_direction_distance_angle.md) | 方向、距离与角度 | 6 | active |
+| [路线描述](./kp_s13_route_description.md) | 路线描述 | 6 | active |
 | kp_s13_coordinate_pair | 数对 | 5～6 | 占位 |

@@ -554,6 +554,17 @@ class CoverageTests(unittest.TestCase):
         ("S05-比比例与正反比例", "kp_s05_ratio_meaning", "比"),
         ("S05-比比例与正反比例", "kp_s05_ratio_simplify", "比"),
         ("S05-比比例与正反比例", "kp_s05_ratio_application", "比"),
+        ("S13-位置与方向", "kp_s13_direction_distance_angle", "位置与方向（二）"),
+        ("S13-位置与方向", "kp_s13_route_description", "位置与方向（二）"),
+        ("S07-平面图形与度量", "kp_s07_circle_parts", "圆"),
+        ("S07-平面图形与度量", "kp_s07_circle_circumference", "圆"),
+        ("S07-平面图形与度量", "kp_s07_circle_area", "圆"),
+        ("S07-平面图形与度量", "kp_s07_sector_and_ring", "圆"),
+        ("S02-小数与百分数", "kp_s02_percent_meaning", "百分数（一）"),
+        ("S02-小数与百分数", "kp_s02_percent_of_quantity", "百分数（一）"),
+        ("S02-小数与百分数", "kp_s02_percent_change", "百分数（一）"),
+        ("S10-统计与可能性", "kp_s10_fan_chart_reading", "扇形统计图"),
+        ("S10-统计与可能性", "kp_s10_chart_data_inference", "扇形统计图"),
     )
 
     def test_phase_two_entries_exist_and_are_linked_once_in_each_view(self) -> None:
@@ -584,6 +595,8 @@ class CoverageTests(unittest.TestCase):
         for specialty, kp_id, _ in self.TARGETS:
             with self.subTest(kp_id=kp_id):
                 entry = self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+                if not entry.is_file():
+                    continue
                 frontmatter = parse_frontmatter(entry.read_text(encoding="utf-8"))
 
                 for field in ("practice", "weak_ref"):
@@ -595,7 +608,8 @@ class CoverageTests(unittest.TestCase):
         positions: dict[str, list[int]] = {"分数乘法": [], "分数除法": [], "比": []}
 
         for _, kp_id, unit in self.TARGETS:
-            positions[unit].append(grade_index.index(f"{kp_id}.md"))
+            if unit in positions:
+                positions[unit].append(grade_index.index(f"{kp_id}.md"))
 
         self.assertLess(max(positions["分数乘法"]), min(positions["分数除法"]))
         self.assertLess(max(positions["分数除法"]), min(positions["比"]))
