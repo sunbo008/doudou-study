@@ -580,6 +580,25 @@ class CoverageTests(unittest.TestCase):
         ("S09-应用题与数量关系", "kp_s09_race_start_compensation", "确定起跑线"),
         ("S09-应用题与数量关系", "kp_s09_water_saving_model", "节约用水"),
     )
+    TASK_SIX_TARGETS = (
+        ("S12-负数与综合实践", "kp_s12_negative_numbers_meaning", "负数"),
+        ("S12-负数与综合实践", "kp_s12_negative_numbers_line", "负数"),
+        ("S02-小数与百分数", "kp_s02_discount", "百分数（二）"),
+        ("S02-小数与百分数", "kp_s02_tax_rate", "百分数（二）"),
+        ("S02-小数与百分数", "kp_s02_interest_rate", "百分数（二）"),
+        ("S02-小数与百分数", "kp_s02_percent_application", "生活与百分数"),
+        ("S08-立体图形", "kp_s08_cylinder_surface_area", "圆柱与圆锥"),
+        ("S08-立体图形", "kp_s08_cylinder_volume", "圆柱与圆锥"),
+        ("S08-立体图形", "kp_s08_cone_volume", "圆柱与圆锥"),
+        ("S08-立体图形", "kp_s08_composite_solids", "圆柱与圆锥"),
+        ("S05-比比例与正反比例", "kp_s05_proportion_meaning", "比例"),
+        ("S05-比比例与正反比例", "kp_s05_proportion_properties", "比例"),
+        ("S05-比比例与正反比例", "kp_s05_direct_proportion", "比例"),
+        ("S05-比比例与正反比例", "kp_s05_inverse_proportion", "比例"),
+        ("S05-比比例与正反比例", "kp_s05_scale", "比例"),
+        ("S09-应用题与数量关系", "kp_s09_bicycle_gearing", "自行车里的数学"),
+        ("S09-应用题与数量关系", "kp_s09_pigeonhole_principle", "数学广角——鸽巢问题"),
+    )
     TARGETS = (
         ("S03-分数", "kp_s03_fraction_multiply_meaning", "分数乘法"),
         ("S03-分数", "kp_s03_fraction_multiply_compute", "分数乘法"),
@@ -685,6 +704,135 @@ class CoverageTests(unittest.TestCase):
                 text = path.read_text(encoding="utf-8")
                 levels = re.findall(r"^#### 难度\s*\n\s*(L[1-4])\s*$", text, re.MULTILINE)
                 self.assertEqual(levels, ["L1", "L2", "L3", "L4"])
+
+    def test_task_six_target_files_exist(self) -> None:
+        for specialty, kp_id, _ in self.TASK_SIX_TARGETS:
+            with self.subTest(kp_id=kp_id):
+                entry = self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+                self.assertTrue(entry.is_file(), f"缺失知识点文件：{entry}")
+
+    def test_task_six_entries_are_active_verified_and_linked_once(self) -> None:
+        grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")
+        specialty_index = self.SPECIALTY_INDEX.read_text(encoding="utf-8")
+        grade_lower_table = grade_index.split("### 下册", 6)[-1].split(
+            "### 六下整理和复习", 1
+        )[0]
+
+        for specialty, kp_id, unit in self.TASK_SIX_TARGETS:
+            with self.subTest(kp_id=kp_id):
+                entry = self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+                self.assertTrue(entry.is_file(), f"缺失知识点文件：{entry}")
+                frontmatter = parse_frontmatter(entry.read_text(encoding="utf-8"))
+                self.assertEqual(frontmatter.get("kp_id"), kp_id)
+                self.assertEqual(frontmatter.get("status"), "active")
+                self.assertEqual(frontmatter.get("source_verification"), "verified_book")
+                self.assertEqual(frontmatter.get("grades"), [6])
+                self.assertEqual(
+                    frontmatter.get("pep_units"),
+                    [{"grade": 6, "volume": "下", "unit": unit}],
+                )
+                for field in ("practice", "weak_ref"):
+                    self.assertNotIn(frontmatter.get(field), {"待建", "待归档"})
+
+                readme = entry.parent / "README.md"
+                rows = [
+                    line
+                    for line in readme.read_text(encoding="utf-8").splitlines()
+                    if f"(./{kp_id}.md)" in line
+                ]
+                self.assertEqual(len(rows), 1)
+                first_cell = rows[0].strip().strip("|").split("|", 1)[0].strip()
+                self.assertEqual(first_cell, f"[{kp_id}](./{kp_id}.md)")
+                self.assertEqual(specialty_index.count(kp_id), 1)
+                self.assertEqual(grade_lower_table.count(kp_id), 1)
+
+    def test_task_six_entries_have_exactly_one_six_block_example_per_level(self) -> None:
+        required = ("题目", "难度", "解题技巧", "步骤要点", "避坑思路", "答案")
+
+        for specialty, kp_id, _ in self.TASK_SIX_TARGETS:
+            with self.subTest(kp_id=kp_id):
+                path = self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+                self.assertTrue(path.is_file(), f"缺失知识点文件：{path}")
+                examples = path.read_text(encoding="utf-8").split("### 例题 ")[1:]
+                self.assertEqual(len(examples), 4)
+                self.assertEqual(
+                    [re.search(r"^#### 难度\s*\n\s*(L[1-4])\s*$", item, re.MULTILINE).group(1) for item in examples],
+                    ["L1", "L2", "L3", "L4"],
+                )
+                for example in examples:
+                    for heading in required:
+                        self.assertEqual(example.count(f"#### {heading}"), 1)
+
+    def test_grade_six_lower_review_aggregates_every_active_entry_once(self) -> None:
+        grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")
+        self.assertIn("### 六下整理和复习", grade_index)
+        aggregate = grade_index.split("### 六下整理和复习", 1)[1].split(
+            "\n### ", 1
+        )[0]
+        self.assertNotIn("### 例题", aggregate)
+
+        active_ids = set()
+        for path in sorted(self.MAP_ROOT.rglob("kp_*.md")):
+            frontmatter = parse_frontmatter(path.read_text(encoding="utf-8"))
+            if frontmatter.get("status") != "active":
+                continue
+            if any(
+                unit.get("grade") == 6 and unit.get("volume") == "下"
+                for unit in frontmatter.get("pep_units", [])
+            ):
+                active_ids.add(frontmatter["kp_id"])
+
+        aggregate_ids = [
+            Path(target.split("#", 1)[0].split("?", 1)[0]).stem
+            for target in scan_markdown_links(aggregate)
+            if Path(target.split("#", 1)[0].split("?", 1)[0]).name.startswith("kp_")
+        ]
+        self.assertEqual(len(aggregate_ids), len(set(aggregate_ids)))
+        self.assertSetEqual(set(aggregate_ids), active_ids)
+
+    def test_task_six_content_boundaries_and_model_conditions(self) -> None:
+        def read(kp_id: str) -> str:
+            specialty = next(
+                folder
+                for folder, target_id, _ in self.TASK_SIX_TARGETS
+                if target_id == kp_id
+            )
+            return (
+                self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+            ).read_text(encoding="utf-8")
+
+        percent_application = read("kp_s02_percent_application")
+        self.assertIn("生活与百分数", percent_application)
+        self.assertIn("综合决策", percent_application)
+        for target in ("kp_s02_discount", "kp_s02_tax_rate", "kp_s02_interest_rate"):
+            self.assertNotEqual(
+                parse_frontmatter(read(target)).get("pep_units"),
+                parse_frontmatter(percent_application).get("pep_units"),
+            )
+
+        for kp_id in (
+            "kp_s08_cylinder_surface_area",
+            "kp_s08_cylinder_volume",
+            "kp_s08_cone_volume",
+            "kp_s08_composite_solids",
+        ):
+            for question in self.example_questions(read(kp_id)):
+                self.assertRegex(question, r"厘米|分米|米")
+                self.assertRegex(question, r"半径|直径")
+                self.assertIn("高", question)
+                self.assertRegex(question, r"有盖|无盖|封闭|开口|是否有盖")
+
+        scale_l4 = self.example_questions(read("kp_s05_scale"))[3]
+        for required_text in ("路线", "比例尺", "图上", "实际"):
+            self.assertIn(required_text, scale_l4)
+
+        bicycle_questions = "\n".join(self.example_questions(read("kp_s09_bicycle_gearing")))
+        for required_text in ("前齿轮", "后齿轮", "不打滑", "车轮周长"):
+            self.assertIn(required_text, bicycle_questions)
+
+        pigeonhole = read("kp_s09_pigeonhole_principle")
+        for required_text in ("最不利原则", "至少", "构造验证"):
+            self.assertIn(required_text, pigeonhole)
 
     def test_race_start_level_two_states_complete_lap_assumptions(self) -> None:
         path = (

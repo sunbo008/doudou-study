@@ -10,9 +10,10 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单
 
 | 计划 kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
-| kp_s12_negative_number | 负数认识 | 6 | 占位 |
+| [kp_s12_negative_numbers_meaning](./kp_s12_negative_numbers_meaning.md) | 负数的意义 | 6 | active |
+| [kp_s12_negative_numbers_line](./kp_s12_negative_numbers_line.md) | 负数在数轴上的位置与大小 | 6 | active |
 | kp_s12_comprehensive_practice | 综合实践主题 | 1～6 | 占位 |

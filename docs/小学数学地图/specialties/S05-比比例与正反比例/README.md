@@ -14,9 +14,11 @@
 
 | 知识点 | 标题 | 年级 | 状态 |
 |---|---|---|---|
-| [比的意义](./kp_s05_ratio_meaning.md) | 比的意义 | 6 | active |
-| [化简比](./kp_s05_ratio_simplify.md) | 化简比 | 6 | active |
-| [比的应用](./kp_s05_ratio_application.md) | 比的应用 | 6 | active |
-| kp_s05_proportion | 比例 | 6 | 占位 |
-| kp_s05_direct_proportion | 正比例 | 6 | 占位 |
-| kp_s05_inverse_proportion | 反比例 | 6 | 占位 |
+| [kp_s05_ratio_meaning](./kp_s05_ratio_meaning.md) | 比的意义 | 6 | active |
+| [kp_s05_ratio_simplify](./kp_s05_ratio_simplify.md) | 化简比 | 6 | active |
+| [kp_s05_ratio_application](./kp_s05_ratio_application.md) | 比的应用 | 6 | active |
+| [kp_s05_proportion_meaning](./kp_s05_proportion_meaning.md) | 比例的意义 | 6 | active |
+| [kp_s05_proportion_properties](./kp_s05_proportion_properties.md) | 比例的基本性质与解比例 | 6 | active |
+| [kp_s05_direct_proportion](./kp_s05_direct_proportion.md) | 正比例 | 6 | active |
+| [kp_s05_inverse_proportion](./kp_s05_inverse_proportion.md) | 反比例 | 6 | active |
+| [kp_s05_scale](./kp_s05_scale.md) | 比例尺 | 6 | active |

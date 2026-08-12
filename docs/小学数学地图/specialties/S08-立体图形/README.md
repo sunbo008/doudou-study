@@ -10,10 +10,13 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单
 
 | 计划 kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
 | kp_s08_cuboid_surface_area | 长方体表面积 | 5～6 | 占位 |
 | kp_s08_cuboid_volume | 长方体体积 | 5～6 | 占位 |
-| kp_s08_cylinder_cone | 圆柱与圆锥 | 6 | 占位 |
+| [kp_s08_cylinder_surface_area](./kp_s08_cylinder_surface_area.md) | 圆柱的侧面积与表面积 | 6 | active |
+| [kp_s08_cylinder_volume](./kp_s08_cylinder_volume.md) | 圆柱的体积 | 6 | active |
+| [kp_s08_cone_volume](./kp_s08_cone_volume.md) | 圆锥的体积 | 6 | active |
+| [kp_s08_composite_solids](./kp_s08_composite_solids.md) | 组合体体积与容积 | 6 | active |

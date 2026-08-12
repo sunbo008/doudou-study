@@ -20,3 +20,7 @@
 | [kp_s02_percent_meaning](./kp_s02_percent_meaning.md) | 百分数的意义与百分率 | 6 | active |
 | [kp_s02_percent_of_quantity](./kp_s02_percent_of_quantity.md) | 求一个数的百分之几 | 6 | active |
 | [kp_s02_percent_change](./kp_s02_percent_change.md) | 百分数增减变化 | 6 | active |
+| [kp_s02_discount](./kp_s02_discount.md) | 折扣 | 6 | active |
+| [kp_s02_tax_rate](./kp_s02_tax_rate.md) | 税率 | 6 | active |
+| [kp_s02_interest_rate](./kp_s02_interest_rate.md) | 利率 | 6 | active |
+| [kp_s02_percent_application](./kp_s02_percent_application.md) | 生活与百分数综合应用 | 6 | active |

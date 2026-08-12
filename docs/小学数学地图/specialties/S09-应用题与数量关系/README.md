@@ -16,6 +16,8 @@
 |---|---|---|---|
 | [kp_s09_race_start_compensation](./kp_s09_race_start_compensation.md) | 起跑线补偿 | 6 | active |
 | [kp_s09_water_saving_model](./kp_s09_water_saving_model.md) | 节约用水建模 | 6 | active |
+| [kp_s09_pigeonhole_principle](./kp_s09_pigeonhole_principle.md) | 鸽巢问题与最不利原则 | 6 | active |
+| [kp_s09_bicycle_gearing](./kp_s09_bicycle_gearing.md) | 自行车齿轮与路程 | 6 | active |
 | kp_s09_sum_diff_multiple | 和差倍问题 | 3～5 | 占位 |
 | kp_s09_travel | 行程问题 | 4～6 | 占位 |
 | kp_s09_work | 工程问题 | 5～6 | 占位 |
