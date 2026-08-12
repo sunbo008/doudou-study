@@ -14,7 +14,7 @@
 
 | 计划 kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
-| kp_s02_percent_to_decimal | 百分数与小数互化 | 5～6 | 占位 |
+| [kp_s02_percent_to_decimal](./kp_s02_percent_to_decimal.md) | 百分数与小数互化 | 5～6 | active |
 | kp_s02_decimal_multiply | 小数乘法 | 5 | 占位 |
-| kp_s02_decimal_div_percent | 小数除以百分数 | 6 | 占位 |
+| [kp_s02_decimal_div_percent](./kp_s02_decimal_div_percent.md) | 小数除以百分数 | 6 | active |
 | kp_s02_percent_of_quantity | 求一个数的百分之几 | 6 | 占位 |

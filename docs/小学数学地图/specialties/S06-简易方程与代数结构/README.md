@@ -17,5 +17,5 @@
 |---|---|---|---|
 | kp_s06_letter_representation | 用字母表示数 | 5 | 占位 |
 | kp_s06_simple_equation | 简易方程 | 5 | 占位 |
-| kp_s06_same_structure_factor | 同结构提公因式 | 6 | 占位 |
-| kp_s06_same_core_rewrite | 同核心式改写 | 6 | 占位 |
+| [kp_s06_same_structure_factor](./kp_s06_same_structure_factor.md) | 同结构提公因式 | 6 | active |
+| [kp_s06_same_core_rewrite](./kp_s06_same_core_rewrite.md) | 同核心式改写 | 6 | active |
