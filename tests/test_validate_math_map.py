@@ -834,6 +834,120 @@ class CoverageTests(unittest.TestCase):
         for required_text in ("最不利原则", "至少", "构造验证"):
             self.assertIn(required_text, pigeonhole)
 
+    def test_tax_rate_level_four_defines_total_income_scope(self) -> None:
+        path = (
+            self.MAP_ROOT
+            / "specialties"
+            / "S02-小数与百分数"
+            / "kp_s02_tax_rate.md"
+        )
+        level_four = path.read_text(encoding="utf-8").split("### 例题 ")[4]
+        question = level_four.split("#### 题目", 1)[1].split("#### 难度", 1)[0]
+        technique = level_four.split("#### 解题技巧", 1)[1].split(
+            "#### 步骤要点", 1
+        )[0]
+        steps = level_four.split("#### 步骤要点", 1)[1].split(
+            "#### 避坑思路", 1
+        )[0]
+        pitfall = level_four.split("#### 避坑思路", 1)[1].split("#### 答案", 1)[0]
+        answer = level_four.split("#### 答案", 1)[1].split("## 常见坑", 1)[0]
+
+        for required in ("全年总收入", "其中", "不计税", "可扣成本"):
+            with self.subTest(section="question", required=required):
+                self.assertIn(required, question)
+        self.assertIn("总收入", technique)
+        self.assertIn("80000-15000-5000=60000", steps)
+        self.assertIn("80000-2400=77600", steps)
+        self.assertIn("补贴已包含在全年总收入", pitfall)
+        for expected in ("2400", "77600"):
+            self.assertIn(expected, answer)
+
+    def test_percent_application_combines_finance_tax_and_discount_models(self) -> None:
+        base = self.MAP_ROOT / "specialties" / "S02-小数与百分数"
+        application_text = (base / "kp_s02_percent_application.md").read_text(
+            encoding="utf-8"
+        )
+        discount_text = (base / "kp_s02_discount.md").read_text(encoding="utf-8")
+        level_two = application_text.split("### 例题 ")[2]
+        level_four = application_text.split("### 例题 ")[4]
+        level_two_question = level_two.split("#### 题目", 1)[1].split(
+            "#### 难度", 1
+        )[0]
+        level_four_question = level_four.split("#### 题目", 1)[1].split(
+            "#### 难度", 1
+        )[0]
+        discount_level_four_question = (
+            discount_text.split("### 例题 ")[4]
+            .split("#### 题目", 1)[1]
+            .split("#### 难度", 1)[0]
+        )
+
+        for required in ("本金", "年利率", "利息", "折"):
+            with self.subTest(level="L2", required=required):
+                self.assertIn(required, level_two_question)
+        for calculation in (
+            "10000×1.8%=180",
+            "200×80%=160",
+            "180-160=20",
+        ):
+            with self.subTest(level="L2", calculation=calculation):
+                self.assertIn(calculation, level_two)
+
+        for required in (
+            "全年总收入",
+            "补贴不计税",
+            "税率",
+            "本金",
+            "年利率",
+            "八五折",
+        ):
+            with self.subTest(level="L4", required=required):
+                self.assertIn(required, level_four_question)
+        for calculation in (
+            "100000-20000=80000",
+            "80000×5%=4000",
+            "100000-4000=96000",
+            "30000×2%=600",
+            "30000+600=30600",
+            "36000×85%=30600",
+            "96000+600-30600=66000",
+        ):
+            with self.subTest(level="L4", calculation=calculation):
+                self.assertIn(calculation, level_four)
+        self.assertNotEqual(
+            level_four_question.strip(), discount_level_four_question.strip()
+        )
+
+    def test_task_six_solid_geometry_questions_state_pi_value_locally(self) -> None:
+        base = self.MAP_ROOT / "specialties" / "S08-立体图形"
+        for kp_id in (
+            "kp_s08_cylinder_surface_area",
+            "kp_s08_cylinder_volume",
+            "kp_s08_cone_volume",
+            "kp_s08_composite_solids",
+        ):
+            text = (base / f"{kp_id}.md").read_text(encoding="utf-8")
+            for level, question in enumerate(self.example_questions(text), start=1):
+                with self.subTest(kp_id=kp_id, level=f"L{level}"):
+                    self.assertIn("π=3.14", question)
+
+    def test_negative_number_meaning_level_two_uses_nonzero_reference(self) -> None:
+        path = (
+            self.MAP_ROOT
+            / "specialties"
+            / "S12-负数与综合实践"
+            / "kp_s12_negative_numbers_meaning.md"
+        )
+        level_two = path.read_text(encoding="utf-8").split("### 例题 ")[2]
+        question = level_two.split("#### 题目", 1)[1].split("#### 难度", 1)[0]
+
+        for required in ("45 kg", "规定为 `0`", "-2 kg", "实际体重"):
+            with self.subTest(required=required):
+                self.assertIn(required, question)
+        for calculation in ("45-2=43", "49-45=+4"):
+            with self.subTest(calculation=calculation):
+                self.assertIn(calculation, level_two)
+
     def test_race_start_level_two_states_complete_lap_assumptions(self) -> None:
         path = (
             self.MAP_ROOT
