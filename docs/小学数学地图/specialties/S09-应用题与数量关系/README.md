@@ -10,10 +10,12 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单
 
-| 计划 kp_id | 标题 | 年级 | 状态 |
+| kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
+| [kp_s09_race_start_compensation](./kp_s09_race_start_compensation.md) | 起跑线补偿 | 6 | active |
+| [kp_s09_water_saving_model](./kp_s09_water_saving_model.md) | 节约用水建模 | 6 | active |
 | kp_s09_sum_diff_multiple | 和差倍问题 | 3～5 | 占位 |
 | kp_s09_travel | 行程问题 | 4～6 | 占位 |
 | kp_s09_work | 工程问题 | 5～6 | 占位 |

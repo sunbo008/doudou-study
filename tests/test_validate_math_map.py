@@ -406,6 +406,9 @@ L2""",
 
 
 class CatalogTests(unittest.TestCase):
+    MAP_ROOT = Path(__file__).resolve().parents[1] / "docs" / "小学数学地图"
+    TASK_FIVE_UNITS = ("数学广角——数与形", "确定起跑线", "节约用水")
+
     def setUp(self) -> None:
         self.temp_dir = tempfile.TemporaryDirectory()
         self.root = Path(self.temp_dir.name)
@@ -539,6 +542,20 @@ class CatalogTests(unittest.TestCase):
 
                 self.assertIn(expected_rule, rules)
 
+    def test_task_five_catalog_entries_are_covered(self) -> None:
+        issues = validate(self.MAP_ROOT)
+
+        for unit in self.TASK_FIVE_UNITS:
+            with self.subTest(unit=unit):
+                self.assertFalse(
+                    any(
+                        issue.rule == "catalog-entry-uncovered"
+                        and f"《{unit}》" in issue.message
+                        for issue in issues
+                    ),
+                    f"目录项目尚未覆盖：{unit}",
+                )
+
 
 class CoverageTests(unittest.TestCase):
     MAP_ROOT = Path(__file__).resolve().parents[1] / "docs" / "小学数学地图"
@@ -558,6 +575,11 @@ class CoverageTests(unittest.TestCase):
         ("S10-统计与可能性", "kp_s10_fan_chart_reading", "扇形统计图"),
         ("S10-统计与可能性", "kp_s10_chart_data_inference", "扇形统计图"),
     )
+    TASK_FIVE_TARGETS = (
+        ("S11-数感与规律", "kp_s11_number_shape_patterns", "数学广角——数与形"),
+        ("S09-应用题与数量关系", "kp_s09_race_start_compensation", "确定起跑线"),
+        ("S09-应用题与数量关系", "kp_s09_water_saving_model", "节约用水"),
+    )
     TARGETS = (
         ("S03-分数", "kp_s03_fraction_multiply_meaning", "分数乘法"),
         ("S03-分数", "kp_s03_fraction_multiply_compute", "分数乘法"),
@@ -569,7 +591,7 @@ class CoverageTests(unittest.TestCase):
         ("S05-比比例与正反比例", "kp_s05_ratio_meaning", "比"),
         ("S05-比比例与正反比例", "kp_s05_ratio_simplify", "比"),
         ("S05-比比例与正反比例", "kp_s05_ratio_application", "比"),
-    ) + TASK_FOUR_TARGETS
+    ) + TASK_FOUR_TARGETS + TASK_FIVE_TARGETS
 
     def read_task_four_entry(self, kp_id: str) -> str:
         specialty = next(
@@ -591,6 +613,9 @@ class CoverageTests(unittest.TestCase):
     def test_phase_two_entries_exist_and_are_linked_once_in_each_view(self) -> None:
         grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")
         specialty_index = self.SPECIALTY_INDEX.read_text(encoding="utf-8")
+        grade_upper_table = grade_index.split("### 上册（实书目录对齐）", 1)[1].split(
+            "### 六上总复习", 1
+        )[0]
 
         for specialty, kp_id, unit in self.TARGETS:
             with self.subTest(kp_id=kp_id):
@@ -602,7 +627,7 @@ class CoverageTests(unittest.TestCase):
                     readme.read_text(encoding="utf-8").count(f"(./{kp_id}.md)"), 1
                 )
                 self.assertEqual(specialty_index.count(kp_id), 1)
-                self.assertEqual(grade_index.count(kp_id), 1)
+                self.assertEqual(grade_upper_table.count(kp_id), 1)
 
                 frontmatter = parse_frontmatter(entry.read_text(encoding="utf-8"))
                 self.assertEqual(
@@ -638,6 +663,51 @@ class CoverageTests(unittest.TestCase):
                 self.assertEqual(len(rows), 1)
                 first_cell = rows[0].strip().strip("|").split("|", 1)[0].strip()
                 self.assertEqual(first_cell, f"[{kp_id}](./{kp_id}.md)")
+
+    def test_task_five_readme_first_column_is_the_linked_kp_id(self) -> None:
+        for specialty, kp_id, _ in self.TASK_FIVE_TARGETS:
+            with self.subTest(kp_id=kp_id):
+                readme = self.MAP_ROOT / "specialties" / specialty / "README.md"
+                rows = [
+                    line
+                    for line in readme.read_text(encoding="utf-8").splitlines()
+                    if f"(./{kp_id}.md)" in line
+                ]
+                self.assertEqual(len(rows), 1)
+                first_cell = rows[0].strip().strip("|").split("|", 1)[0].strip()
+                self.assertEqual(first_cell, f"[{kp_id}](./{kp_id}.md)")
+
+    def test_task_five_entries_have_one_example_at_each_level(self) -> None:
+        for specialty, kp_id, _ in self.TASK_FIVE_TARGETS:
+            with self.subTest(kp_id=kp_id):
+                path = self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+                self.assertTrue(path.is_file(), f"缺失知识点文件：{path}")
+                text = path.read_text(encoding="utf-8")
+                levels = re.findall(r"^#### 难度\s*\n\s*(L[1-4])\s*$", text, re.MULTILINE)
+                self.assertEqual(levels, ["L1", "L2", "L3", "L4"])
+
+    def test_grade_six_upper_review_aggregates_every_active_entry_once(self) -> None:
+        grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")
+        self.assertIn("### 六上总复习", grade_index)
+        aggregate = grade_index.split("### 六上总复习", 1)[1].split("\n### ", 1)[0]
+        self.assertNotIn("### 例题", aggregate)
+
+        active_ids = []
+        for path in sorted(self.MAP_ROOT.rglob("kp_*.md")):
+            frontmatter = parse_frontmatter(path.read_text(encoding="utf-8"))
+            if frontmatter.get("status") != "active":
+                continue
+            if not any(
+                unit.get("grade") == 6 and unit.get("volume") == "上"
+                for unit in frontmatter.get("pep_units", [])
+            ):
+                continue
+            active_ids.append(frontmatter["kp_id"])
+
+        self.assertGreater(len(active_ids), 0)
+        for kp_id in active_ids:
+            with self.subTest(kp_id=kp_id):
+                self.assertEqual(aggregate.count(f"{kp_id}.md"), 1)
 
     def test_sector_and_annulus_are_separate_progressive_entries(self) -> None:
         sector = self.read_task_four_entry("kp_s07_sector_and_ring")
