@@ -16,7 +16,7 @@
 |---|---|---|---|
 | [分数乘法的意义](./kp_s03_fraction_multiply_meaning.md) | 分数乘法的意义 | 6 | active |
 | [分数乘法的计算](./kp_s03_fraction_multiply_compute.md) | 分数乘法的计算 | 6 | active |
-| [分数四则混合运算](./kp_s03_fraction_mixed_operations.md) | 分数四则混合运算 | 6 | active |
+| [分数乘加减混合运算与简算](./kp_s03_fraction_mixed_operations.md) | 分数乘加减混合运算与简算 | 6 | active |
 | [分数乘法应用题](./kp_s03_fraction_multiply_word_problems.md) | 分数乘法应用题 | 6 | active |
 | [分数除法的意义](./kp_s03_fraction_divide_meaning.md) | 分数除法的意义 | 6 | active |
 | [分数除法的计算](./kp_s03_fraction_divide_compute.md) | 分数除法的计算 | 6 | active |

@@ -7,8 +7,6 @@ pep_units:
   - { grade: 6, volume: 上, unit: "分数除法" }
 status: active
 source_verification: verified_book
-practice: 待建
-weak_ref: 待归档
 lateral_tags: [乘除互逆, 包含除, 单位1]
 ---
 
@@ -171,5 +169,5 @@ L4
 ## 关联
 
 - **相近知识点**：[`分数除法的计算`](./kp_s03_fraction_divide_compute.md)、[`分数除法应用题`](./kp_s03_fraction_divide_word_problems.md)
-- **练习材料**：待建
-- **素质跟踪弱项**：待归档
+- **练习材料**：暂无对应练习记录
+- **素质跟踪弱项**：暂无对应弱项记录

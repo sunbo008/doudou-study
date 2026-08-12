@@ -576,6 +576,29 @@ class CoverageTests(unittest.TestCase):
                     [{"grade": 6, "volume": "上", "unit": unit}],
                 )
                 self.assertEqual(frontmatter.get("source_verification"), "verified_book")
+                self.assertEqual(frontmatter.get("status"), "active")
+
+    def test_active_phase_two_entries_do_not_use_placeholder_optional_references(self) -> None:
+        forbidden = {"待建", "待归档"}
+
+        for specialty, kp_id, _ in self.TARGETS:
+            with self.subTest(kp_id=kp_id):
+                entry = self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+                frontmatter = parse_frontmatter(entry.read_text(encoding="utf-8"))
+
+                for field in ("practice", "weak_ref"):
+                    if field in frontmatter:
+                        self.assertNotIn(frontmatter[field], forbidden)
+
+    def test_grade_six_index_orders_task_three_units(self) -> None:
+        grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")
+        positions: dict[str, list[int]] = {"分数乘法": [], "分数除法": [], "比": []}
+
+        for _, kp_id, unit in self.TARGETS:
+            positions[unit].append(grade_index.index(f"{kp_id}.md"))
+
+        self.assertLess(max(positions["分数乘法"]), min(positions["分数除法"]))
+        self.assertLess(max(positions["分数除法"]), min(positions["比"]))
 
 
 if __name__ == "__main__":

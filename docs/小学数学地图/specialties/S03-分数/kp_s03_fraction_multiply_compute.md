@@ -7,8 +7,6 @@ pep_units:
   - { grade: 6, volume: 上, unit: "分数乘法" }
 status: active
 source_verification: verified_book
-practice: 待建
-weak_ref: 待归档
 lateral_tags: [约分, 带分数, 乘法分配律]
 ---
 
@@ -172,6 +170,6 @@ L4
 
 ## 关联
 
-- **相近知识点**：[`分数乘法的意义`](./kp_s03_fraction_multiply_meaning.md)、[`分数四则混合运算`](./kp_s03_fraction_mixed_operations.md)
-- **练习材料**：待建
-- **素质跟踪弱项**：待归档
+- **相近知识点**：[`分数乘法的意义`](./kp_s03_fraction_multiply_meaning.md)、[`分数乘加减混合运算与简算`](./kp_s03_fraction_mixed_operations.md)
+- **练习材料**：暂无对应练习记录
+- **素质跟踪弱项**：暂无对应弱项记录

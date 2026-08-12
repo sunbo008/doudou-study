@@ -7,8 +7,6 @@ pep_units:
   - { grade: 6, volume: 上, unit: "比" }
 status: active
 source_verification: verified_book
-practice: 待建
-weak_ref: 待归档
 lateral_tags: [最简整数比, 比的基本性质, 连比]
 ---
 
@@ -172,5 +170,5 @@ L4
 ## 关联
 
 - **相近知识点**：[`比的意义`](./kp_s05_ratio_meaning.md)、[`比的应用`](./kp_s05_ratio_application.md)
-- **练习材料**：待建
-- **素质跟踪弱项**：待归档
+- **练习材料**：暂无对应练习记录
+- **素质跟踪弱项**：暂无对应弱项记录

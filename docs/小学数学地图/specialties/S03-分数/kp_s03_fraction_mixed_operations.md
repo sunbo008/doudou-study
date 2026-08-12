@@ -1,22 +1,20 @@
 ---
 kp_id: kp_s03_fraction_mixed_operations
-title: 分数四则混合运算
+title: 分数乘加减混合运算与简算
 specialty_id: S03
 grades: [6]
 pep_units:
   - { grade: 6, volume: 上, unit: "分数乘法" }
 status: active
 source_verification: verified_book
-practice: 待建
-weak_ref: 待归档
 lateral_tags: [运算顺序, 运算定律, 裂项]
 ---
 
-# 分数四则混合运算
+# 分数乘加减混合运算与简算
 
 ## 一句话
 
-没有括号时先乘除后加减，有括号先算括号；看见同因数、互为倒数或连续差分时再选择简算。
+没有括号时先乘后加减，有括号先算括号；看见同因数、乘积为 `1` 或连续差分时再选择简算。
 
 ## 典型题型（按难度）
 
@@ -173,5 +171,5 @@ L4
 ## 关联
 
 - **相近知识点**：[`分数乘法的计算`](./kp_s03_fraction_multiply_compute.md)、[`分数除法的计算`](./kp_s03_fraction_divide_compute.md)
-- **练习材料**：待建
-- **素质跟踪弱项**：待归档
+- **练习材料**：暂无对应练习记录
+- **素质跟踪弱项**：暂无对应弱项记录
