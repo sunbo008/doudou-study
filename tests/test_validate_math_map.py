@@ -7,7 +7,7 @@ import re
 import tempfile
 import unittest
 
-from scripts.validate_math_map import main, parse_frontmatter, validate
+from scripts.validate_math_map import main, parse_frontmatter, scan_markdown_links, validate
 
 
 class MathMapValidationTests(unittest.TestCase):
@@ -686,13 +686,56 @@ class CoverageTests(unittest.TestCase):
                 levels = re.findall(r"^#### 难度\s*\n\s*(L[1-4])\s*$", text, re.MULTILINE)
                 self.assertEqual(levels, ["L1", "L2", "L3", "L4"])
 
+    def test_race_start_level_two_states_complete_lap_assumptions(self) -> None:
+        path = (
+            self.MAP_ROOT
+            / "specialties"
+            / "S09-应用题与数量关系"
+            / "kp_s09_race_start_compensation.md"
+        )
+        question = path.read_text(encoding="utf-8").split("### 例题 ")[2].split(
+            "#### 难度", 1
+        )[0]
+
+        self.assertTrue("一整圈" in question or "360°" in question)
+        self.assertIn("直线段等长", question)
+        self.assertIn("终点相同", question)
+
+    def test_race_start_level_four_states_partial_arc_assumptions(self) -> None:
+        path = (
+            self.MAP_ROOT
+            / "specialties"
+            / "S09-应用题与数量关系"
+            / "kp_s09_race_start_compensation.md"
+        )
+        question = path.read_text(encoding="utf-8").split("### 例题 ")[4].split(
+            "#### 难度", 1
+        )[0]
+
+        for required in ("同心圆弧", "直线部分等长", "相同总圆心角", "270°", "终点相同"):
+            with self.subTest(required=required):
+                self.assertIn(required, question)
+
+    def test_water_saving_level_four_states_stratum_representativeness(self) -> None:
+        path = (
+            self.MAP_ROOT
+            / "specialties"
+            / "S09-应用题与数量关系"
+            / "kp_s09_water_saving_model.md"
+        )
+        question = path.read_text(encoding="utf-8").split("### 例题 ")[4].split(
+            "#### 难度", 1
+        )[0]
+
+        self.assertIn("两组样本分别能代表各自小区家庭", question)
+
     def test_grade_six_upper_review_aggregates_every_active_entry_once(self) -> None:
         grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")
         self.assertIn("### 六上总复习", grade_index)
         aggregate = grade_index.split("### 六上总复习", 1)[1].split("\n### ", 1)[0]
         self.assertNotIn("### 例题", aggregate)
 
-        active_ids = []
+        active_ids = set()
         for path in sorted(self.MAP_ROOT.rglob("kp_*.md")):
             frontmatter = parse_frontmatter(path.read_text(encoding="utf-8"))
             if frontmatter.get("status") != "active":
@@ -702,12 +745,16 @@ class CoverageTests(unittest.TestCase):
                 for unit in frontmatter.get("pep_units", [])
             ):
                 continue
-            active_ids.append(frontmatter["kp_id"])
+            active_ids.add(frontmatter["kp_id"])
 
         self.assertGreater(len(active_ids), 0)
-        for kp_id in active_ids:
-            with self.subTest(kp_id=kp_id):
-                self.assertEqual(aggregate.count(f"{kp_id}.md"), 1)
+        aggregate_ids = [
+            Path(target.split("#", 1)[0].split("?", 1)[0]).stem
+            for target in scan_markdown_links(aggregate)
+            if Path(target.split("#", 1)[0].split("?", 1)[0]).name.startswith("kp_")
+        ]
+        self.assertEqual(len(aggregate_ids), len(set(aggregate_ids)))
+        self.assertSetEqual(set(aggregate_ids), active_ids)
 
     def test_sector_and_annulus_are_separate_progressive_entries(self) -> None:
         sector = self.read_task_four_entry("kp_s07_sector_and_ring")
