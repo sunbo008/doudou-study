@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.validate_math_map import main, validate
+from scripts.validate_math_map import main, parse_frontmatter, validate
 
 
 class MathMapValidationTests(unittest.TestCase):
@@ -537,6 +537,45 @@ class CatalogTests(unittest.TestCase):
                 rules = {issue.rule for issue in validate(self.root)}
 
                 self.assertIn(expected_rule, rules)
+
+
+class CoverageTests(unittest.TestCase):
+    MAP_ROOT = Path(__file__).resolve().parents[1] / "docs" / "小学数学地图"
+    GRADE_INDEX = MAP_ROOT / "年级索引.md"
+    SPECIALTY_INDEX = MAP_ROOT / "专项索引.md"
+    TARGETS = (
+        ("S03-分数", "kp_s03_fraction_multiply_meaning", "分数乘法"),
+        ("S03-分数", "kp_s03_fraction_multiply_compute", "分数乘法"),
+        ("S03-分数", "kp_s03_fraction_mixed_operations", "分数乘法"),
+        ("S03-分数", "kp_s03_fraction_multiply_word_problems", "分数乘法"),
+        ("S03-分数", "kp_s03_fraction_divide_meaning", "分数除法"),
+        ("S03-分数", "kp_s03_fraction_divide_compute", "分数除法"),
+        ("S03-分数", "kp_s03_fraction_divide_word_problems", "分数除法"),
+        ("S05-比比例与正反比例", "kp_s05_ratio_meaning", "比"),
+        ("S05-比比例与正反比例", "kp_s05_ratio_simplify", "比"),
+        ("S05-比比例与正反比例", "kp_s05_ratio_application", "比"),
+    )
+
+    def test_phase_two_entries_exist_and_are_linked_once_in_each_view(self) -> None:
+        grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")
+        specialty_index = self.SPECIALTY_INDEX.read_text(encoding="utf-8")
+
+        for specialty, kp_id, unit in self.TARGETS:
+            with self.subTest(kp_id=kp_id):
+                entry = self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+                readme = entry.parent / "README.md"
+
+                self.assertTrue(entry.is_file(), f"缺失知识点文件：{entry}")
+                self.assertEqual(readme.read_text(encoding="utf-8").count(kp_id), 1)
+                self.assertEqual(specialty_index.count(kp_id), 1)
+                self.assertEqual(grade_index.count(kp_id), 1)
+
+                frontmatter = parse_frontmatter(entry.read_text(encoding="utf-8"))
+                self.assertEqual(
+                    frontmatter.get("pep_units"),
+                    [{"grade": 6, "volume": "上", "unit": unit}],
+                )
+                self.assertEqual(frontmatter.get("source_verification"), "verified_book")
 
 
 if __name__ == "__main__":

@@ -10,11 +10,16 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单（二期 active + 后续占位）
 
-| 计划 kp_id | 标题 | 年级 | 状态 |
+| 知识点 | 标题 | 年级 | 状态 |
 |---|---|---|---|
+| [分数乘法的意义](./kp_s03_fraction_multiply_meaning.md) | 分数乘法的意义 | 6 | active |
+| [分数乘法的计算](./kp_s03_fraction_multiply_compute.md) | 分数乘法的计算 | 6 | active |
+| [分数四则混合运算](./kp_s03_fraction_mixed_operations.md) | 分数四则混合运算 | 6 | active |
+| [分数乘法应用题](./kp_s03_fraction_multiply_word_problems.md) | 分数乘法应用题 | 6 | active |
+| [分数除法的意义](./kp_s03_fraction_divide_meaning.md) | 分数除法的意义 | 6 | active |
+| [分数除法的计算](./kp_s03_fraction_divide_compute.md) | 分数除法的计算 | 6 | active |
+| [分数除法应用题](./kp_s03_fraction_divide_word_problems.md) | 分数除法应用题 | 6 | active |
 | kp_s03_reduce_common_denominator | 约分与通分 | 4～5 | 占位 |
 | kp_s03_fraction_add_sub | 分数加减法 | 5 | 占位 |
-| kp_s03_fraction_multiply_divide | 分数乘除法 | 5～6 | 占位 |
-| kp_s03_fraction_application | 分数应用 | 5～6 | 占位 |

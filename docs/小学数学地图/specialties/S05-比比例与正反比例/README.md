@@ -10,11 +10,13 @@
 
 暂无
 
-## 知识点清单（一期占位）
+## 知识点清单（二期 active + 后续占位）
 
-| 计划 kp_id | 标题 | 年级 | 状态 |
+| 知识点 | 标题 | 年级 | 状态 |
 |---|---|---|---|
-| kp_s05_ratio_meaning | 比的意义与化简 | 6 | 占位 |
+| [比的意义](./kp_s05_ratio_meaning.md) | 比的意义 | 6 | active |
+| [化简比](./kp_s05_ratio_simplify.md) | 化简比 | 6 | active |
+| [比的应用](./kp_s05_ratio_application.md) | 比的应用 | 6 | active |
 | kp_s05_proportion | 比例 | 6 | 占位 |
 | kp_s05_direct_proportion | 正比例 | 6 | 占位 |
 | kp_s05_inverse_proportion | 反比例 | 6 | 占位 |
