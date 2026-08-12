@@ -543,6 +543,20 @@ class CoverageTests(unittest.TestCase):
     MAP_ROOT = Path(__file__).resolve().parents[1] / "docs" / "小学数学地图"
     GRADE_INDEX = MAP_ROOT / "年级索引.md"
     SPECIALTY_INDEX = MAP_ROOT / "专项索引.md"
+    TASK_FOUR_TARGETS = (
+        ("S13-位置与方向", "kp_s13_direction_distance_angle", "位置与方向（二）"),
+        ("S13-位置与方向", "kp_s13_route_description", "位置与方向（二）"),
+        ("S07-平面图形与度量", "kp_s07_circle_parts", "圆"),
+        ("S07-平面图形与度量", "kp_s07_circle_circumference", "圆"),
+        ("S07-平面图形与度量", "kp_s07_circle_area", "圆"),
+        ("S07-平面图形与度量", "kp_s07_sector_and_ring", "圆"),
+        ("S07-平面图形与度量", "kp_s07_annulus_area", "圆"),
+        ("S02-小数与百分数", "kp_s02_percent_meaning", "百分数（一）"),
+        ("S02-小数与百分数", "kp_s02_percent_of_quantity", "百分数（一）"),
+        ("S02-小数与百分数", "kp_s02_percent_change", "百分数（一）"),
+        ("S10-统计与可能性", "kp_s10_fan_chart_reading", "扇形统计图"),
+        ("S10-统计与可能性", "kp_s10_chart_data_inference", "扇形统计图"),
+    )
     TARGETS = (
         ("S03-分数", "kp_s03_fraction_multiply_meaning", "分数乘法"),
         ("S03-分数", "kp_s03_fraction_multiply_compute", "分数乘法"),
@@ -554,18 +568,24 @@ class CoverageTests(unittest.TestCase):
         ("S05-比比例与正反比例", "kp_s05_ratio_meaning", "比"),
         ("S05-比比例与正反比例", "kp_s05_ratio_simplify", "比"),
         ("S05-比比例与正反比例", "kp_s05_ratio_application", "比"),
-        ("S13-位置与方向", "kp_s13_direction_distance_angle", "位置与方向（二）"),
-        ("S13-位置与方向", "kp_s13_route_description", "位置与方向（二）"),
-        ("S07-平面图形与度量", "kp_s07_circle_parts", "圆"),
-        ("S07-平面图形与度量", "kp_s07_circle_circumference", "圆"),
-        ("S07-平面图形与度量", "kp_s07_circle_area", "圆"),
-        ("S07-平面图形与度量", "kp_s07_sector_and_ring", "圆"),
-        ("S02-小数与百分数", "kp_s02_percent_meaning", "百分数（一）"),
-        ("S02-小数与百分数", "kp_s02_percent_of_quantity", "百分数（一）"),
-        ("S02-小数与百分数", "kp_s02_percent_change", "百分数（一）"),
-        ("S10-统计与可能性", "kp_s10_fan_chart_reading", "扇形统计图"),
-        ("S10-统计与可能性", "kp_s10_chart_data_inference", "扇形统计图"),
-    )
+    ) + TASK_FOUR_TARGETS
+
+    def read_task_four_entry(self, kp_id: str) -> str:
+        specialty = next(
+            specialty
+            for specialty, target_id, _ in self.TASK_FOUR_TARGETS
+            if target_id == kp_id
+        )
+        path = self.MAP_ROOT / "specialties" / specialty / f"{kp_id}.md"
+        self.assertTrue(path.is_file(), f"缺失知识点文件：{path}")
+        return path.read_text(encoding="utf-8")
+
+    @staticmethod
+    def example_questions(text: str) -> list[str]:
+        return [
+            chunk.split("#### 题目", 1)[1].split("#### 难度", 1)[0]
+            for chunk in text.split("### 例题 ")[1:]
+        ]
 
     def test_phase_two_entries_exist_and_are_linked_once_in_each_view(self) -> None:
         grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")
@@ -577,7 +597,9 @@ class CoverageTests(unittest.TestCase):
                 readme = entry.parent / "README.md"
 
                 self.assertTrue(entry.is_file(), f"缺失知识点文件：{entry}")
-                self.assertEqual(readme.read_text(encoding="utf-8").count(kp_id), 1)
+                self.assertEqual(
+                    readme.read_text(encoding="utf-8").count(f"(./{kp_id}.md)"), 1
+                )
                 self.assertEqual(specialty_index.count(kp_id), 1)
                 self.assertEqual(grade_index.count(kp_id), 1)
 
@@ -602,6 +624,64 @@ class CoverageTests(unittest.TestCase):
                 for field in ("practice", "weak_ref"):
                     if field in frontmatter:
                         self.assertNotIn(frontmatter[field], forbidden)
+
+    def test_task_four_readme_first_column_is_the_linked_kp_id(self) -> None:
+        for specialty, kp_id, _ in self.TASK_FOUR_TARGETS:
+            with self.subTest(kp_id=kp_id):
+                readme = self.MAP_ROOT / "specialties" / specialty / "README.md"
+                rows = [
+                    line
+                    for line in readme.read_text(encoding="utf-8").splitlines()
+                    if f"(./{kp_id}.md)" in line
+                ]
+                self.assertEqual(len(rows), 1)
+                first_cell = rows[0].strip().strip("|").split("|", 1)[0].strip()
+                self.assertEqual(first_cell, f"[{kp_id}](./{kp_id}.md)")
+
+    def test_sector_and_annulus_are_separate_progressive_entries(self) -> None:
+        sector = self.read_task_four_entry("kp_s07_sector_and_ring")
+        annulus = self.read_task_four_entry("kp_s07_annulus_area")
+        sector_questions = self.example_questions(sector)
+        annulus_questions = self.example_questions(annulus)
+
+        self.assertEqual(parse_frontmatter(sector).get("title"), "扇形面积")
+        self.assertEqual(parse_frontmatter(annulus).get("title"), "圆环面积")
+        self.assertTrue(all("扇形" in question for question in sector_questions))
+        self.assertTrue(
+            all("圆环" in question or "环形" in question for question in annulus_questions)
+        )
+        self.assertIn("圆心角是多少", sector_questions[2])
+        self.assertIn("分针", sector_questions[3])
+        self.assertIn("内圆半径是多少", annulus_questions[2])
+        self.assertIn("内圆周长", annulus_questions[3])
+
+    def test_fan_chart_levels_two_and_three_derive_a_share_from_visual_information(self) -> None:
+        text = self.read_task_four_entry("kp_s10_fan_chart_reading")
+        examples = text.split("### 例题 ")[1:]
+
+        for number in (2, 3):
+            with self.subTest(example=number):
+                example = examples[number - 1]
+                self.assertIn("扇形统计图", example)
+                self.assertIn("°", example)
+                self.assertIn("÷360", example)
+
+    def test_cross_chart_level_one_uses_two_sources_for_one_inference(self) -> None:
+        level_one = self.read_task_four_entry("kp_s10_chart_data_inference").split(
+            "### 例题 ", 2
+        )[1]
+
+        self.assertIn("统计表", level_one)
+        self.assertIn("扇形图", level_one)
+        self.assertIn("°", level_one)
+
+    def test_percent_meaning_level_three_compares_multiple_denominators(self) -> None:
+        level_three = self.read_task_four_entry("kp_s02_percent_meaning").split(
+            "### 例题 ", 4
+        )[3]
+
+        self.assertGreaterEqual(level_three.count("%"), 3)
+        self.assertTrue("分母" in level_three or "标准量" in level_three)
 
     def test_grade_six_index_orders_task_three_units(self) -> None:
         grade_index = self.GRADE_INDEX.read_text(encoding="utf-8")

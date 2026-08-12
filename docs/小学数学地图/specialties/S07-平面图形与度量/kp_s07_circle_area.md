@@ -159,6 +159,6 @@ L4
 
 ## 关联
 
-- **相近知识点**：[圆的基本要素](./kp_s07_circle_parts.md)、[扇形与圆环](./kp_s07_sector_and_ring.md)
+- **相近知识点**：[圆的基本要素](./kp_s07_circle_parts.md)、[扇形面积](./kp_s07_sector_and_ring.md)、[圆环面积](./kp_s07_annulus_area.md)
 - **练习材料**：暂无对应练习记录
 - **素质跟踪弱项**：暂无对应弱项记录

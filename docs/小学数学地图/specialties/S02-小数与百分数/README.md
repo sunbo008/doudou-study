@@ -17,6 +17,6 @@
 | [kp_s02_percent_to_decimal](./kp_s02_percent_to_decimal.md) | 百分数与小数互化 | 5～6 | active |
 | kp_s02_decimal_multiply | 小数乘法 | 5 | 占位 |
 | [kp_s02_decimal_div_percent](./kp_s02_decimal_div_percent.md) | 小数除以百分数 | 6 | active |
-| [百分数的意义与百分率](./kp_s02_percent_meaning.md) | 百分数的意义与百分率 | 6 | active |
-| [求一个数的百分之几](./kp_s02_percent_of_quantity.md) | 求一个数的百分之几 | 6 | active |
-| [百分数增减变化](./kp_s02_percent_change.md) | 百分数增减变化 | 6 | active |
+| [kp_s02_percent_meaning](./kp_s02_percent_meaning.md) | 百分数的意义与百分率 | 6 | active |
+| [kp_s02_percent_of_quantity](./kp_s02_percent_of_quantity.md) | 求一个数的百分之几 | 6 | active |
+| [kp_s02_percent_change](./kp_s02_percent_change.md) | 百分数增减变化 | 6 | active |

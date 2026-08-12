@@ -14,7 +14,7 @@
 
 | 计划 kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
-| [扇形统计图的读取](./kp_s10_fan_chart_reading.md) | 扇形统计图的读取 | 6 | active |
-| [跨图表数据推断](./kp_s10_chart_data_inference.md) | 跨图表数据推断 | 6 | active |
+| [kp_s10_fan_chart_reading](./kp_s10_fan_chart_reading.md) | 扇形统计图的读取 | 6 | active |
+| [kp_s10_chart_data_inference](./kp_s10_chart_data_inference.md) | 跨图表数据推断 | 6 | active |
 | kp_s10_average | 平均数 | 4～6 | 占位 |
 | kp_s10_probability | 可能性 | 5～6 | 占位 |
