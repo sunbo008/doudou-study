@@ -14,6 +14,8 @@
 
 | kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
+| [kp_s14_clock_whole_hour](./kp_s14_clock_whole_hour.md) | 认识整时 | 1 | active |
+| [kp_s14_rmb_shopping](./kp_s14_rmb_shopping.md) | 人民币购物 | 1 | active |
 | [kp_s14_unit_consistency](./kp_s14_unit_consistency.md) | 复合情境中的单位统一 | 6 | active |
 | kp_s14_length_unit | 长度单位换算 | 2～4 | 占位 |
 | kp_s14_mass_unit | 质量单位换算 | 3～4 | 占位 |

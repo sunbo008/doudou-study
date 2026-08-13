@@ -14,6 +14,8 @@
 
 | 计划 kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
+| [kp_s07_solid_shapes_intro](./kp_s07_solid_shapes_intro.md) | 立体图形辨认 | 1 | active |
+| [kp_s07_plane_shapes_intro](./kp_s07_plane_shapes_intro.md) | 认识平面图形 | 1 | active |
 | kp_s07_angle_measure | 角与度量 | 4 | 占位 |
 | kp_s07_rect_perimeter_area | 长方形与正方形周长面积 | 3～4 | 占位 |
 | [kp_s07_circle_parts](./kp_s07_circle_parts.md) | 圆的基本要素 | 6 | active |

@@ -14,6 +14,15 @@
 
 | kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
+| [kp_s01_prep_counting](./kp_s01_prep_counting.md) | 数一数与比多少 | 1 | active |
+| [kp_s01_numbers_add_sub_to_5](./kp_s01_numbers_add_sub_to_5.md) | 5以内数的认识与加减 | 1 | active |
+| [kp_s01_numbers_add_sub_6_to_10](./kp_s01_numbers_add_sub_6_to_10.md) | 6~10的认识与加减 | 1 | active |
+| [kp_s01_numbers_to_20](./kp_s01_numbers_to_20.md) | 11~20各数的认识 | 1 | active |
+| [kp_s01_carry_add_to_20](./kp_s01_carry_add_to_20.md) | 20以内进位加法 | 1 | active |
+| [kp_s01_borrow_sub_to_20](./kp_s01_borrow_sub_to_20.md) | 20以内退位减法 | 1 | active |
+| [kp_s01_numbers_to_100](./kp_s01_numbers_to_100.md) | 100以内数的认识 | 1 | active |
+| [kp_s01_add_sub_to_100_mental](./kp_s01_add_sub_to_100_mental.md) | 100以内口算加减 | 1 | active |
+| [kp_s01_add_sub_to_100_written](./kp_s01_add_sub_to_100_written.md) | 100以内笔算加减 | 1 | active |
 | [kp_s01_integer_operation_structure](./kp_s01_integer_operation_structure.md) | 整数运算结构与简算 | 6 | active |
 | kp_s01_four_ops_mixed | 四则混合运算 | 3～4 | 占位 |
 | kp_s01_estimation | 估算 | 2～4 | 占位 |

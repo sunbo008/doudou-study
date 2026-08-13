@@ -14,6 +14,7 @@
 
 | kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
+| [kp_s09_add_sub_quantity_relations](./kp_s09_add_sub_quantity_relations.md) | 加减数量关系 | 1 | active |
 | [kp_s09_race_start_compensation](./kp_s09_race_start_compensation.md) | 起跑线补偿 | 6 | active |
 | [kp_s09_water_saving_model](./kp_s09_water_saving_model.md) | 节约用水建模 | 6 | active |
 | [kp_s09_pigeonhole_principle](./kp_s09_pigeonhole_principle.md) | 鸽巢问题与最不利原则 | 6 | active |
