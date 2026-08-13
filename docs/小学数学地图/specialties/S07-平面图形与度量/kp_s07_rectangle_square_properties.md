@@ -123,7 +123,8 @@ L3
 
 ## 思维横向题（L4）
 
-周长巧算适龄性不足；与 [长方形与正方形周长](./kp_s07_rectangle_square_perimeter.md)（三上）和 [长方形与正方形面积](./kp_s07_rectangle_square_area.md) 构成递进。
+暂不设置：周长巧算适龄性不足；与 [长方形与正方形周长](./kp_s07_rectangle_square_perimeter.md)（三上）和 [长方形与正方形面积](./kp_s07_rectangle_square_area.md) 构成递进。
+
 
 ## 关联
 

@@ -124,7 +124,8 @@ L3
 
 ## 思维横向题（L4）
 
-巧算竞赛适龄性不足；与 [表内乘法（二）](./kp_s01_table_multiplication_2.md) 衔接。
+暂不设置：巧算竞赛适龄性不足；与 [表内乘法（二）](./kp_s01_table_multiplication_2.md) 衔接。
+
 
 ## 关联
 

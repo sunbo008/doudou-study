@@ -1757,6 +1757,86 @@ class L4AuditTests(unittest.TestCase):
         joined = "\n".join(questions)
         self.assertNotRegex(joined, r"追上|追赶|相遇|速度")
 
+    def _iter_active_kp_paths(self) -> list[Path]:
+        return sorted(self.MAP_ROOT.glob("specialties/*/kp_*.md"))
+
+    def test_all_active_entries_have_l1_and_l2_examples(self) -> None:
+        missing: list[str] = []
+        for path in self._iter_active_kp_paths():
+            text = path.read_text(encoding="utf-8")
+            if parse_frontmatter(text).get("status") != "active":
+                continue
+            levels = re.findall(
+                r"^#### 难度\s*\n\s*(L[1-4])\s*$", text, re.MULTILINE
+            )
+            if "L1" not in levels or "L2" not in levels:
+                missing.append(path.name)
+        self.assertEqual(missing, [], f"active 条目缺少 L1/L2 例题：{missing}")
+
+    def test_active_entries_with_lateral_tags_have_l3_and_l4_policy(self) -> None:
+        """有 lateral_tags 的 active 条目须有 L3 例题，且 L4 为例题或适龄暂不设置。"""
+        gaps: list[str] = []
+        for path in self._iter_active_kp_paths():
+            text = path.read_text(encoding="utf-8")
+            frontmatter = parse_frontmatter(text)
+            if frontmatter.get("status") != "active":
+                continue
+            tags = frontmatter.get("lateral_tags") or []
+            if not tags:
+                continue
+            levels = re.findall(
+                r"^#### 难度\s*\n\s*(L[1-4])\s*$", text, re.MULTILINE
+            )
+            if "L3" not in levels:
+                gaps.append(f"{path.name}: missing L3")
+                continue
+            if "L4" in levels:
+                continue
+            section = re.search(
+                r"## 思维横向题（L4）\s*\n+(.*?)(?=\n## |\Z)", text, re.S
+            )
+            if section is None:
+                gaps.append(f"{path.name}: missing L4 section")
+                continue
+            body = section.group(1).strip()
+            if not body.startswith("暂不设置"):
+                gaps.append(f"{path.name}: L4 neither example nor 暂不设置")
+                continue
+            if "：" not in body and ":" not in body:
+                gaps.append(f"{path.name}: 暂不设置缺少适龄原因")
+            if not re.search(r"\[[^\]]+\]\([^)]+\)", body):
+                gaps.append(f"{path.name}: 暂不设置缺少横向链接")
+        self.assertEqual(gaps, [], f"lateral_tags 条目 L3/L4 政策缺口：{gaps}")
+
+    def test_deferred_l4_links_resolve_to_existing_files(self) -> None:
+        broken: list[str] = []
+        for path in self._iter_active_kp_paths():
+            text = path.read_text(encoding="utf-8")
+            if parse_frontmatter(text).get("status") != "active":
+                continue
+            section = re.search(
+                r"## 思维横向题（L4）\s*\n+(.*?)(?=\n## |\Z)", text, re.S
+            )
+            if section is None or not section.group(1).strip().startswith("暂不设置"):
+                continue
+            links = scan_markdown_links(section.group(1))
+            if not links:
+                broken.append(f"{path.name}: no link")
+                continue
+            for link in links:
+                target = link.split("#", 1)[0].split("?", 1)[0]
+                if target.startswith(("http://", "https://")):
+                    continue
+                resolved = (path.parent / target).resolve()
+                if not resolved.is_file():
+                    broken.append(f"{path.name} -> {target}")
+        self.assertEqual(broken, [], f"暂不设置横向链接失效：{broken}")
+
+    def test_phase3_audit_doc_states_lower_grade_l4_policy(self) -> None:
+        text = self.AUDIT.read_text(encoding="utf-8")
+        self.assertIn("## 一至五年级适龄 L4 口径", text)
+        self.assertIn("暂不设置", text)
+
 
 if __name__ == "__main__":
     unittest.main()

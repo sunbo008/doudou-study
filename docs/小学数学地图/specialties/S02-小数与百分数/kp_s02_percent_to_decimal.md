@@ -134,7 +134,8 @@ L3
 
 ## 思维横向题（L4）
 
-待补（本知识点以转化为主；综合运算见 [`kp_s02_decimal_div_percent`](./kp_s02_decimal_div_percent.md)）。
+暂不设置：本知识点以基础技能为主，综合横向并入关联条目。横向能力见 [`kp_s02_decimal_div_percent`](./kp_s02_decimal_div_percent.md)。
+
 
 ## 关联
 

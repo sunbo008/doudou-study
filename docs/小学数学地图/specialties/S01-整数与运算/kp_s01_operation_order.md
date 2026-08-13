@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-巧算变形见 [运算律](./kp_s01_operation_laws.md) 与六年级 [整数运算结构与简算](./kp_s01_integer_operation_structure.md)。
+暂不设置：巧算变形见 [运算律](./kp_s01_operation_laws.md) 与六年级 [整数运算结构与简算](./kp_s01_integer_operation_structure.md)。
+
 
 ## 关联
 

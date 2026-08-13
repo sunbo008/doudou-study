@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-面积巧算适龄性不足；与 [长方形与正方形周长](./kp_s07_rectangle_square_perimeter.md) 区分「围一圈」与「铺一面」。
+暂不设置：面积巧算适龄性不足；与 [长方形与正方形周长](./kp_s07_rectangle_square_perimeter.md) 区分「围一圈」与「铺一面」。
+
 
 ## 关联
 

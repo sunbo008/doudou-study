@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-多步建模见高年级和差倍问题；与 [加减数量关系](./kp_s09_add_sub_quantity_relations.md) 构成数量关系系列。
+暂不设置：多步建模见高年级和差倍问题；与 [加减数量关系](./kp_s09_add_sub_quantity_relations.md) 构成数量关系系列。
+
 
 ## 关联
 

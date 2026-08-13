@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-三角形面积见高年级；与 [平行四边形和梯形](./kp_s07_parallelogram_trapezoid.md) 衔接。
+暂不设置：三角形面积见高年级；与 [平行四边形和梯形](./kp_s07_parallelogram_trapezoid.md) 衔接。
+
 
 ## 关联
 

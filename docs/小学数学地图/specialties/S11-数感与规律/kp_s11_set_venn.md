@@ -123,7 +123,8 @@ L3
 
 ## 思维横向题（L4）
 
-三集合问题适龄性不足；与 [搭配（一）](./kp_s11_matching_combinations.md) 同属数学广角类思维。
+暂不设置：三集合问题适龄性不足；与 [搭配（一）](./kp_s11_matching_combinations.md) 同属数学广角类思维。
+
 
 ## 关联
 

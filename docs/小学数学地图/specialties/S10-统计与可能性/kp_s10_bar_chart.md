@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-复式条形图见 [平均数与条形统计图](./kp_s10_average_and_bar_chart.md)。
+暂不设置：复式条形图见 [平均数与条形统计图](./kp_s10_average_and_bar_chart.md)。
+
 
 ## 关联
 

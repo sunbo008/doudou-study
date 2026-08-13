@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-面积公式见高年级；与 [长方形与正方形特征](./kp_s07_rectangle_square_properties.md) 衔接。
+暂不设置：面积公式见高年级；与 [长方形与正方形特征](./kp_s07_rectangle_square_properties.md) 衔接。
+
 
 ## 关联
 

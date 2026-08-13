@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-优化建模适龄性不足；与 [数学广角——优化](./kp_s09_optimization_strategy.md) 同属方案比较。
+暂不设置：优化建模适龄性不足；与 [数学广角——优化](./kp_s09_optimization_strategy.md) 同属方案比较。
+
 
 ## 关联
 

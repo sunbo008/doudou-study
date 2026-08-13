@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-巧算竞赛适龄性不足；与六年级 [整数运算结构与简算](./kp_s01_integer_operation_structure.md) 横向衔接。
+暂不设置：巧算竞赛适龄性不足；与六年级 [整数运算结构与简算](./kp_s01_integer_operation_structure.md) 横向衔接。
+
 
 ## 关联
 

@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-乘法巧算适龄性不足；与 [多位数乘一位数](./kp_s01_multi_digit_multiply_one.md) 构成递进。
+暂不设置：乘法巧算适龄性不足；与 [多位数乘一位数](./kp_s01_multi_digit_multiply_one.md) 构成递进。
+
 
 ## 关联
 

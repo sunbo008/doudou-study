@@ -124,7 +124,8 @@ L3
 
 ## 思维横向题（L4）
 
-巧算竞赛适龄性不足；与 [有余数的除法](./kp_s01_division_with_remainder.md) 和 [多位数乘一位数](./kp_s01_multi_digit_multiply_one.md) 构成乘除互逆。
+暂不设置：巧算竞赛适龄性不足；与 [有余数的除法](./kp_s01_division_with_remainder.md) 和 [多位数乘一位数](./kp_s01_multi_digit_multiply_one.md) 构成乘除互逆。
+
 
 ## 关联
 

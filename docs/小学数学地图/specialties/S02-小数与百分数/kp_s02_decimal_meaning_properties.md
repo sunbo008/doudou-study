@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-小数化简与 [小数的加法和减法](./kp_s02_decimal_add_sub.md) 衔接；与三年级 [小数的初步认识](./kp_s02_decimal_intro.md) 递进。
+暂不设置：小数化简与 [小数的加法和减法](./kp_s02_decimal_add_sub.md) 衔接；与三年级 [小数的初步认识](./kp_s02_decimal_intro.md) 递进。
+
 
 ## 关联
 

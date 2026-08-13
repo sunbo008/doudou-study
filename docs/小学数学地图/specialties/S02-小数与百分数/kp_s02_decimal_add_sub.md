@@ -122,7 +122,8 @@ L3
 
 ## 思维横向题（L4）
 
-小数巧算适龄性不足；与 [小数的意义和性质](./kp_s02_decimal_meaning_properties.md) 衔接。
+暂不设置：小数巧算适龄性不足；与 [小数的意义和性质](./kp_s02_decimal_meaning_properties.md) 衔接。
+
 
 ## 关联
 

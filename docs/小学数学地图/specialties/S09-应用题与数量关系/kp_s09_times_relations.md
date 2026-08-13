@@ -123,7 +123,8 @@ L3
 
 ## 思维横向题（L4）
 
-复杂倍数推理适龄性不足；与 [乘除数量关系](./kp_s09_mul_div_quantity_relations.md) 构成二年级到三年级的衔接。
+暂不设置：复杂倍数推理适龄性不足；与 [乘除数量关系](./kp_s09_mul_div_quantity_relations.md) 构成二年级到三年级的衔接。
+
 
 ## 关联
 
