@@ -41,3 +41,6 @@ venv/
 
 # Git worktrees
 .worktrees/
+
+# Local research caches
+.tmp/

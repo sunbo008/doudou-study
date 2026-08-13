@@ -45,6 +45,17 @@ DECLARED_LEVEL_ROW = re.compile(
     r"^\|\s*(L[34])\s*\|[^\n|]*\|\s*([^|\n]+?)\s*\|\s*$", re.MULTILINE
 )
 PUBLIC_SOURCE_DOMAINS = ("pep.com.cn", "gov.cn", "edu.cn")
+PUBLIC_SOURCE_PATH = Path("_meta/三期来源核验记录.md")
+PUBLIC_SOURCE_COLUMNS = (
+    "年级",
+    "册次",
+    "核验",
+    "页面标题",
+    "证据",
+    "访问日期",
+    "可见目录",
+    "版本与限制",
+)
 
 
 @dataclass(frozen=True)
@@ -180,6 +191,72 @@ def parse_catalog(path: Path) -> list[CatalogEntry]:
         if len(cells) == len(CATALOG_COLUMNS):
             entries.append(CatalogEntry(*cells))
     return entries
+
+
+def _approved_public_url(value: str) -> bool:
+    targets = scan_markdown_links(value)
+    if len(targets) != 1:
+        return False
+    parsed = urlparse(targets[0])
+    hostname = (parsed.hostname or "").lower()
+    return (
+        parsed.scheme == "https"
+        and not re.search(r"(?:^|\.)(?:google|bing|baidu)\.", hostname)
+        and any(
+            hostname == domain or hostname.endswith(f".{domain}")
+            for domain in PUBLIC_SOURCE_DOMAINS
+        )
+    )
+
+
+def validate_public_sources(root: Path) -> list[Issue]:
+    """Validate the grades 1--5 public-source evidence ledger when present."""
+    path = root / PUBLIC_SOURCE_PATH
+    if not path.is_file():
+        return []
+    lines = path.read_text(encoding="utf-8").splitlines()
+    header_index = next(
+        (
+            index
+            for index, line in enumerate(lines)
+            if line.startswith("|") and tuple(_table_cells(line)) == PUBLIC_SOURCE_COLUMNS
+        ),
+        None,
+    )
+    if header_index is None:
+        return [Issue(path, "public-source-invalid", "公开来源表头或字段不完整")]
+
+    issues: list[Issue] = []
+    seen: set[tuple[int, str]] = set()
+    for number, line in enumerate(lines[header_index + 2 :], header_index + 3):
+        if not line.startswith("|"):
+            break
+        cells = _table_cells(line)
+        if len(cells) != len(PUBLIC_SOURCE_COLUMNS):
+            issues.append(Issue(path, "public-source-invalid", f"来源第 {number} 行必须恰有 8 列"))
+            continue
+        grade_text, volume, verification, title, evidence, date, catalog, limits = cells
+        grade = int(grade_text) if grade_text.isdigit() else 0
+        key = (grade, volume)
+        if grade not in range(1, 6) or volume not in {"上", "下"} or key in seen:
+            issues.append(Issue(path, "public-source-invalid", f"来源第 {number} 行年级册次非法或重复"))
+        seen.add(key)
+        if verification != "verified_public":
+            issues.append(Issue(path, "public-source-invalid", f"来源第 {number} 行必须为 verified_public"))
+        if not title or not _approved_public_url(evidence):
+            issues.append(Issue(path, "public-source-invalid", f"来源第 {number} 行缺直接 HTTPS 权威原页或页面标题"))
+        if date != "2026-08-12":
+            issues.append(Issue(path, "public-source-invalid", f"来源第 {number} 行访问日期必须为 2026-08-12"))
+        if not catalog or re.search(r"待核验|未取得|pending", catalog, re.IGNORECASE):
+            issues.append(Issue(path, "public-source-invalid", f"来源第 {number} 行缺可见目录"))
+        if not limits or "实书" not in limits:
+            issues.append(Issue(path, "public-source-invalid", f"来源第 {number} 行须披露实书复核限制"))
+
+    expected = {(grade, volume) for grade in range(1, 6) for volume in ("上", "下")}
+    if seen != expected:
+        missing = sorted(expected - seen)
+        issues.append(Issue(path, "public-source-invalid", f"公开来源须覆盖十册，缺少：{missing}"))
+    return issues
 
 
 def _section_content(section: str) -> str:
@@ -356,15 +433,7 @@ def _catalog_evidence_is_valid(catalog_path: Path, entry: CatalogEntry) -> bool:
         return False
     target = targets[0]
     if entry.verification == "verified_public":
-        parsed = urlparse(target)
-        hostname = (parsed.hostname or "").lower()
-        return (
-            parsed.scheme == "https"
-            and any(
-                hostname == domain or hostname.endswith(f".{domain}")
-                for domain in PUBLIC_SOURCE_DOMAINS
-            )
-        )
+        return _approved_public_url(entry.evidence)
     links = _catalog_local_links(catalog_path, entry.evidence)
     return (
         len(links) == 1
@@ -700,6 +769,7 @@ def validate(root: Path) -> list[Issue]:
     if not root.is_dir():
         return [Issue(root, "invalid-root", "地图根目录不存在或不是目录")]
     issues: list[Issue] = []
+    issues.extend(validate_public_sources(root))
     issues.extend(validate_catalog(root))
     kp_paths = sorted(root.rglob("kp_*.md"))
     kp_ids: dict[str, list[Path]] = {}

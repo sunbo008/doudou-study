@@ -558,6 +558,101 @@ class CatalogTests(unittest.TestCase):
                 )
 
 
+class PublicSourceTests(unittest.TestCase):
+    """Validate the machine-readable evidence ledger for grades 1--5."""
+
+    def setUp(self) -> None:
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp_dir.name)
+        self.meta = self.root / "_meta"
+        self.meta.mkdir()
+        self.sources = self.meta / "三期来源核验记录.md"
+
+    def tearDown(self) -> None:
+        self.temp_dir.cleanup()
+
+    def write_sources(self, replacement: dict[str, str] | None = None) -> None:
+        replacement = replacement or {}
+        rows = []
+        for grade in range(1, 6):
+            for volume in ("上", "下"):
+                key = f"{grade}{volume}"
+                row = {
+                    "grade": str(grade),
+                    "volume": volume,
+                    "verification": "verified_public",
+                    "title": f"义务教育教科书 数学 {grade}年级{volume}册",
+                    "evidence": (
+                        f"[人教社电子教材](https://download.pep.com.cn/"
+                        f"xsxjc/grade-{grade}-{volume}.html)"
+                    ),
+                    "date": "2026-08-12",
+                    "catalog": "第一单元、第二单元、总复习",
+                    "limits": "公开页面核验；仍待用户手边实书复核",
+                }
+                if key == "1上":
+                    row.update(replacement)
+                rows.append(
+                    "| {grade} | {volume} | {verification} | {title} | "
+                    "{evidence} | {date} | {catalog} | {limits} |".format(**row)
+                )
+        self.sources.write_text(
+            """# 三期来源核验记录
+
+| 年级 | 册次 | 核验 | 页面标题 | 证据 | 访问日期 | 可见目录 | 版本与限制 |
+|---|---|---|---|---|---|---|---|
+%s
+""" % "\n".join(rows),
+            encoding="utf-8",
+        )
+
+    def rules(self) -> set[str]:
+        return {issue.rule for issue in validate(self.root)}
+
+    def test_ten_complete_primary_source_records_are_allowed(self) -> None:
+        self.write_sources()
+
+        self.assertNotIn("public-source-invalid", self.rules())
+
+    def test_missing_public_evidence_is_rejected(self) -> None:
+        self.write_sources({"evidence": ""})
+
+        self.assertIn("public-source-invalid", self.rules())
+
+    def test_public_evidence_must_use_https(self) -> None:
+        self.write_sources(
+            {"evidence": "[人教社](http://download.pep.com.cn/book.html)"}
+        )
+
+        self.assertIn("public-source-invalid", self.rules())
+
+    def test_search_result_url_is_not_primary_evidence(self) -> None:
+        self.write_sources(
+            {"evidence": "[搜索结果](https://www.google.com/search?q=pep+math)"}
+        )
+
+        self.assertIn("public-source-invalid", self.rules())
+
+    def test_unapproved_domain_is_rejected(self) -> None:
+        self.write_sources(
+            {"evidence": "[转载页](https://example.com/pep-math.html)"}
+        )
+
+        self.assertIn("public-source-invalid", self.rules())
+
+    def test_grades_one_to_five_cannot_claim_book_verification(self) -> None:
+        self.write_sources({"verification": "verified_book"})
+
+        self.assertIn("public-source-invalid", self.rules())
+
+    def test_visible_catalog_cannot_be_missing_or_pending(self) -> None:
+        for catalog in ("", "待核验"):
+            with self.subTest(catalog=catalog):
+                self.write_sources({"catalog": catalog})
+
+                self.assertIn("public-source-invalid", self.rules())
+
+
 class FinalAcceptanceContractTests(unittest.TestCase):
     """Pressure-test the CLI contract against a real copied map tree."""
 
