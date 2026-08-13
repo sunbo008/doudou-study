@@ -29,6 +29,10 @@
 | [kp_s01_division_with_remainder](./kp_s01_division_with_remainder.md) | 有余数的除法 | 2 | active |
 | [kp_s01_numbers_to_10000](./kp_s01_numbers_to_10000.md) | 万以内数的认识 | 2 | active |
 | [kp_s01_add_sub_to_10000](./kp_s01_add_sub_to_10000.md) | 万以内加减 | 2 | active |
+| [kp_s01_add_sub_within_10000_1](./kp_s01_add_sub_within_10000_1.md) | 万以内加减（一） | 3 | active |
+| [kp_s01_add_sub_within_10000_2](./kp_s01_add_sub_within_10000_2.md) | 万以内加减（二） | 3 | active |
+| [kp_s01_multi_digit_multiply_one](./kp_s01_multi_digit_multiply_one.md) | 多位数乘一位数 | 3 | active |
+| [kp_s01_division_one_digit](./kp_s01_division_one_digit.md) | 除数是一位数的除法 | 3 | active |
 | [kp_s01_integer_operation_structure](./kp_s01_integer_operation_structure.md) | 整数运算结构与简算 | 6 | active |
-| kp_s01_four_ops_mixed | 四则混合运算 | 3～4 | 占位 |
+| kp_s01_four_ops_mixed | 四则混合运算 | 4 | 占位 |
 | kp_s01_estimation | 估算 | 3～4 | 占位 |

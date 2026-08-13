@@ -20,5 +20,8 @@
 | [kp_s14_measure_and_compare](./kp_s14_measure_and_compare.md) | 量一量，比一比 | 2 | active |
 | [kp_s14_time_hour_minute](./kp_s14_time_hour_minute.md) | 认识时间 | 2 | active |
 | [kp_s14_time_in_life](./kp_s14_time_in_life.md) | 时间在哪里 | 2 | active |
+| [kp_s14_time_hms](./kp_s14_time_hms.md) | 时、分、秒 | 3 | active |
+| [kp_s14_measurement_mm_km](./kp_s14_measurement_mm_km.md) | 毫米、分米与千米 | 3 | active |
+| [kp_s14_calendar_ymd](./kp_s14_calendar_ymd.md) | 年、月、日 | 3 | active |
 | [kp_s14_unit_consistency](./kp_s14_unit_consistency.md) | 复合情境中的单位统一 | 6 | active |
 | kp_s14_mass_unit | 质量单位换算 | 3～4 | 占位 |

@@ -21,5 +21,6 @@
 | [分数除法的意义](./kp_s03_fraction_divide_meaning.md) | 分数除法的意义 | 6 | active |
 | [分数除法的计算](./kp_s03_fraction_divide_compute.md) | 分数除法的计算 | 6 | active |
 | [分数除法应用题](./kp_s03_fraction_divide_word_problems.md) | 分数除法应用题 | 6 | active |
+| [分数的初步认识](./kp_s03_fraction_intro.md) | 分数的初步认识 | 3 | active |
 | kp_s03_reduce_common_denominator | 约分与通分 | 4～5 | 占位 |
 | kp_s03_fraction_add_sub | 分数加减法 | 5 | 占位 |

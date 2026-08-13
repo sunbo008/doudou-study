@@ -125,7 +125,7 @@ L3
 
 ## 思维横向题（L4）
 
-时间计算见三年级「时、分、秒」占位；与 [认识整时](./kp_s14_clock_whole_hour.md) 衔接。
+时间计算见 [时、分、秒](./kp_s14_time_hms.md)；与 [认识整时](./kp_s14_clock_whole_hour.md) 衔接。
 
 ## 关联
 

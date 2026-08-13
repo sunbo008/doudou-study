@@ -24,3 +24,4 @@
 | [kp_s02_tax_rate](./kp_s02_tax_rate.md) | 税率 | 6 | active |
 | [kp_s02_interest_rate](./kp_s02_interest_rate.md) | 利率 | 6 | active |
 | [kp_s02_percent_application](./kp_s02_percent_application.md) | 生活与百分数综合应用 | 6 | active |
+| [kp_s02_decimal_intro](./kp_s02_decimal_intro.md) | 小数的初步认识 | 3 | active |
