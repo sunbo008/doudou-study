@@ -15,6 +15,8 @@
 | kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
 | [kp_s11_math_playground](./kp_s11_math_playground.md) | 数学乐园综合 | 1 | active |
+| [kp_s11_matching_combinations](./kp_s11_matching_combinations.md) | 搭配（一） | 2 | active |
+| [kp_s11_math_comics](./kp_s11_math_comics.md) | 数学连环画 | 2 | active |
 | [kp_s11_number_shape_patterns](./kp_s11_number_shape_patterns.md) | 数与形规律 | 6 | active |
-| kp_s11_find_pattern | 找规律 | 1～4 | 占位 |
-| kp_s11_number_arrangement | 数的排列 | 2～4 | 占位 |
+| kp_s11_find_pattern | 找规律 | 3～4 | 占位 |
+| kp_s11_number_arrangement | 数的排列 | 3～4 | 占位 |

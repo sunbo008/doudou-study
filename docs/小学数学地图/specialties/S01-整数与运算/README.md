@@ -23,6 +23,12 @@
 | [kp_s01_numbers_to_100](./kp_s01_numbers_to_100.md) | 100以内数的认识 | 1 | active |
 | [kp_s01_add_sub_to_100_mental](./kp_s01_add_sub_to_100_mental.md) | 100以内口算加减 | 1 | active |
 | [kp_s01_add_sub_to_100_written](./kp_s01_add_sub_to_100_written.md) | 100以内笔算加减 | 1 | active |
+| [kp_s01_add_sub_to_100](./kp_s01_add_sub_to_100.md) | 100以内加减（二） | 2 | active |
+| [kp_s01_table_multiplication_1](./kp_s01_table_multiplication_1.md) | 表内乘法（一） | 2 | active |
+| [kp_s01_table_multiplication_2](./kp_s01_table_multiplication_2.md) | 表内乘法（二） | 2 | active |
+| [kp_s01_division_with_remainder](./kp_s01_division_with_remainder.md) | 有余数的除法 | 2 | active |
+| [kp_s01_numbers_to_10000](./kp_s01_numbers_to_10000.md) | 万以内数的认识 | 2 | active |
+| [kp_s01_add_sub_to_10000](./kp_s01_add_sub_to_10000.md) | 万以内加减 | 2 | active |
 | [kp_s01_integer_operation_structure](./kp_s01_integer_operation_structure.md) | 整数运算结构与简算 | 6 | active |
 | kp_s01_four_ops_mixed | 四则混合运算 | 3～4 | 占位 |
-| kp_s01_estimation | 估算 | 2～4 | 占位 |
+| kp_s01_estimation | 估算 | 3～4 | 占位 |
