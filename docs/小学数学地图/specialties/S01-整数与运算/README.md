@@ -1,0 +1,42 @@
+# S01 整数与运算
+
+## 范围
+
+**含什么：** 认数（万以内、亿以内）、整数四则运算、四则混合运算、运算估算、速算技巧、运算定律（交换律、结合律、分配律等）。运算估算在本专项；与 S11 的规律 / 数感情境下的合理猜测区分。
+
+**不含什么：** 小数、分数、百分数的意义与运算（归 S02、S03）；因数倍数与整除（归 S04）；简易方程与字母表示（归 S06）；应用题数量关系建模（归 S09）；规律 / 数感类合理猜测（归 S11）。
+
+## 与现有材料
+
+暂无
+
+## 知识点清单
+
+| kp_id | 标题 | 年级 | 状态 |
+|---|---|---|---|
+| [kp_s01_prep_counting](./kp_s01_prep_counting.md) | 数一数与比多少 | 1 | active |
+| [kp_s01_numbers_add_sub_to_5](./kp_s01_numbers_add_sub_to_5.md) | 5以内数的认识与加减 | 1 | active |
+| [kp_s01_numbers_add_sub_6_to_10](./kp_s01_numbers_add_sub_6_to_10.md) | 6~10的认识与加减 | 1 | active |
+| [kp_s01_numbers_to_20](./kp_s01_numbers_to_20.md) | 11~20各数的认识 | 1 | active |
+| [kp_s01_carry_add_to_20](./kp_s01_carry_add_to_20.md) | 20以内进位加法 | 1 | active |
+| [kp_s01_borrow_sub_to_20](./kp_s01_borrow_sub_to_20.md) | 20以内退位减法 | 1 | active |
+| [kp_s01_numbers_to_100](./kp_s01_numbers_to_100.md) | 100以内数的认识 | 1 | active |
+| [kp_s01_add_sub_to_100_mental](./kp_s01_add_sub_to_100_mental.md) | 100以内口算加减 | 1 | active |
+| [kp_s01_add_sub_to_100_written](./kp_s01_add_sub_to_100_written.md) | 100以内笔算加减 | 1 | active |
+| [kp_s01_add_sub_to_100](./kp_s01_add_sub_to_100.md) | 100以内加减（二） | 2 | active |
+| [kp_s01_table_multiplication_1](./kp_s01_table_multiplication_1.md) | 表内乘法（一） | 2 | active |
+| [kp_s01_table_multiplication_2](./kp_s01_table_multiplication_2.md) | 表内乘法（二） | 2 | active |
+| [kp_s01_division_with_remainder](./kp_s01_division_with_remainder.md) | 有余数的除法 | 2 | active |
+| [kp_s01_numbers_to_10000](./kp_s01_numbers_to_10000.md) | 万以内数的认识 | 2 | active |
+| [kp_s01_add_sub_to_10000](./kp_s01_add_sub_to_10000.md) | 万以内加减 | 2 | active |
+| [kp_s01_add_sub_within_10000_1](./kp_s01_add_sub_within_10000_1.md) | 万以内加减（一） | 3 | active |
+| [kp_s01_add_sub_within_10000_2](./kp_s01_add_sub_within_10000_2.md) | 万以内加减（二） | 3 | active |
+| [kp_s01_multi_digit_multiply_one](./kp_s01_multi_digit_multiply_one.md) | 多位数乘一位数 | 3 | active |
+| [kp_s01_division_one_digit](./kp_s01_division_one_digit.md) | 除数是一位数的除法 | 3 | active |
+| [kp_s01_large_numbers](./kp_s01_large_numbers.md) | 大数的认识 | 4 | active |
+| [kp_s01_three_digit_multiply](./kp_s01_three_digit_multiply.md) | 三位数乘两位数 | 4 | active |
+| [kp_s01_divisor_two_digit](./kp_s01_divisor_two_digit.md) | 除数是两位数的除法 | 4 | active |
+| [kp_s01_operation_order](./kp_s01_operation_order.md) | 四则运算 | 4 | active |
+| [kp_s01_operation_laws](./kp_s01_operation_laws.md) | 运算律 | 4 | active |
+| [kp_s01_integer_operation_structure](./kp_s01_integer_operation_structure.md) | 整数运算结构与简算 | 6 | active |
+| kp_s01_estimation | 估算 | 3～4 | 占位 |
