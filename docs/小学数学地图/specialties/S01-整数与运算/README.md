@@ -33,6 +33,10 @@
 | [kp_s01_add_sub_within_10000_2](./kp_s01_add_sub_within_10000_2.md) | 万以内加减（二） | 3 | active |
 | [kp_s01_multi_digit_multiply_one](./kp_s01_multi_digit_multiply_one.md) | 多位数乘一位数 | 3 | active |
 | [kp_s01_division_one_digit](./kp_s01_division_one_digit.md) | 除数是一位数的除法 | 3 | active |
+| [kp_s01_large_numbers](./kp_s01_large_numbers.md) | 大数的认识 | 4 | active |
+| [kp_s01_three_digit_multiply](./kp_s01_three_digit_multiply.md) | 三位数乘两位数 | 4 | active |
+| [kp_s01_divisor_two_digit](./kp_s01_divisor_two_digit.md) | 除数是两位数的除法 | 4 | active |
+| [kp_s01_operation_order](./kp_s01_operation_order.md) | 四则运算 | 4 | active |
+| [kp_s01_operation_laws](./kp_s01_operation_laws.md) | 运算律 | 4 | active |
 | [kp_s01_integer_operation_structure](./kp_s01_integer_operation_structure.md) | 整数运算结构与简算 | 6 | active |
-| kp_s01_four_ops_mixed | 四则混合运算 | 4 | 占位 |
 | kp_s01_estimation | 估算 | 3～4 | 占位 |

@@ -25,3 +25,5 @@
 | [kp_s02_interest_rate](./kp_s02_interest_rate.md) | 利率 | 6 | active |
 | [kp_s02_percent_application](./kp_s02_percent_application.md) | 生活与百分数综合应用 | 6 | active |
 | [kp_s02_decimal_intro](./kp_s02_decimal_intro.md) | 小数的初步认识 | 3 | active |
+| [kp_s02_decimal_meaning_properties](./kp_s02_decimal_meaning_properties.md) | 小数的意义和性质 | 4 | active |
+| [kp_s02_decimal_add_sub](./kp_s02_decimal_add_sub.md) | 小数的加法和减法 | 4 | active |

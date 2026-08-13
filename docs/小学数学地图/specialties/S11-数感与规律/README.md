@@ -19,6 +19,7 @@
 | [kp_s11_math_comics](./kp_s11_math_comics.md) | 数学连环画 | 2 | active |
 | [kp_s11_number_coding](./kp_s11_number_coding.md) | 数字编码 | 3 | active |
 | [kp_s11_set_venn](./kp_s11_set_venn.md) | 集合（韦恩图） | 3 | active |
+| [kp_s11_how_big_is_100_million](./kp_s11_how_big_is_100_million.md) | 1亿有多大 | 4 | active |
 | [kp_s11_number_shape_patterns](./kp_s11_number_shape_patterns.md) | 数与形规律 | 6 | active |
 | kp_s11_find_pattern | 找规律 | 3～4 | 占位 |
 | kp_s11_number_arrangement | 数的排列 | 3～4 | 占位 |

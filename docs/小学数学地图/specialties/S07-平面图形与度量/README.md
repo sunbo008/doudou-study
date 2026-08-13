@@ -21,10 +21,12 @@
 | [kp_s07_motion_symmetry_intro](./kp_s07_motion_symmetry_intro.md) | 生活中的运动现象 | 3 | active |
 | [kp_s07_rectangle_square_properties](./kp_s07_rectangle_square_properties.md) | 长方形与正方形特征 | 3 | active |
 | [kp_s07_rectangle_square_area](./kp_s07_rectangle_square_area.md) | 长方形与正方形面积 | 3 | active |
-| kp_s07_angle_measure | 角与度量 | 4 | 占位 |
+| [kp_s07_angle_measure](./kp_s07_angle_measure.md) | 角的度量 | 4 | active |
+| [kp_s07_parallelogram_trapezoid](./kp_s07_parallelogram_trapezoid.md) | 平行四边形和梯形 | 4 | active |
+| [kp_s07_triangles](./kp_s07_triangles.md) | 三角形 | 4 | active |
+| [kp_s07_shape_motion_2](./kp_s07_shape_motion_2.md) | 图形的运动（二） | 4 | active |
 | [kp_s07_circle_parts](./kp_s07_circle_parts.md) | 圆的基本要素 | 6 | active |
 | [kp_s07_circle_circumference](./kp_s07_circle_circumference.md) | 圆的周长 | 6 | active |
 | [kp_s07_circle_area](./kp_s07_circle_area.md) | 圆的面积 | 6 | active |
 | [kp_s07_sector_and_ring](./kp_s07_sector_and_ring.md) | 扇形面积 | 6 | active |
 | [kp_s07_annulus_area](./kp_s07_annulus_area.md) | 圆环面积 | 6 | active |
-| kp_s07_symmetry_transform | 对称、平移与旋转 | 4～5 | 占位 |

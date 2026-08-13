@@ -23,5 +23,6 @@
 | [kp_s14_time_hms](./kp_s14_time_hms.md) | 时、分、秒 | 3 | active |
 | [kp_s14_measurement_mm_km](./kp_s14_measurement_mm_km.md) | 毫米、分米与千米 | 3 | active |
 | [kp_s14_calendar_ymd](./kp_s14_calendar_ymd.md) | 年、月、日 | 3 | active |
+| [kp_s14_hectare_square_km](./kp_s14_hectare_square_km.md) | 公顷和平方千米 | 4 | active |
 | [kp_s14_unit_consistency](./kp_s14_unit_consistency.md) | 复合情境中的单位统一 | 6 | active |
 | kp_s14_mass_unit | 质量单位换算 | 3～4 | 占位 |

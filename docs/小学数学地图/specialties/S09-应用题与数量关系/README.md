@@ -17,6 +17,9 @@
 | [kp_s09_add_sub_quantity_relations](./kp_s09_add_sub_quantity_relations.md) | 加减数量关系 | 1 | active |
 | [kp_s09_mul_div_quantity_relations](./kp_s09_mul_div_quantity_relations.md) | 乘除数量关系 | 2 | active |
 | [kp_s09_times_relations](./kp_s09_times_relations.md) | 倍的认识 | 3 | active |
+| [kp_s09_optimization_strategy](./kp_s09_optimization_strategy.md) | 数学广角——优化 | 4 | active |
+| [kp_s09_nutrition_dinner](./kp_s09_nutrition_dinner.md) | 营养晚餐 | 4 | active |
+| [kp_s09_chicken_rabbit](./kp_s09_chicken_rabbit.md) | 数学广角——鸡兔同笼 | 4 | active |
 | [kp_s09_race_start_compensation](./kp_s09_race_start_compensation.md) | 起跑线补偿 | 6 | active |
 | [kp_s09_water_saving_model](./kp_s09_water_saving_model.md) | 节约用水建模 | 6 | active |
 | [kp_s09_pigeonhole_principle](./kp_s09_pigeonhole_principle.md) | 鸽巢问题与最不利原则 | 6 | active |
