@@ -15,7 +15,7 @@
 | kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
 | [kp_s04_divisibility_constraints](./kp_s04_divisibility_constraints.md) | 整除条件与余数约束 | 6 | active |
-| kp_s04_factor_multiple | 因数与倍数 | 5 | 占位 |
-| kp_s04_prime_composite | 质数与合数 | 5 | 占位 |
-| kp_s04_greatest_common_factor | 最大公因数 | 5 | 占位 |
-| kp_s04_least_common_multiple | 最小公倍数 | 5 | 占位 |
+| [kp_s04_factors_multiples](./kp_s04_factors_multiples.md) | 因数和倍数 | 5 | active |
+| [kp_s04_prime_composite](./kp_s04_prime_composite.md) | 质数与合数 | 5 | active |
+| [kp_s04_gcd](./kp_s04_gcd.md) | 最大公因数 | 5 | active |
+| [kp_s04_lcm](./kp_s04_lcm.md) | 最小公倍数 | 5 | active |

@@ -19,4 +19,6 @@
 | [kp_s10_data_collect_organize](./kp_s10_data_collect_organize.md) | 数据的收集与整理 | 3 | active |
 | [kp_s10_bar_chart](./kp_s10_bar_chart.md) | 条形统计图 | 4 | active |
 | [kp_s10_average_and_bar_chart](./kp_s10_average_and_bar_chart.md) | 平均数与条形统计图 | 4 | active |
-| kp_s10_probability | 可能性 | 5～6 | 占位 |
+| [kp_s10_possibility](./kp_s10_possibility.md) | 可能性 | 5 | active |
+| [kp_s10_dice_experiment](./kp_s10_dice_experiment.md) | 掷一掷 | 5 | active |
+| [kp_s10_broken_line_chart](./kp_s10_broken_line_chart.md) | 折线统计图 | 5 | active |

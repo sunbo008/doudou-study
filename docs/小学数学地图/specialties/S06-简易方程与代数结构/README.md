@@ -15,7 +15,8 @@
 
 | 计划 kp_id | 标题 | 年级 | 状态 |
 |---|---|---|---|
-| kp_s06_letter_representation | 用字母表示数 | 5 | 占位 |
-| kp_s06_simple_equation | 简易方程 | 5 | 占位 |
+| [kp_s06_letters_expressions](./kp_s06_letters_expressions.md) | 用字母表示数 | 5 | active |
+| [kp_s06_linear_equation_intro](./kp_s06_linear_equation_intro.md) | 解简易方程 | 5 | active |
+| [kp_s06_equation_word_problems](./kp_s06_equation_word_problems.md) | 方程解决问题 | 5 | active |
 | [kp_s06_same_structure_factor](./kp_s06_same_structure_factor.md) | 同构方程移项提公因式（分班扩展） | 6 | draft / pending |
 | [kp_s06_same_core_rewrite](./kp_s06_same_core_rewrite.md) | 同核心算式的整体改写 | 6 | active |

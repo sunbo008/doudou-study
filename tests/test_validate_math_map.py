@@ -997,7 +997,16 @@ class FinalAcceptanceContractTests(unittest.TestCase):
         grade_index = (self.root / "年级索引.md").read_text(encoding="utf-8")
         specialty_index = (self.root / "专项索引.md").read_text(encoding="utf-8")
 
-        self.assertSetEqual(active_ids, {"kp_s06_same_core_rewrite"})
+        # 五上简易方程 + 六上同核心改写为 active；分班扩展草稿不得进入索引
+        self.assertSetEqual(
+            active_ids,
+            {
+                "kp_s06_letters_expressions",
+                "kp_s06_linear_equation_intro",
+                "kp_s06_equation_word_problems",
+                "kp_s06_same_core_rewrite",
+            },
+        )
         self.assertEqual(extension_frontmatter.get("status"), "draft")
         self.assertEqual(extension_frontmatter.get("source_verification"), "pending")
         self.assertNotIn("kp_s06_same_structure_factor", grade_index)

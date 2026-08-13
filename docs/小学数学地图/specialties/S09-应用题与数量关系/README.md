@@ -27,4 +27,6 @@
 | [kp_s09_travel](./kp_s09_travel.md) | 行程问题的速度与时间轴 | 6 | active |
 | [kp_s09_work](./kp_s09_work.md) | 工程问题的效率模型 | 6 | active |
 | kp_s09_sum_diff_multiple | 和差倍问题 | 3～5 | 占位 |
-| kp_s09_planting_cycle | 植树与周期策略 | 4～6 | 占位 |
+| [kp_s09_planting_and_cycle](./kp_s09_planting_and_cycle.md) | 植树问题 | 5 | active |
+| [kp_s09_notify_fastest](./kp_s09_notify_fastest.md) | 怎样通知最快 | 5 | active |
+| [kp_s09_find_defective](./kp_s09_find_defective.md) | 找次品 | 5 | active |

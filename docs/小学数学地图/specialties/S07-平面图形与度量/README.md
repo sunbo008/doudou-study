@@ -25,6 +25,9 @@
 | [kp_s07_parallelogram_trapezoid](./kp_s07_parallelogram_trapezoid.md) | 平行四边形和梯形 | 4 | active |
 | [kp_s07_triangles](./kp_s07_triangles.md) | 三角形 | 4 | active |
 | [kp_s07_shape_motion_2](./kp_s07_shape_motion_2.md) | 图形的运动（二） | 4 | active |
+| [kp_s07_polygon_area](./kp_s07_polygon_area.md) | 多边形的面积 | 5 | active |
+| [kp_s07_explore_shapes](./kp_s07_explore_shapes.md) | 探索图形 | 5 | active |
+| [kp_s07_shape_motion_3](./kp_s07_shape_motion_3.md) | 图形的运动（三） | 5 | active |
 | [kp_s07_circle_parts](./kp_s07_circle_parts.md) | 圆的基本要素 | 6 | active |
 | [kp_s07_circle_circumference](./kp_s07_circle_circumference.md) | 圆的周长 | 6 | active |
 | [kp_s07_circle_area](./kp_s07_circle_area.md) | 圆的面积 | 6 | active |

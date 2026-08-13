@@ -19,4 +19,5 @@
 | [kp_s13_observation_view](./kp_s13_observation_view.md) | 观察物体（二） | 4 | active |
 | [kp_s13_direction_distance_angle](./kp_s13_direction_distance_angle.md) | 方向、距离与角度 | 6 | active |
 | [kp_s13_route_description](./kp_s13_route_description.md) | 路线描述 | 6 | active |
-| kp_s13_coordinate_pair | 数对 | 5～6 | 占位 |
+| [kp_s13_coordinate_pairs](./kp_s13_coordinate_pairs.md) | 用数对确定位置 | 5 | active |
+| [kp_s13_observation_view_3](./kp_s13_observation_view_3.md) | 观察物体（三） | 5 | active |
