@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generate W4 有理数数轴应用 PDFs from markdown."""
 from pathlib import Path
+import math
 import re
 from xml.sax.saxutils import escape
 
@@ -23,6 +24,267 @@ try:
     BOLD = 'HeitiBold'
 except Exception:
     BOLD = 'Heiti'
+pdfmetrics.registerFont(TTFont('Mono', '/System/Library/Fonts/Menlo.ttc', subfontIndex=0))
+
+# Wide glyphs break column alignment in number-line ASCII art → normalize to 1-cell ASCII.
+_ASCII_ART_MAP = str.maketrans({
+    '─': '-', '━': '-', '—': '-', '–': '-',
+    '│': '|', '┃': '|',
+    '●': '*', '○': 'o', '◆': '*',
+    '←': '<', '→': '>', '↔': '-',
+})
+
+
+class MonoArt(Flowable):
+    """Monospace ASCII block so number-line columns stay aligned."""
+
+    def __init__(self, lines, font_size=8.5, left_indent=6):
+        super().__init__()
+        self.lines = [(ln if ln.strip() else ' ') for ln in lines]
+        self.font_size = font_size
+        self.left_indent = left_indent
+        self.leading = font_size + 2.5
+        cw = stringWidth('M', 'Mono', font_size)
+        max_cols = max((len(ln) for ln in self.lines), default=1)
+        self.width = left_indent + cw * max_cols
+        self.height = self.leading * len(self.lines) + 4
+
+    def wrap(self, aw, ah):
+        return min(self.width, aw), self.height
+
+    def draw(self):
+        c = self.canv
+        c.setFont('Mono', self.font_size)
+        c.setFillColor(colors.HexColor('#222222'))
+        y = self.height - self.leading
+        for ln in self.lines:
+            c.drawString(self.left_indent, y, ln)
+            y -= self.leading
+
+
+def normalize_ascii_art(line: str) -> str:
+    s = line.translate(_ASCII_ART_MAP)
+    s = s.replace('⇒', '>').replace('⇐', '<')
+    return s
+
+
+def _parse_num(s: str) -> float:
+    s = s.strip().replace('−', '-').replace('—', '-')
+    return float(s)
+
+
+def _fmt_num(v: float) -> str:
+    if abs(v - round(v)) < 1e-9:
+        return str(int(round(v)))
+    return f'{v:g}'
+
+
+class NumberLine(Flowable):
+    """Vector number line with fixed unit scale (same 1-unit length across figures)."""
+
+    # points per number-line unit — keep identical across all diagrams
+    UNIT = 11.5
+
+    def __init__(self, points, spans=None, dirs=None, cuts=None, bands=None, pad=1.0):
+        super().__init__()
+        self.points = list(points)
+        self.spans = list(spans or [])   # (v0, v1, mid, bottom)
+        self.dirs = list(dirs or [])     # (v_from, v_to, mid, side)
+        self.cuts = list(cuts or [])
+        self.bands = list(bands or [])
+        self.pad = pad
+        vals = [v for _, v in self.points] + list(self.cuts)
+        for a, b, *_ in self.spans:
+            vals.extend([a, b])
+        for a, b, *_ in self.dirs:
+            vals.extend([a, b])
+        if not vals:
+            vals = [0, 1]
+        self.vmin = min(vals) - self.pad
+        self.vmax = max(vals) + self.pad
+        self.margin_x = 10
+        self.unit = float(self.UNIT)
+        span_w = (self.vmax - self.vmin) * self.unit
+        self.width = self.margin_x * 2 + span_w + 8  # +8 for axis arrowhead
+        self.top_h = 16
+        if self.spans:
+            self.ann_h = 26 + 22 * len(self.spans)
+        elif self.dirs:
+            self.ann_h = 26 + 24 * len(self.dirs)
+        elif self.bands:
+            self.ann_h = 8
+        else:
+            self.ann_h = 4
+        self.axis_y_from_bottom = 8 + self.ann_h
+        self.height = self.axis_y_from_bottom + self.top_h + 4
+
+    def wrap(self, aw, ah):
+        # keep fixed scale; only shrink if figure would overflow page width
+        if self.width > aw:
+            self.unit = (aw - self.margin_x * 2 - 8) / max(self.vmax - self.vmin, 1e-6)
+            self.width = aw
+        return self.width, self.height
+
+    def _x(self, v: float) -> float:
+        return self.margin_x + (v - self.vmin) * self.unit
+
+    def _arrowhead(self, c, x, y, direction=1, size=5):
+        # direction: +1 right, -1 left
+        c.setFillColor(colors.black)
+        if direction >= 0:
+            path = c.beginPath()
+            path.moveTo(x, y)
+            path.lineTo(x - size, y + size * 0.45)
+            path.lineTo(x - size, y - size * 0.45)
+            path.close()
+            c.drawPath(path, fill=1, stroke=0)
+        else:
+            path = c.beginPath()
+            path.moveTo(x, y)
+            path.lineTo(x + size, y + size * 0.45)
+            path.lineTo(x + size, y - size * 0.45)
+            path.close()
+            c.drawPath(path, fill=1, stroke=0)
+
+    def _draw_bracket(self, c, x0, x1, y, mid_text, bot_text, directed=None):
+        """directed: None=both ends (distance), +1=rightward, -1=leftward."""
+        lo, hi = (x0, x1) if x0 <= x1 else (x1, x0)
+        c.setStrokeColor(colors.HexColor('#333333'))
+        c.setLineWidth(1.0)
+        c.line(lo, y, hi, y)
+        if directed is None:
+            c.line(lo, y - 3.5, lo, y + 3.5)
+            c.line(hi, y - 3.5, hi, y + 3.5)
+            self._arrowhead(c, lo, y, -1, 4)
+            self._arrowhead(c, hi, y, +1, 4)
+        elif directed > 0:
+            # start bar → arrowhead (signed, rightward)
+            c.line(lo, y - 3.5, lo, y + 3.5)
+            self._arrowhead(c, hi, y, +1, 5.5)
+        else:
+            c.line(hi, y - 3.5, hi, y + 3.5)
+            self._arrowhead(c, lo, y, -1, 5.5)
+        mx = (lo + hi) / 2
+        c.setFillColor(colors.black)
+        c.setFont('Heiti', 8)
+        if mid_text:
+            tw = stringWidth(mid_text, 'Heiti', 8)
+            c.setFillColor(colors.white)
+            c.rect(mx - tw / 2 - 2, y - 1, tw + 4, 9, fill=1, stroke=0)
+            c.setFillColor(colors.black)
+            c.drawCentredString(mx, y + 1, mid_text)
+        if bot_text:
+            c.setFont('Heiti', 8)
+            c.drawCentredString(mx, y - 12, bot_text)
+
+    def draw(self):
+        c = self.canv
+        y = self.axis_y_from_bottom
+        x_left = self._x(self.vmin)
+        x_right = self._x(self.vmax)
+
+        # axis
+        c.setStrokeColor(colors.black)
+        c.setLineWidth(1.2)
+        c.line(x_left, y, x_right - 2, y)
+        self._arrowhead(c, x_right, y, +1, 6)
+
+        # integer unit ticks (makes equal spacing visually checkable)
+        tick0 = math.ceil(self.vmin + 1e-9)
+        tick1 = math.floor(self.vmax - 1e-9)
+        c.setStrokeColor(colors.HexColor('#666666'))
+        c.setLineWidth(0.7)
+        for tv in range(tick0, tick1 + 1):
+            tx = self._x(tv)
+            c.line(tx, y - 3.5, tx, y + 3.5)
+
+        # cuts (partition ticks taller)
+        for cv in self.cuts:
+            cx = self._x(cv)
+            c.setStrokeColor(colors.HexColor('#555555'))
+            c.setLineWidth(1.0)
+            c.line(cx, y - 8, cx, y + 10)
+
+        # band labels above
+        if self.bands and self.cuts:
+            ordered = sorted(self.cuts)
+            edges = [self.vmin] + ordered + [self.vmax]
+            for i, lab in enumerate(self.bands):
+                if i + 1 >= len(edges):
+                    break
+                mx = (self._x(edges[i]) + self._x(edges[i + 1])) / 2
+                c.setFont(BOLD, 8)
+                c.setFillColor(colors.HexColor('#333333'))
+                c.drawCentredString(mx, y + 14, lab)
+
+        # points
+        for label, val in self.points:
+            x = self._x(val)
+            c.setFillColor(colors.black)
+            c.circle(x, y, 3.2, fill=1, stroke=0)
+            c.setFont(BOLD, 9)
+            c.drawCentredString(x, y + 8, label)
+            c.setFont('Heiti', 8)
+            c.drawCentredString(x, y - 12, _fmt_num(val))
+
+        # undirected spans (distance)
+        for i, (v0, v1, mid, bot) in enumerate(self.spans):
+            yy = y - 28 - i * 22
+            self._draw_bracket(c, self._x(v0), self._x(v1), yy, mid, bot, directed=None)
+
+        # directed segments (signed): mid = magnitude, bottom = equation
+        for i, (vf, vt, mid, side) in enumerate(self.dirs):
+            yy = y - 28 - i * 24
+            d = 1 if vt >= vf else -1
+            self._draw_bracket(c, self._x(vf), self._x(vt), yy, mid, side, directed=d)
+
+
+def parse_numberline(lines):
+    """Parse ```numberline DSL into a NumberLine flowable."""
+    points = []
+    spans = []
+    dirs = []
+    cuts = []
+    bands = []
+    name_to_val = {}
+    for raw in lines:
+        line = raw.strip()
+        if not line or line.startswith('#'):
+            continue
+        if line.startswith('points '):
+            for tok in line[7:].split():
+                if '=' not in tok:
+                    continue
+                name, vs = tok.split('=', 1)
+                v = _parse_num(vs)
+                points.append((name, v))
+                name_to_val[name] = v
+        elif line.startswith('span '):
+            # span A P 2 PA   OR  span 0 2 2 PA
+            parts = line.split()
+            a, b, mid = parts[1], parts[2], parts[3]
+            bot = parts[4] if len(parts) > 4 else ''
+            v0 = name_to_val.get(a, _parse_num(a) if re.match(r'^-?\d', a.replace('−', '-')) else None)
+            v1 = name_to_val.get(b, _parse_num(b) if re.match(r'^-?\d', b.replace('−', '-')) else None)
+            if v0 is None:
+                v0 = _parse_num(a)
+            if v1 is None:
+                v1 = _parse_num(b)
+            spans.append((v0, v1, mid, bot))
+        elif line.startswith('dir '):
+            # dir A M +3 A->M=+3
+            parts = line.split(None, 4)
+            a, b, mid = parts[1], parts[2], parts[3]
+            side = parts[4] if len(parts) > 4 else ''
+            v0 = name_to_val[a]
+            v1 = name_to_val[b]
+            dirs.append((v0, v1, mid, side))
+        elif line.startswith('cut '):
+            for tok in line[4:].split():
+                cuts.append(name_to_val.get(tok, _parse_num(tok)))
+        elif line.startswith('bands '):
+            bands = line[6:].split()
+    return NumberLine(points, spans=spans, dirs=dirs, cuts=cuts, bands=bands)
 
 ROOT = Path(__file__).resolve().parents[1] / 'practice' / 'W4-有理数数轴应用'
 FILES = [
@@ -30,6 +292,13 @@ FILES = [
     'Day01.md',
     'Day02.md',
     'Day03.md',
+    '答案.md',
+]
+C_ROOT = ROOT / 'C专项-距离比'
+C_FILES = [
+    '00-几何与±法则.md',
+    'Day01.md',
+    'Day02.md',
     '答案.md',
 ]
 
@@ -207,6 +476,23 @@ def md_to_story(md: str, compact: bool = False):
             story.append(HRFlowable(width='100%', thickness=0.4, color=colors.HexColor('#bbbbbb'), spaceBefore=1, spaceAfter=2 if compact else 4))
             i += 1
             continue
+        if line.strip().startswith('```'):
+            fence = line.strip()[3:].strip().lower()
+            i += 1
+            block = []
+            while i < len(lines) and not lines[i].strip().startswith('```'):
+                block.append(lines[i].rstrip('\n'))
+                i += 1
+            if i < len(lines) and lines[i].strip().startswith('```'):
+                i += 1
+            if fence.startswith('numberline'):
+                story.append(parse_numberline(block))
+            else:
+                art = [normalize_ascii_art(x) for x in block]
+                fs = 7.5 if compact else 8.5
+                story.append(MonoArt(art, font_size=fs, left_indent=4 if compact else 8))
+            story.append(Spacer(1, body_gap))
+            continue
         if line.startswith('>'):
             qs = []
             while i < len(lines) and lines[i].startswith('>'):
@@ -279,6 +565,13 @@ def main():
             raise SystemExit(f'missing {md_path}')
         compact = name.startswith('Day')
         build_pdf(md_path, ROOT / f'{md_path.stem}.pdf', compact=compact)
+
+    for name in C_FILES:
+        md_path = C_ROOT / name
+        if not md_path.exists():
+            raise SystemExit(f'missing {md_path}')
+        compact = name.startswith('Day')
+        build_pdf(md_path, C_ROOT / f'{md_path.stem}.pdf', compact=compact)
 
 
 if __name__ == '__main__':
