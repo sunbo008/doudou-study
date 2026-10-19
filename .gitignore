@@ -44,3 +44,10 @@ venv/
 
 # Local research caches
 .tmp/
+
+# TikZ compile cache (gen_w4_pdfs.py)
+scripts/.tikz_cache/
+
+# Large scanned PDFs (local only; do not push)
+docs/资料/人教版_数学_七上_一本周末小测卷【测试卷】.pdf
+docs/资料/数学/人教版_数学_七上_一本周末小复习【专项练习-知识归纳】.pdf

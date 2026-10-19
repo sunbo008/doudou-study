@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Generate W4 有理数数轴应用 PDFs from markdown."""
 from pathlib import Path
+import hashlib
 import math
 import re
+import shutil
+import subprocess
+import tempfile
 from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
@@ -10,12 +14,13 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
-    HRFlowable, Flowable,
+    HRFlowable, Flowable, Image as RLImage,
 )
 
 pdfmetrics.registerFont(TTFont('Heiti', '/System/Library/Fonts/STHeiti Light.ttc', subfontIndex=0))
@@ -286,6 +291,157 @@ def parse_numberline(lines):
             bands = line[6:].split()
     return NumberLine(points, spans=spans, dirs=dirs, cuts=cuts, bands=bands)
 
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+TIKZ_CACHE = SCRIPT_DIR / '.tikz_cache'
+TIKZ_DPI = 200
+TIKZ_RE = re.compile(r'^```\s*tikz\b', re.MULTILINE | re.IGNORECASE)
+
+
+def _which(cmd: str) -> str | None:
+    return shutil.which(cmd)
+
+
+def require_tikz_tools():
+    """Ensure pdflatex + rasterizer exist when ```tikz fences are present."""
+    missing = []
+    if not _which('pdflatex'):
+        missing.append('pdflatex')
+    if not (_which('pdftoppm') or _which('convert')):
+        missing.append('pdftoppm or convert (ImageMagick)')
+    if missing:
+        raise SystemExit(
+            'TikZ PDF render needs: ' + ', '.join(missing)
+            + '\nInstall TeX Live and poppler/imagemagick, then retry.'
+        )
+
+
+def _wrap_tikz_document(source: str) -> str:
+    body = source.strip()
+    if r'\begin{tikzpicture}' not in body:
+        body = '\\begin{tikzpicture}\n' + body + '\n\\end{tikzpicture}'
+    return (
+        '\\documentclass[border=2pt]{standalone}\n'
+        '\\usepackage{tikz}\n'
+        '\\usepackage{amsmath,amssymb}\n'
+        '\\begin{document}\n'
+        f'{body}\n'
+        '\\end{document}\n'
+    )
+
+
+def _tikz_log_tail(log_path: Path, n: int = 40) -> str:
+    if not log_path.exists():
+        return '(no log file)'
+    lines = log_path.read_text(encoding='utf-8', errors='replace').splitlines()
+    return '\n'.join(lines[-n:])
+
+
+def render_tikz_to_png(source: str) -> Path:
+    """Compile TikZ source with pdflatex → PNG; cache by SHA256 of source."""
+    key = hashlib.sha256(source.encode('utf-8')).hexdigest()
+    TIKZ_CACHE.mkdir(parents=True, exist_ok=True)
+    out_png = TIKZ_CACHE / f'{key}.png'
+    if out_png.exists() and out_png.stat().st_size > 0:
+        return out_png
+
+    tex = _wrap_tikz_document(source)
+    with tempfile.TemporaryDirectory(prefix='tikz_') as tmp:
+        tmp_path = Path(tmp)
+        tex_path = tmp_path / 'fig.tex'
+        tex_path.write_text(tex, encoding='utf-8')
+        try:
+            subprocess.run(
+                [
+                    'pdflatex',
+                    '-interaction=nonstopmode',
+                    '-halt-on-error',
+                    'fig.tex',
+                ],
+                cwd=tmp_path,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except subprocess.CalledProcessError as e:
+            log_tail = _tikz_log_tail(tmp_path / 'fig.log')
+            raise RuntimeError(
+                'pdflatex failed for TikZ block.\n'
+                f'stderr:\n{e.stderr[-2000:] if e.stderr else ""}\n'
+                f'log tail:\n{log_tail}'
+            ) from e
+
+        pdf_path = tmp_path / 'fig.pdf'
+        if not pdf_path.exists():
+            raise RuntimeError(
+                'pdflatex produced no fig.pdf.\n'
+                f'log tail:\n{_tikz_log_tail(tmp_path / "fig.log")}'
+            )
+
+        raster_ok = False
+        if _which('pdftoppm'):
+            try:
+                subprocess.run(
+                    ['pdftoppm', '-png', '-r', str(TIKZ_DPI), 'fig', 'fig'],
+                    cwd=tmp_path,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                candidates = sorted(tmp_path.glob('fig*.png'))
+                if candidates:
+                    shutil.copy2(candidates[0], out_png)
+                    raster_ok = True
+            except subprocess.CalledProcessError:
+                raster_ok = False
+
+        if not raster_ok and _which('convert'):
+            try:
+                subprocess.run(
+                    [
+                        'convert',
+                        '-density', str(TIKZ_DPI),
+                        'fig.pdf',
+                        'fig.png',
+                    ],
+                    cwd=tmp_path,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                src = tmp_path / 'fig.png'
+                if src.exists():
+                    shutil.copy2(src, out_png)
+                    raster_ok = True
+            except subprocess.CalledProcessError as e:
+                raise RuntimeError(
+                    'Failed to rasterize TikZ PDF '
+                    f'(pdftoppm and convert).\n{e.stderr[-1000:] if e.stderr else ""}'
+                ) from e
+
+        if not raster_ok or not out_png.exists():
+            raise RuntimeError('TikZ rasterization produced no PNG.')
+
+    return out_png
+
+
+def parse_tikz(block, max_width=170 * mm) -> RLImage:
+    """Compile ```tikz fence to a scaled ReportLab Image."""
+    source = '\n'.join(block)
+    png_path = render_tikz_to_png(source)
+    iw, ih = ImageReader(str(png_path)).getSize()  # pixels
+    # pdftoppm/convert at TIKZ_DPI → convert pixels to PDF points
+    scale = 72.0 / float(TIKZ_DPI)
+    w = iw * scale
+    h = ih * scale
+    if w > max_width:
+        h = h * (max_width / w)
+        w = max_width
+    img = RLImage(str(png_path), width=w, height=h)
+    img.hAlign = 'LEFT'
+    return img
+
+
 ROOT = Path(__file__).resolve().parents[1] / 'practice' / 'W4-有理数数轴应用'
 FILES = [
     '技巧与避坑.md',
@@ -487,6 +643,8 @@ def md_to_story(md: str, compact: bool = False):
                 i += 1
             if fence.startswith('numberline'):
                 story.append(parse_numberline(block))
+            elif fence.startswith('tikz'):
+                story.append(parse_tikz(block, max_width=usable * 0.95))
             else:
                 art = [normalize_ascii_art(x) for x in block]
                 fs = 7.5 if compact else 8.5
@@ -558,18 +716,32 @@ def build_pdf(md_path: Path, pdf_path: Path, compact: bool = False):
     print(f'OK {pdf_path.name}')
 
 
-def main():
+def _md_paths():
     for name in FILES:
-        md_path = ROOT / name
+        yield ROOT / name
+    for name in C_FILES:
+        yield C_ROOT / name
+
+
+def main():
+    paths = list(_md_paths())
+    for md_path in paths:
         if not md_path.exists():
             raise SystemExit(f'missing {md_path}')
+
+    needs_tikz = any(
+        TIKZ_RE.search(p.read_text(encoding='utf-8')) for p in paths
+    )
+    if needs_tikz:
+        require_tikz_tools()
+
+    for name in FILES:
+        md_path = ROOT / name
         compact = name.startswith('Day')
         build_pdf(md_path, ROOT / f'{md_path.stem}.pdf', compact=compact)
 
     for name in C_FILES:
         md_path = C_ROOT / name
-        if not md_path.exists():
-            raise SystemExit(f'missing {md_path}')
         compact = name.startswith('Day')
         build_pdf(md_path, C_ROOT / f'{md_path.stem}.pdf', compact=compact)
 
