@@ -139,6 +139,40 @@ def check_word(root: Path, lemma: str, doc: dict) -> list[str]:
     if not str(review.get("reviewed_at") or "").strip():
         errors.append(f"word:{lemma}: content_review.reviewed_at required")
 
+    # part_explain: if present, enforce power=no gloss honesty
+    parts = doc.get("part_explain")
+    if parts is not None:
+        if not isinstance(parts, list):
+            errors.append(f"word:{lemma}: part_explain must be a list")
+        else:
+            for i, part in enumerate(parts):
+                if not isinstance(part, dict):
+                    errors.append(f"word:{lemma}: part_explain[{i}] must be object")
+                    continue
+                seg = str(part.get("segment") or "").strip()
+                power = str(part.get("power") or "").strip().lower()
+                gloss = str(part.get("gloss") or "")
+                if not seg:
+                    errors.append(f"word:{lemma}: part_explain[{i}].segment required")
+                if power not in {"yes", "no", "weak"}:
+                    errors.append(
+                        f"word:{lemma}: part_explain[{i}].power must be yes|no|weak"
+                    )
+                if power == "no" and "无独立词义" not in gloss:
+                    errors.append(
+                        f"word:{lemma}: part_explain[{i}] power=no gloss must contain「无独立词义」"
+                    )
+
+    # common orthographic triggers: prefer explicit part_explain
+    low = lemma.lower()
+    if any(x in low for x in ("ough", "igh", "kn", "wr")) and not parts:
+        claims = (doc.get("content_review") or {}).get("claims") or {}
+        if not claims.get("part_explain_skip"):
+            errors.append(
+                f"word:{lemma}: spelling trigger needs part_explain "
+                f"(or set content_review.claims.part_explain_skip)"
+            )
+
     return errors
 
 

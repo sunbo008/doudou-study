@@ -50,3 +50,6 @@
 {"op": "update_core", "core_id": "bo", "summary": "refresh core bo", "ts": "2026-10-19T14:12:06+08:00"}
 {"op": "rebuild_table", "links_updated": ["boat", "body", "book", "boot", "bottle", "bow", "bowl", "box"], "workers": 8, "summary": "rebuild-all 8 words", "ts": "2026-10-19T14:13:12+08:00"}
 {"op": "rebuild_table", "links_updated": ["boat", "body", "book", "boot", "bottle", "bow", "bowl", "box"], "workers": 8, "summary": "rebuild-all 8 words", "ts": "2026-10-19T14:13:42+08:00"}
+{"op": "create", "word": "bough", "cores_created": [], "links_updated": ["boat", "body", "book", "boot", "bottle", "bough", "bow", "bowl", "box"], "workers": 4, "summary": "upsert bough; rerender 9 pages", "ts": "2026-10-19T14:17:38+08:00"}
+{"op": "create", "word": "bough", "cores_created": [], "links_updated": ["boat", "body", "book", "boot", "bottle", "bough", "bow", "bowl", "box"], "workers": 4, "summary": "upsert bough; rerender 9 pages", "ts": "2026-10-19T14:21:20+08:00"}
+{"op": "create", "word": "bough", "cores_created": [], "links_updated": ["boat", "body", "book", "boot", "bottle", "bough", "bow", "bowl", "box"], "workers": 4, "summary": "upsert bough; rerender 9 pages", "ts": "2026-10-19T14:26:07+08:00"}

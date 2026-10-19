@@ -6,6 +6,7 @@
 2. 先立**核意象**（具象、可看见），再推基本义与延伸义。
 3. 教学逻辑服务记忆；≠ 历史词源。页面注明边界。
 4. 禁止用「固定搭配」结束思考——要能说清「为什么」。
+5. **可拆则拆、无义说无**：怪拼写/像词缀时，按 **`part-explain.md`** 判断各段独立解释力；禁止假词缀。
 
 ## 起草清单
 
@@ -20,11 +21,12 @@
 2. **内容教研**：按 **`content-review.md`**，保证词↔核↔义↔图一致（防张冠李戴）；`content_review.status=approved`。
 3. **实物图 + 图审**：按 `images.md` / **`image-review.md`**；`image.review.status=approved`。
 4. **基本义** `basic`：用核解释 W（必须说本词，不是兄弟词）。
-5. **chains**：延伸链；兄弟词用**单 token**。
-6. **map_words**：导图里每一个英文单词节点。
-7. **related**：同核兄弟精简列表（≤12）。
-8. **examples**：每条重要链至少 1 句英文。
-9. **notes**：可选；提醒教学逻辑。
+5. **part_explain**（触发则必填）：逐段 `segment` / `role` / `power` / `gloss`；`power=no` 必写「无独立词义」+ 宜有 `contrast`。详见 **`part-explain.md`**。
+6. **chains**：延伸链；兄弟词用**单 token**；拼写提醒链可挂 `contrast` 词。
+7. **map_words**：导图里每一个英文单词节点（含 part_explain.contrast）。
+8. **related**：同核兄弟精简列表（≤12）。
+9. **examples**：每条重要链至少 1 句英文。
+10. **notes**：可选；收束「哪段有义 / 哪段无义」。
 
 ## 示例核
 

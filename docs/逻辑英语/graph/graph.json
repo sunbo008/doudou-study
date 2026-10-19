@@ -6,49 +6,54 @@
       "name": "盒子",
       "label": "bo ---- box（盒子）",
       "path": "cores/bo.html",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
     }
   },
   "nodes": {
     "boat": {
       "path": "words/boat.html",
       "core_id": "bo",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
     },
     "body": {
       "path": "words/body.html",
       "core_id": "bo",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
     },
     "book": {
       "path": "words/book.html",
       "core_id": "bo",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
     },
     "boot": {
       "path": "words/boot.html",
       "core_id": "bo",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
     },
     "bottle": {
       "path": "words/bottle.html",
       "core_id": "bo",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
+    },
+    "bough": {
+      "path": "words/bough.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:26:07+08:00"
     },
     "bow": {
       "path": "words/bow.html",
       "core_id": "bo",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
     },
     "bowl": {
       "path": "words/bowl.html",
       "core_id": "bo",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
     },
     "box": {
       "path": "words/box.html",
       "core_id": "bo",
-      "updated_at": "2026-10-19T14:13:42+08:00"
+      "updated_at": "2026-10-19T14:26:07+08:00"
     }
   },
   "edges": [
@@ -240,6 +245,81 @@
     {
       "from": "bottle",
       "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "boat",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "body",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "book",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "boot",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "bottle",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "bow",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "bowl",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "branch",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "cough",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "enough",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "leaf",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "though",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "through",
+      "kind": "map"
+    },
+    {
+      "from": "bough",
+      "to": "tree",
       "kind": "map"
     },
     {

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-19T14:13:42+08:00",
+  "updated_at": "2026-10-19T14:26:07+08:00",
   "lemmas": {
     "boat": {
       "exists": true,
@@ -18,6 +18,7 @@
         "book",
         "boot",
         "bottle",
+        "bough",
         "bow",
         "bowl",
         "box"
@@ -39,6 +40,7 @@
         "body",
         "book",
         "bottle",
+        "bough",
         "bow",
         "box"
       ]
@@ -57,6 +59,7 @@
       "mentioned_by": [
         "boat",
         "book",
+        "bough",
         "bowl",
         "box"
       ]
@@ -82,6 +85,7 @@
         "book",
         "boot",
         "bottle",
+        "bough",
         "bow",
         "bowl"
       ]
@@ -117,6 +121,7 @@
         "body",
         "boot",
         "bottle",
+        "bough",
         "bow",
         "bowl",
         "box"
@@ -136,7 +141,8 @@
       ],
       "mentioned_by": [
         "book",
-        "boot"
+        "boot",
+        "bough"
       ]
     },
     "boot": {
@@ -155,6 +161,7 @@
         "body",
         "book",
         "bottle",
+        "bough",
         "box"
       ]
     },
@@ -213,6 +220,7 @@
       "mentioned_by": [
         "book",
         "boot",
+        "bough",
         "box"
       ]
     },
@@ -314,6 +322,100 @@
       "mentions": [],
       "mentioned_by": [
         "box"
+      ]
+    },
+    "bough": {
+      "exists": true,
+      "path": "words/bough.html",
+      "json": "words/bough.json",
+      "core_id": "bo",
+      "mentions": [
+        "boat",
+        "body",
+        "book",
+        "boot",
+        "bottle",
+        "bow",
+        "bowl",
+        "box",
+        "branch",
+        "cough",
+        "enough",
+        "leaf",
+        "though",
+        "through",
+        "tree"
+      ],
+      "mentioned_by": []
+    },
+    "tree": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "bough"
+      ]
+    },
+    "branch": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "bough"
+      ]
+    },
+    "leaf": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "bough"
+      ]
+    },
+    "cough": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "bough"
+      ]
+    },
+    "though": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "bough"
+      ]
+    },
+    "through": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "bough"
+      ]
+    },
+    "enough": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "bough"
       ]
     }
   }

@@ -1,7 +1,7 @@
 # 内容教研机制（防张冠李戴）
 
-覆盖：**词核归属、基本义、延伸链、主图主义、展示文案**。  
-图片专项见 `image-review.md`。二者都要通过才能交付。
+覆盖：**词核归属、基本义、延伸链、主图主义、展示文案、词各部分解释力**。  
+图片专项见 `image-review.md`；部分解释见 **`part-explain.md`**。内容+图片都要通过才能交付。
 
 反例（张冠李戴）：
 
@@ -11,6 +11,7 @@
 | bow 主图是船 | bow 主图是**弓**（船头义写在链里） |
 | boat 基本义写成「弓」 | boat = 水上的盒子/船 |
 | book 挂到无关核 | book 挂 `bo` |
+| bough 的 ugh 编成语义后缀 | `ugh` → 无独立词义（拼写残留） |
 
 ---
 
@@ -35,7 +36,8 @@ Maker 不得直接自批 `approved`（至少二次清单 + notes；推荐对立�
     "lemma_fits_key": "book starts with bo",
     "basic_one_liner": "装页的扁平盒",
     "image_primary_sense": "closed book",
-    "not_confused_with": ["box", "boat"]
+    "not_confused_with": ["box", "boat"],
+    "part_explain_summary": "可选；有拆分时必填，如「ugh 无独立词义；bo 为核键」"
   }
 }
 ```
@@ -52,6 +54,7 @@ Maker 不得直接自批 `approved`（至少二次清单 + notes；推荐对立�
 | K4 | 主图匹配主义 | `image.primary_sense` 与 `basic`/lemma 一致；不得用兄弟实物图 |
 | K5 | 链不串台 | chains/map 里的兄弟词同核合理；多义次要义不抢主图 |
 | K6 | 小学生可辨 | 不看英文也能看出主物/主义不颠倒 |
+| P1–P4 | 部分解释 | 触发拆分时按 **`part-explain.md`**；无义段不得假词缀 |
 
 写入：
 

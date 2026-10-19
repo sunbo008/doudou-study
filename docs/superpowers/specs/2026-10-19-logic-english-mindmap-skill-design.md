@@ -131,6 +131,14 @@ docs/逻辑英语/graph/
   "backlinks": [],
   "examples": ["Please book a room."],
   "notes": "教学逻辑 ≠ 词源",
+  "part_explain": [
+    {
+      "segment": "bo",
+      "role": "core_key",
+      "power": "yes",
+      "gloss": "音形键，挂盒子核"
+    }
+  ],
   "updated_at": "2026-10-19T10:00:00+08:00"
 }
 ```
@@ -138,6 +146,7 @@ docs/逻辑英语/graph/
 规则：
 
 - `core.id` / `core.name` / `core.def`：写词时必填；upsert 时若 `cores/<id>` 不存在则创建。
+- **`part_explain`**（触发则必填）：词各部分独立解释力；`power=no` 的 gloss 须含「无独立词义」。见 skill `references/part-explain.md`。
 - `related`：同核兄弟等（建议子集）。
 - **`map_words`**：导图中所有需要参与链接/回溯的英文 lemma 显式列表（Agent 维护，**应覆盖导图里每一个单词节点**）。
 - **可链接集合 `linkables(W)`**（脚本计算，用于渲染与回溯）=

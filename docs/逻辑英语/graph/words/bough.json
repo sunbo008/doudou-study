@@ -1,0 +1,207 @@
+{
+  "lemma": "bough",
+  "core": {
+    "id": "bo",
+    "key": "bo",
+    "prototype": "box",
+    "name": "盒子",
+    "def": "有边界、能装东西的空间",
+    "image": {
+      "path": "assets/cores/bo.jpg",
+      "alt": "一只开口的纸箱，能看见内部空间",
+      "caption": "bo ---- box（盒子）· 核意象锚点",
+      "source": "generated",
+      "prompt": "open empty cardboard box, plain background, photorealistic",
+      "primary_sense": "open cardboard box（开口盒子·词核）",
+      "must_show": [
+        "开口纸箱",
+        "可见内部空间"
+      ],
+      "must_not_show": [
+        "书",
+        "船",
+        "碗作为主物"
+      ],
+      "confusable_with": [
+        "book",
+        "boat",
+        "bowl"
+      ],
+      "review": {
+        "status": "approved",
+        "checklist": {
+          "primary_object_match": true,
+          "must_show_ok": true,
+          "must_not_show_ok": true,
+          "presentation_ok": true,
+          "child_recognizable": true
+        },
+        "reviewer": "human+agent-backfill",
+        "notes": "词核盒子：开口箱，能看见可装的空间",
+        "reviewed_at": "2026-10-19T10:41:11+08:00"
+      }
+    }
+  },
+  "basic": "树干伸出的粗大枝桠（大树枝）；读音同 bow，主图是枝不是弓",
+  "chains": [
+    {
+      "id": "basic-scene",
+      "title": "基本义场景",
+      "items": [
+        "tree",
+        "branch",
+        "leaf"
+      ]
+    },
+    {
+      "id": "sound-twin",
+      "title": "同音易混（勿串台）",
+      "items": [
+        "bow"
+      ]
+    },
+    {
+      "id": "ough-spell",
+      "title": "拼写提醒：-ough 无独立词义",
+      "items": [
+        "though",
+        "through",
+        "cough",
+        "enough"
+      ]
+    },
+    {
+      "id": "R",
+      "title": "同核兄弟",
+      "items": [
+        "book",
+        "boat",
+        "box",
+        "bowl",
+        "body",
+        "boot",
+        "bottle"
+      ]
+    }
+  ],
+  "related": [
+    "bow",
+    "book",
+    "boat",
+    "box",
+    "bowl",
+    "body",
+    "boot",
+    "bottle"
+  ],
+  "map_words": [
+    "tree",
+    "branch",
+    "leaf",
+    "bow",
+    "though",
+    "through",
+    "cough",
+    "enough",
+    "book",
+    "boat",
+    "box",
+    "bowl",
+    "body",
+    "boot",
+    "bottle"
+  ],
+  "examples": [
+    "A bird sat on the bough.",
+    "Snow weighed down the bough.",
+    "Do not confuse bough with bow.",
+    "The -ough in bough is spelling, not a meaning piece."
+  ],
+  "notes": "教学逻辑：音形键 bo；与 bow 同音异义——bough=大树枝，bow=弓。-ough/ugh 是历史拼写残留（古喉音消失），无独立词义；同形块读音不一（though/through/cough/enough）。教学≠严格词源。",
+  "part_explain": [
+    {
+      "segment": "bo",
+      "role": "core_key",
+      "power": "yes",
+      "gloss": "音形键，挂 bo ---- box（盒子）"
+    },
+    {
+      "segment": "ugh",
+      "role": "orthographic",
+      "power": "no",
+      "gloss": "无独立词义；属 -ough 历史拼写残留，现代读 /baʊ/ 时 gh 不发音",
+      "contrast": [
+        "though",
+        "through",
+        "cough",
+        "enough"
+      ]
+    }
+  ],
+  "image": {
+    "path": "assets/words/bough.jpg",
+    "alt": "一根带树皮与苔藓的粗大树枝",
+    "caption": "bough · 大树枝（不是弓）",
+    "source": "generated",
+    "prompt": "A single large thick tree bough branch with bark texture extending naturally, photorealistic isolation on plain light soft background, only wooden branch as subject, NOT archery bow, NOT bowstring, NOT boat, NOT ribbon bow, NOT person bowing, no text no watermark",
+    "primary_sense": "large tree bough / branch（大树枝）",
+    "must_show": [
+      "粗大树枝",
+      "树皮纹理",
+      "从树干或树冠伸出的枝桠"
+    ],
+    "must_not_show": [
+      "弓",
+      "archery bow",
+      "弓弦",
+      "船",
+      "boat",
+      "蝴蝶结",
+      "鞠躬的人"
+    ],
+    "confusable_with": [
+      "bow",
+      "boat"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "checker-second-pass",
+      "notes": "目视确认是粗树枝（带树皮/苔藓），非弓非船",
+      "reviewed_at": "2026-10-19T14:17:20+08:00"
+    }
+  },
+  "content_review": {
+    "status": "approved",
+    "claims": {
+      "core_key": "bo",
+      "lemma_fits_key": "bough starts with bo /baʊ/",
+      "basic_one_liner": "树干伸出的粗大枝桠（大树枝）",
+      "image_primary_sense": "large tree bough / branch（大树枝）",
+      "not_confused_with": [
+        "bow",
+        "boat"
+      ],
+      "part_explain_summary": "bo 核键有义；ugh 无独立词义"
+    },
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "checker-second-pass",
+    "notes": "bough↔bo↔大树枝图；ugh power=no 已标明无独立词义",
+    "reviewed_at": "2026-10-19T14:25:00+08:00"
+  },
+  "updated_at": "2026-10-19T14:26:07+08:00",
+  "backlinks": []
+}

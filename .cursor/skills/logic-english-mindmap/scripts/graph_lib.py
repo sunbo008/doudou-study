@@ -587,6 +587,31 @@ def render_word_html(doc: dict[str, Any], table: dict[str, Any]) -> str:
             f'<div class="chips">{chips}</div></div>'
         )
     more_html = "".join(more_blocks)
+    part_rows: list[str] = []
+    for part in doc.get("part_explain") or []:
+        if not isinstance(part, dict):
+            continue
+        seg = html.escape(str(part.get("segment") or ""))
+        role = html.escape(str(part.get("role") or ""))
+        power = str(part.get("power") or "").strip().lower()
+        gloss = html.escape(str(part.get("gloss") or ""))
+        power_label = {"yes": "有独立解释力", "no": "无独立词义", "weak": "弱助记"}.get(power, power)
+        contrast = part.get("contrast") or []
+        contrast_html = ""
+        if contrast:
+            chips = "".join(
+                f'<span class="chip">{word_chip(str(c), table) if TOKEN_RE.match(str(c).lower()) else html.escape(str(c))}</span>'
+                for c in contrast
+            )
+            contrast_html = f'<div class="chips" style="margin-top:.35rem">{chips}</div>'
+        part_rows.append(
+            f'<div class="chain-block"><div class="chain-title">'
+            f'<code>{seg}</code> · {role} · {html.escape(power_label)}</div>'
+            f'<div>{gloss}</div>{contrast_html}</div>'
+        )
+    parts_html = (
+        f'<h2>词各部分解释</h2>{"".join(part_rows)}' if part_rows else ""
+    )
 
     # Mermaid 点击：已生成同核/回溯词 → 本站词页；中心词 → 有道；词核标签 → 核页
     click_map: dict[str, str] = {}
@@ -667,12 +692,13 @@ footer {{ padding:0 1.5rem 2rem; color:var(--muted); font-size:.9rem; }}
   <div class="panel">
     <h2>谁链到我 · backlinks</h2>
     <ul>{back_html}</ul>
+    {parts_html}
     <h2>验收造句</h2>
     <ul>{examples}</ul>
     <p class="notes">{notes}</p>
   </div>
 </section>
-<footer>updated_at: {updated} · 中心是单词，分支是核/义/链 · 教学逻辑 ≠ 词源</footer>
+<footer>updated_at: {updated} · 中心是单词，分支是核/义/链 · 教学逻辑 ≠ 词源 · 可拆则拆、无义说无</footer>
 {mermaid_boot_scripts(mindmap=True)}
 </body>
 </html>
