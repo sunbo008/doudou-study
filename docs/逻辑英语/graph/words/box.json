@@ -1,0 +1,158 @@
+{
+  "lemma": "box",
+  "core": {
+    "id": "bo",
+    "key": "bo",
+    "prototype": "box",
+    "name": "盒子",
+    "def": "有边界、能装东西的空间",
+    "image": {
+      "path": "assets/cores/bo.jpg",
+      "alt": "一只开口的纸箱，能看见内部空间",
+      "caption": "bo ---- box（盒子）· 核意象锚点",
+      "source": "generated",
+      "prompt": "open empty cardboard box, plain background, photorealistic",
+      "primary_sense": "open cardboard box（开口盒子·词核）",
+      "must_show": [
+        "开口纸箱",
+        "可见内部空间"
+      ],
+      "must_not_show": [
+        "书",
+        "船",
+        "碗作为主物"
+      ],
+      "confusable_with": [
+        "book",
+        "boat",
+        "bowl"
+      ],
+      "review": {
+        "status": "approved",
+        "checklist": {
+          "primary_object_match": true,
+          "must_show_ok": true,
+          "must_not_show_ok": true,
+          "presentation_ok": true,
+          "child_recognizable": true
+        },
+        "reviewer": "human+agent-backfill",
+        "notes": "词核盒子：开口箱，能看见可装的空间",
+        "reviewed_at": "2026-10-19T10:41:11+08:00"
+      }
+    }
+  },
+  "basic": "方盒子本身——核「盒子」的原型实物",
+  "chains": [
+    {
+      "id": "R",
+      "title": "同核兄弟",
+      "items": [
+        "book",
+        "boat",
+        "bow",
+        "bowl",
+        "bottle",
+        "boot"
+      ]
+    },
+    {
+      "id": "use",
+      "title": "延伸",
+      "items": [
+        "inbox",
+        "mailbox"
+      ]
+    }
+  ],
+  "related": [
+    "book",
+    "boat",
+    "bow",
+    "bowl"
+  ],
+  "map_words": [
+    "book",
+    "boat",
+    "bow",
+    "bowl",
+    "bottle",
+    "boot",
+    "inbox",
+    "mailbox"
+  ],
+  "examples": [
+    "Put the toys in the box.",
+    "Tick the box.",
+    "A box of pages is a book."
+  ],
+  "notes": "教学逻辑：box 即核的具象",
+  "image": {
+    "path": "assets/words/box.jpg",
+    "alt": "一只合上的纸箱",
+    "caption": "box · 方盒原型",
+    "source": "generated",
+    "primary_sense": "cardboard box（箱子）",
+    "must_show": [
+      "纸箱",
+      "盒形容器"
+    ],
+    "must_not_show": [
+      "碗",
+      "bowl",
+      "书页为主",
+      "book pages"
+    ],
+    "confusable_with": [
+      "bowl",
+      "book"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "human+agent-backfill",
+      "notes": "确认是箱盒",
+      "reviewed_at": "2026-10-19T10:41:11+08:00"
+    }
+  },
+  "backlinks": [
+    "boat",
+    "body",
+    "book",
+    "boot",
+    "bottle",
+    "bow",
+    "bowl"
+  ],
+  "updated_at": "2026-10-19T10:44:23+08:00",
+  "content_review": {
+    "status": "approved",
+    "claims": {
+      "core_key": "bo",
+      "lemma_fits_key": "box fits key",
+      "basic_one_liner": "方盒子本身——核「盒子」的原型实物",
+      "image_primary_sense": "cardboard box（箱子）",
+      "not_confused_with": [
+        "bowl",
+        "book"
+      ]
+    },
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "human+agent-backfill",
+    "notes": "box↔bo↔箱图；原型词与核锚点一致",
+    "reviewed_at": "2026-10-19T10:45:33+08:00"
+  }
+}

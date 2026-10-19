@@ -1,0 +1,152 @@
+{
+  "lemma": "bow",
+  "core": {
+    "id": "bo",
+    "key": "bo",
+    "prototype": "box",
+    "name": "盒子",
+    "def": "有边界、能装东西的空间",
+    "image": {
+      "path": "assets/cores/bo.jpg",
+      "alt": "一只开口的纸箱，能看见内部空间",
+      "caption": "bo ---- box（盒子）· 核意象锚点",
+      "source": "generated",
+      "prompt": "open empty cardboard box, plain background, photorealistic",
+      "primary_sense": "open cardboard box（开口盒子·词核）",
+      "must_show": [
+        "开口纸箱",
+        "可见内部空间"
+      ],
+      "must_not_show": [
+        "书",
+        "船",
+        "碗作为主物"
+      ],
+      "confusable_with": [
+        "book",
+        "boat",
+        "bowl"
+      ],
+      "review": {
+        "status": "approved",
+        "checklist": {
+          "primary_object_match": true,
+          "must_show_ok": true,
+          "must_not_show_ok": true,
+          "presentation_ok": true,
+          "child_recognizable": true
+        },
+        "reviewer": "human+agent-backfill",
+        "notes": "词核盒子：开口箱，能看见可装的空间",
+        "reviewed_at": "2026-10-19T10:41:11+08:00"
+      }
+    }
+  },
+  "basic": "弯曲有张力的弧（弓）；亦指鞠躬、蝴蝶结；与船头 bow 同形异义时靠语境区分",
+  "chains": [
+    {
+      "id": "R",
+      "title": "同核兄弟",
+      "items": [
+        "book",
+        "boat",
+        "box",
+        "bowl"
+      ]
+    },
+    {
+      "id": "senses",
+      "title": "多义延伸",
+      "items": [
+        "弓 / 射箭",
+        "鞠躬",
+        "蝴蝶结",
+        "船头（同形异义）"
+      ]
+    }
+  ],
+  "related": [
+    "book",
+    "boat",
+    "box",
+    "bowl"
+  ],
+  "map_words": [
+    "book",
+    "boat",
+    "box",
+    "bowl"
+  ],
+  "backlinks": [
+    "boat",
+    "book",
+    "bowl",
+    "box"
+  ],
+  "examples": [
+    "Stand at the bow of the boat.",
+    "Take a bow after the show.",
+    "A bow and arrow."
+  ],
+  "notes": "教学逻辑：与 boat/book 同核「盒子」族串联",
+  "updated_at": "2026-10-19T11:26:49+08:00",
+  "image": {
+    "path": "assets/words/bow.jpg",
+    "alt": "一张拉紧弦的木弓",
+    "caption": "bow · 弓（弯曲的弧，不是船）",
+    "source": "generated",
+    "prompt": "wooden archery bow with string, plain background, photorealistic, not a boat",
+    "primary_sense": "archery bow（弓）",
+    "must_show": [
+      "木弓",
+      "弓弦",
+      "弯曲弓身"
+    ],
+    "must_not_show": [
+      "船",
+      "船头",
+      "boat",
+      "ship",
+      "hull"
+    ],
+    "confusable_with": [
+      "boat"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "human+agent-backfill",
+      "notes": "确认是弓不是船（曾误用船图已改正）",
+      "reviewed_at": "2026-10-19T10:41:11+08:00"
+    }
+  },
+  "content_review": {
+    "status": "approved",
+    "claims": {
+      "core_key": "bo",
+      "lemma_fits_key": "bow fits key",
+      "basic_one_liner": "弯曲有张力的弧（弓）；亦指鞠躬、蝴蝶结；与船头 bow 同形异义时靠语境区分",
+      "image_primary_sense": "archery bow（弓）",
+      "not_confused_with": [
+        "boat"
+      ]
+    },
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "human+agent-backfill",
+    "notes": "bow↔bo↔弓图（非船）；船头义在链中",
+    "reviewed_at": "2026-10-19T10:45:33+08:00"
+  }
+}

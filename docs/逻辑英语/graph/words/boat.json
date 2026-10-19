@@ -1,0 +1,148 @@
+{
+  "lemma": "boat",
+  "core": {
+    "id": "bo",
+    "key": "bo",
+    "prototype": "box",
+    "name": "盒子",
+    "def": "有边界、能装东西的空间",
+    "image": {
+      "path": "assets/cores/bo.jpg",
+      "alt": "一只开口的纸箱，能看见内部空间",
+      "caption": "bo ---- box（盒子）· 核意象锚点",
+      "source": "generated",
+      "prompt": "open empty cardboard box, plain background, photorealistic",
+      "primary_sense": "open cardboard box（开口盒子·词核）",
+      "must_show": [
+        "开口纸箱",
+        "可见内部空间"
+      ],
+      "must_not_show": [
+        "书",
+        "船",
+        "碗作为主物"
+      ],
+      "confusable_with": [
+        "book",
+        "boat",
+        "bowl"
+      ],
+      "review": {
+        "status": "approved",
+        "checklist": {
+          "primary_object_match": true,
+          "must_show_ok": true,
+          "must_not_show_ok": true,
+          "presentation_ok": true,
+          "child_recognizable": true
+        },
+        "reviewer": "human+agent-backfill",
+        "notes": "词核盒子：开口箱，能看见可装的空间",
+        "reviewed_at": "2026-10-19T10:41:11+08:00"
+      }
+    }
+  },
+  "basic": "水上的盒子——中空船体装人装货",
+  "chains": [
+    {
+      "id": "R",
+      "title": "同核兄弟",
+      "items": [
+        "box",
+        "book",
+        "bow",
+        "bowl"
+      ]
+    },
+    {
+      "id": "part",
+      "title": "部位",
+      "items": [
+        "bow"
+      ]
+    }
+  ],
+  "related": [
+    "box",
+    "book",
+    "bow",
+    "bowl"
+  ],
+  "map_words": [
+    "box",
+    "book",
+    "bow",
+    "bowl"
+  ],
+  "examples": [
+    "The boat is a floating box.",
+    "Don't miss the boat.",
+    "Stand at the bow of the boat."
+  ],
+  "notes": "习语 miss the boat 仍挂在同核画面上",
+  "image": {
+    "path": "assets/words/boat.jpg",
+    "alt": "一艘小木船浮在水面",
+    "caption": "boat · 水上的盒子",
+    "source": "generated",
+    "primary_sense": "small wooden boat（小船）",
+    "must_show": [
+      "船体",
+      "浮在水面的船"
+    ],
+    "must_not_show": [
+      "弓",
+      "archery",
+      "bowstring"
+    ],
+    "confusable_with": [
+      "bow"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "human+agent-backfill",
+      "notes": "确认是船不是弓",
+      "reviewed_at": "2026-10-19T10:41:11+08:00"
+    }
+  },
+  "backlinks": [
+    "body",
+    "book",
+    "boot",
+    "bottle",
+    "bow",
+    "bowl",
+    "box"
+  ],
+  "updated_at": "2026-10-19T10:50:28+08:00",
+  "content_review": {
+    "status": "approved",
+    "claims": {
+      "core_key": "bo",
+      "lemma_fits_key": "boat fits key",
+      "basic_one_liner": "水上的盒子——中空船体装人装货",
+      "image_primary_sense": "small wooden boat（小船）",
+      "not_confused_with": [
+        "bow"
+      ]
+    },
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "human+agent-backfill",
+    "notes": "boat↔bo↔船图（非弓）",
+    "reviewed_at": "2026-10-19T10:45:33+08:00"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "lemma": "bowl",
+  "core": {
+    "id": "bo",
+    "key": "bo",
+    "prototype": "box",
+    "name": "盒子",
+    "def": "有边界、能装东西的空间",
+    "image": {
+      "path": "assets/cores/bo.jpg",
+      "alt": "一只开口的纸箱，能看见内部空间",
+      "caption": "bo ---- box（盒子）· 核意象锚点",
+      "source": "generated",
+      "prompt": "open empty cardboard box, plain background, photorealistic",
+      "primary_sense": "open cardboard box（开口盒子·词核）",
+      "must_show": [
+        "开口纸箱",
+        "可见内部空间"
+      ],
+      "must_not_show": [
+        "书",
+        "船",
+        "碗作为主物"
+      ],
+      "confusable_with": [
+        "book",
+        "boat",
+        "bowl"
+      ],
+      "review": {
+        "status": "approved",
+        "checklist": {
+          "primary_object_match": true,
+          "must_show_ok": true,
+          "must_not_show_ok": true,
+          "presentation_ok": true,
+          "child_recognizable": true
+        },
+        "reviewer": "human+agent-backfill",
+        "notes": "词核盒子：开口箱，能看见可装的空间",
+        "reviewed_at": "2026-10-19T10:41:11+08:00"
+      }
+    }
+  },
+  "basic": "开口朝上的圆盒子——盛物的容器",
+  "chains": [
+    {
+      "id": "R",
+      "title": "同核兄弟",
+      "items": [
+        "box",
+        "book",
+        "boat",
+        "bow"
+      ]
+    }
+  ],
+  "related": [
+    "box",
+    "book",
+    "boat",
+    "bow"
+  ],
+  "map_words": [
+    "box",
+    "book",
+    "boat",
+    "bow"
+  ],
+  "examples": [
+    "A bowl of soup.",
+    "The bowl is an open box."
+  ],
+  "notes": "圆口容器 vs box 方盒",
+  "image": {
+    "path": "assets/words/bowl.jpg",
+    "alt": "一只空陶瓷碗",
+    "caption": "bowl · 开口圆盒",
+    "source": "generated",
+    "primary_sense": "open ceramic bowl（碗）",
+    "must_show": [
+      "开口碗",
+      "圆容器"
+    ],
+    "must_not_show": [
+      "封闭纸箱",
+      "box with lid",
+      "carton",
+      "closed lid",
+      "box"
+    ],
+    "confusable_with": [
+      "box"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "human+agent-backfill",
+      "notes": "确认是碗不是盒",
+      "reviewed_at": "2026-10-19T10:41:11+08:00"
+    }
+  },
+  "backlinks": [
+    "boat",
+    "body",
+    "book",
+    "bottle",
+    "bow",
+    "box"
+  ],
+  "updated_at": "2026-10-19T10:44:23+08:00",
+  "content_review": {
+    "status": "approved",
+    "claims": {
+      "core_key": "bo",
+      "lemma_fits_key": "bowl fits key",
+      "basic_one_liner": "开口朝上的圆盒子——盛物的容器",
+      "image_primary_sense": "open ceramic bowl（碗）",
+      "not_confused_with": [
+        "box"
+      ]
+    },
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "human+agent-backfill",
+    "notes": "bowl↔bo↔碗图",
+    "reviewed_at": "2026-10-19T10:45:33+08:00"
+  }
+}

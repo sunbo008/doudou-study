@@ -1,0 +1,320 @@
+{
+  "version": 1,
+  "updated_at": "2026-10-19T14:13:42+08:00",
+  "lemmas": {
+    "boat": {
+      "exists": true,
+      "path": "words/boat.html",
+      "json": "words/boat.json",
+      "core_id": "bo",
+      "mentions": [
+        "book",
+        "bow",
+        "bowl",
+        "box"
+      ],
+      "mentioned_by": [
+        "body",
+        "book",
+        "boot",
+        "bottle",
+        "bow",
+        "bowl",
+        "box"
+      ]
+    },
+    "bowl": {
+      "exists": true,
+      "path": "words/bowl.html",
+      "json": "words/bowl.json",
+      "core_id": "bo",
+      "mentions": [
+        "boat",
+        "book",
+        "bow",
+        "box"
+      ],
+      "mentioned_by": [
+        "boat",
+        "body",
+        "book",
+        "bottle",
+        "bow",
+        "box"
+      ]
+    },
+    "bow": {
+      "exists": true,
+      "path": "words/bow.html",
+      "json": "words/bow.json",
+      "core_id": "bo",
+      "mentions": [
+        "boat",
+        "book",
+        "bowl",
+        "box"
+      ],
+      "mentioned_by": [
+        "boat",
+        "book",
+        "bowl",
+        "box"
+      ]
+    },
+    "box": {
+      "exists": true,
+      "path": "words/box.html",
+      "json": "words/box.json",
+      "core_id": "bo",
+      "mentions": [
+        "boat",
+        "book",
+        "boot",
+        "bottle",
+        "bow",
+        "bowl",
+        "inbox",
+        "mailbox"
+      ],
+      "mentioned_by": [
+        "boat",
+        "body",
+        "book",
+        "boot",
+        "bottle",
+        "bow",
+        "bowl"
+      ]
+    },
+    "book": {
+      "exists": true,
+      "path": "words/book.html",
+      "json": "words/book.json",
+      "core_id": "bo",
+      "mentions": [
+        "boat",
+        "body",
+        "booking",
+        "bookkeeper",
+        "booklet",
+        "bookmark",
+        "bookshelf",
+        "bookstore",
+        "boot",
+        "border",
+        "bottle",
+        "bound",
+        "boundary",
+        "bow",
+        "bowl",
+        "box",
+        "ebook",
+        "notebook",
+        "textbook"
+      ],
+      "mentioned_by": [
+        "boat",
+        "body",
+        "boot",
+        "bottle",
+        "bow",
+        "bowl",
+        "box"
+      ]
+    },
+    "body": {
+      "exists": true,
+      "path": "words/body.html",
+      "json": "words/body.json",
+      "core_id": "bo",
+      "mentions": [
+        "boat",
+        "book",
+        "boot",
+        "bowl",
+        "box"
+      ],
+      "mentioned_by": [
+        "book",
+        "boot"
+      ]
+    },
+    "boot": {
+      "exists": true,
+      "path": "words/boot.html",
+      "json": "words/boot.json",
+      "core_id": "bo",
+      "mentions": [
+        "boat",
+        "body",
+        "book",
+        "bottle",
+        "box"
+      ],
+      "mentioned_by": [
+        "body",
+        "book",
+        "bottle",
+        "box"
+      ]
+    },
+    "bookshelf": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "border": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "textbook": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "bookstore": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "bottle": {
+      "exists": true,
+      "path": "words/bottle.html",
+      "json": "words/bottle.json",
+      "core_id": "bo",
+      "mentions": [
+        "boat",
+        "book",
+        "boot",
+        "bowl",
+        "box"
+      ],
+      "mentioned_by": [
+        "book",
+        "boot",
+        "box"
+      ]
+    },
+    "bookkeeper": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "bound": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "notebook": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "booklet": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "bookmark": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "boundary": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "booking": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "ebook": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "book"
+      ]
+    },
+    "mailbox": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "box"
+      ]
+    },
+    "inbox": {
+      "exists": false,
+      "path": null,
+      "json": null,
+      "core_id": null,
+      "mentions": [],
+      "mentioned_by": [
+        "box"
+      ]
+    }
+  }
+}

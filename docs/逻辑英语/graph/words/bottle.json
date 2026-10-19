@@ -1,0 +1,139 @@
+{
+  "lemma": "bottle",
+  "core": {
+    "id": "bo",
+    "key": "bo",
+    "prototype": "box",
+    "name": "盒子",
+    "def": "有边界、能装东西的空间",
+    "image": {
+      "path": "assets/cores/bo.jpg",
+      "alt": "一只开口的纸箱，能看见内部空间",
+      "caption": "bo ---- box（盒子）· 核意象锚点",
+      "source": "generated",
+      "prompt": "open empty cardboard box, plain background, photorealistic",
+      "primary_sense": "open cardboard box（开口盒子·词核）",
+      "must_show": [
+        "开口纸箱",
+        "可见内部空间"
+      ],
+      "must_not_show": [
+        "书",
+        "船",
+        "碗作为主物"
+      ],
+      "confusable_with": [
+        "book",
+        "boat",
+        "bowl"
+      ],
+      "review": {
+        "status": "approved",
+        "checklist": {
+          "primary_object_match": true,
+          "must_show_ok": true,
+          "must_not_show_ok": true,
+          "presentation_ok": true,
+          "child_recognizable": true
+        },
+        "reviewer": "human+agent-backfill",
+        "notes": "词核盒子：开口箱，能看见可装的空间",
+        "reviewed_at": "2026-10-19T10:41:11+08:00"
+      }
+    }
+  },
+  "basic": "装液体的窄口盒子——瓶子",
+  "chains": [
+    {
+      "id": "R",
+      "title": "同核兄弟",
+      "items": [
+        "box",
+        "boot",
+        "boat",
+        "bowl",
+        "book"
+      ]
+    }
+  ],
+  "related": [
+    "box",
+    "boot",
+    "boat",
+    "bowl"
+  ],
+  "map_words": [
+    "box",
+    "boot",
+    "boat",
+    "bowl",
+    "book"
+  ],
+  "backlinks": [
+    "book",
+    "boot",
+    "box"
+  ],
+  "examples": [
+    "A bottle of water.",
+    "The bottle is a liquid box."
+  ],
+  "notes": "bottle≠boot：瓶 vs 靴",
+  "image": {
+    "path": "assets/words/bottle.jpg",
+    "alt": "一只透明玻璃瓶",
+    "caption": "bottle · 液体的盒子",
+    "source": "generated",
+    "primary_sense": "glass bottle（瓶子）",
+    "must_show": [
+      "玻璃瓶",
+      "瓶口",
+      "瓶身"
+    ],
+    "must_not_show": [
+      "boot",
+      "靴子",
+      "鞋"
+    ],
+    "confusable_with": [
+      "boot"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "checker",
+      "notes": "目视确认是瓶不是靴",
+      "reviewed_at": "2026-10-19T10:59:35+08:00"
+    }
+  },
+  "content_review": {
+    "status": "approved",
+    "claims": {
+      "core_key": "bo",
+      "lemma_fits_key": "bottle starts with bo",
+      "basic_one_liner": "装液体的窄口盒子——瓶子",
+      "image_primary_sense": "glass bottle（瓶子）",
+      "not_confused_with": [
+        "boot"
+      ]
+    },
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "checker",
+    "notes": "bottle↔bo↔图一致",
+    "reviewed_at": "2026-10-19T10:59:35+08:00"
+  },
+  "updated_at": "2026-10-19T10:59:35+08:00"
+}

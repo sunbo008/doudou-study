@@ -1,0 +1,326 @@
+{
+  "cores": {
+    "bo": {
+      "key": "bo",
+      "prototype": "box",
+      "name": "盒子",
+      "label": "bo ---- box（盒子）",
+      "path": "cores/bo.html",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    }
+  },
+  "nodes": {
+    "boat": {
+      "path": "words/boat.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    },
+    "body": {
+      "path": "words/body.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    },
+    "book": {
+      "path": "words/book.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    },
+    "boot": {
+      "path": "words/boot.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    },
+    "bottle": {
+      "path": "words/bottle.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    },
+    "bow": {
+      "path": "words/bow.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    },
+    "bowl": {
+      "path": "words/bowl.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    },
+    "box": {
+      "path": "words/box.html",
+      "core_id": "bo",
+      "updated_at": "2026-10-19T14:13:42+08:00"
+    }
+  },
+  "edges": [
+    {
+      "from": "boat",
+      "to": "book",
+      "kind": "map"
+    },
+    {
+      "from": "boat",
+      "to": "bow",
+      "kind": "map"
+    },
+    {
+      "from": "boat",
+      "to": "bowl",
+      "kind": "map"
+    },
+    {
+      "from": "boat",
+      "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "body",
+      "to": "boat",
+      "kind": "map"
+    },
+    {
+      "from": "body",
+      "to": "book",
+      "kind": "map"
+    },
+    {
+      "from": "body",
+      "to": "boot",
+      "kind": "map"
+    },
+    {
+      "from": "body",
+      "to": "bowl",
+      "kind": "map"
+    },
+    {
+      "from": "body",
+      "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "boat",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "body",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "booking",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "bookkeeper",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "booklet",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "bookmark",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "bookshelf",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "bookstore",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "boot",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "border",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "bottle",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "bound",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "boundary",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "bow",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "bowl",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "ebook",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "notebook",
+      "kind": "map"
+    },
+    {
+      "from": "book",
+      "to": "textbook",
+      "kind": "map"
+    },
+    {
+      "from": "boot",
+      "to": "boat",
+      "kind": "map"
+    },
+    {
+      "from": "boot",
+      "to": "body",
+      "kind": "map"
+    },
+    {
+      "from": "boot",
+      "to": "book",
+      "kind": "map"
+    },
+    {
+      "from": "boot",
+      "to": "bottle",
+      "kind": "map"
+    },
+    {
+      "from": "boot",
+      "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "bottle",
+      "to": "boat",
+      "kind": "map"
+    },
+    {
+      "from": "bottle",
+      "to": "book",
+      "kind": "map"
+    },
+    {
+      "from": "bottle",
+      "to": "boot",
+      "kind": "map"
+    },
+    {
+      "from": "bottle",
+      "to": "bowl",
+      "kind": "map"
+    },
+    {
+      "from": "bottle",
+      "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "bow",
+      "to": "boat",
+      "kind": "map"
+    },
+    {
+      "from": "bow",
+      "to": "book",
+      "kind": "map"
+    },
+    {
+      "from": "bow",
+      "to": "bowl",
+      "kind": "map"
+    },
+    {
+      "from": "bow",
+      "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "bowl",
+      "to": "boat",
+      "kind": "map"
+    },
+    {
+      "from": "bowl",
+      "to": "book",
+      "kind": "map"
+    },
+    {
+      "from": "bowl",
+      "to": "bow",
+      "kind": "map"
+    },
+    {
+      "from": "bowl",
+      "to": "box",
+      "kind": "map"
+    },
+    {
+      "from": "box",
+      "to": "boat",
+      "kind": "map"
+    },
+    {
+      "from": "box",
+      "to": "book",
+      "kind": "map"
+    },
+    {
+      "from": "box",
+      "to": "boot",
+      "kind": "map"
+    },
+    {
+      "from": "box",
+      "to": "bottle",
+      "kind": "map"
+    },
+    {
+      "from": "box",
+      "to": "bow",
+      "kind": "map"
+    },
+    {
+      "from": "box",
+      "to": "bowl",
+      "kind": "map"
+    },
+    {
+      "from": "box",
+      "to": "inbox",
+      "kind": "map"
+    },
+    {
+      "from": "box",
+      "to": "mailbox",
+      "kind": "map"
+    }
+  ]
+}

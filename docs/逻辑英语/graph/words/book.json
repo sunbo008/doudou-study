@@ -1,0 +1,204 @@
+{
+  "lemma": "book",
+  "core": {
+    "id": "bo",
+    "key": "bo",
+    "prototype": "box",
+    "name": "盒子",
+    "def": "有边界、能装东西的空间",
+    "image": {
+      "path": "assets/cores/bo.jpg",
+      "alt": "一只开口的纸箱，能看见内部空间",
+      "caption": "bo ---- box（盒子）· 核意象锚点",
+      "source": "generated",
+      "prompt": "open empty cardboard box, plain background, photorealistic",
+      "primary_sense": "open cardboard box（开口盒子·词核）",
+      "must_show": [
+        "开口纸箱",
+        "可见内部空间"
+      ],
+      "must_not_show": [
+        "书",
+        "船",
+        "碗作为主物"
+      ],
+      "confusable_with": [
+        "book",
+        "boat",
+        "bowl"
+      ],
+      "review": {
+        "status": "approved",
+        "checklist": {
+          "primary_object_match": true,
+          "must_show_ok": true,
+          "must_not_show_ok": true,
+          "presentation_ok": true,
+          "child_recognizable": true
+        },
+        "reviewer": "human+agent-backfill",
+        "notes": "词核盒子：开口箱，能看见可装的空间",
+        "reviewed_at": "2026-10-19T10:41:11+08:00"
+      }
+    }
+  },
+  "basic": "装「页 / 字」的扁平盒；合上是盒，打开是页",
+  "chains": [
+    {
+      "id": "basic-forms",
+      "title": "基本义延伸",
+      "items": [
+        "textbook",
+        "notebook",
+        "ebook"
+      ]
+    },
+    {
+      "id": "A",
+      "title": "装进名册",
+      "items": [
+        "booking",
+        "bookkeeper"
+      ]
+    },
+    {
+      "id": "R",
+      "title": "同核兄弟",
+      "items": [
+        "box",
+        "boat",
+        "bow",
+        "bowl",
+        "bottle",
+        "boot",
+        "body"
+      ]
+    },
+    {
+      "id": "form",
+      "title": "形态链",
+      "items": [
+        "booklet",
+        "bookmark",
+        "bookshelf",
+        "bookstore"
+      ]
+    },
+    {
+      "id": "bound",
+      "title": "边界族",
+      "items": [
+        "bound",
+        "border",
+        "boundary"
+      ]
+    }
+  ],
+  "related": [
+    "box",
+    "boat",
+    "bow",
+    "bowl",
+    "bottle",
+    "boot",
+    "body"
+  ],
+  "map_words": [
+    "textbook",
+    "notebook",
+    "ebook",
+    "booking",
+    "bookkeeper",
+    "box",
+    "boat",
+    "bow",
+    "bowl",
+    "bottle",
+    "boot",
+    "body",
+    "booklet",
+    "bookmark",
+    "bookshelf",
+    "bookstore",
+    "bound",
+    "border",
+    "boundary"
+  ],
+  "backlinks": [
+    "boat",
+    "body",
+    "boot",
+    "bottle",
+    "bow",
+    "bowl",
+    "box"
+  ],
+  "examples": [
+    "This book is a box of pages.",
+    "Please book a room before the weekend.",
+    "The hotel is fully booked.",
+    "Do it by the book.",
+    "The accountant will close the books tomorrow.",
+    "She is an open book.",
+    "I need to hit the books tonight.",
+    "The boat is a floating box; the bowl is an open box."
+  ],
+  "notes": "教学逻辑 ≠ 历史词源；核「盒子」用于串联记忆",
+  "updated_at": "2026-10-19T11:18:44+08:00",
+  "image": {
+    "path": "assets/words/book.jpg",
+    "alt": "一本合上的精装书，书口可见纸页",
+    "caption": "book · 装页的扁平盒",
+    "source": "generated",
+    "primary_sense": "closed hardcover book（书）",
+    "must_show": [
+      "书",
+      "书页侧面",
+      "精装封面"
+    ],
+    "must_not_show": [
+      "空箱子",
+      "empty box only",
+      "船"
+    ],
+    "confusable_with": [
+      "box"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "human+agent-backfill",
+      "notes": "确认是书不是箱",
+      "reviewed_at": "2026-10-19T10:41:11+08:00"
+    }
+  },
+  "content_review": {
+    "status": "approved",
+    "claims": {
+      "core_key": "bo",
+      "lemma_fits_key": "book fits key",
+      "basic_one_liner": "装「页 / 字」的扁平盒；合上是盒，打开是页",
+      "image_primary_sense": "closed hardcover book（书）",
+      "not_confused_with": [
+        "box"
+      ]
+    },
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "human+agent-backfill",
+    "notes": "book↔bo↔书图；核标签 bo ---- box（盒子）",
+    "reviewed_at": "2026-10-19T10:45:33+08:00"
+  }
+}

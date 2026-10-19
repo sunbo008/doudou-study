@@ -1,0 +1,140 @@
+{
+  "lemma": "boot",
+  "core": {
+    "id": "bo",
+    "key": "bo",
+    "prototype": "box",
+    "name": "盒子",
+    "def": "有边界、能装东西的空间",
+    "image": {
+      "path": "assets/cores/bo.jpg",
+      "alt": "一只开口的纸箱，能看见内部空间",
+      "caption": "bo ---- box（盒子）· 核意象锚点",
+      "source": "generated",
+      "prompt": "open empty cardboard box, plain background, photorealistic",
+      "primary_sense": "open cardboard box（开口盒子·词核）",
+      "must_show": [
+        "开口纸箱",
+        "可见内部空间"
+      ],
+      "must_not_show": [
+        "书",
+        "船",
+        "碗作为主物"
+      ],
+      "confusable_with": [
+        "book",
+        "boat",
+        "bowl"
+      ],
+      "review": {
+        "status": "approved",
+        "checklist": {
+          "primary_object_match": true,
+          "must_show_ok": true,
+          "must_not_show_ok": true,
+          "presentation_ok": true,
+          "child_recognizable": true
+        },
+        "reviewer": "human+agent-backfill",
+        "notes": "词核盒子：开口箱，能看见可装的空间",
+        "reviewed_at": "2026-10-19T10:41:11+08:00"
+      }
+    }
+  },
+  "basic": "脚的盒子——靴子包住脚",
+  "chains": [
+    {
+      "id": "R",
+      "title": "同核兄弟",
+      "items": [
+        "box",
+        "bottle",
+        "body",
+        "boat",
+        "book"
+      ]
+    }
+  ],
+  "related": [
+    "box",
+    "bottle",
+    "body",
+    "boat"
+  ],
+  "map_words": [
+    "box",
+    "bottle",
+    "body",
+    "boat",
+    "book"
+  ],
+  "backlinks": [
+    "body",
+    "book",
+    "bottle",
+    "box"
+  ],
+  "examples": [
+    "Put on your boots.",
+    "A boot is a box for the foot."
+  ],
+  "notes": "boot≠bottle：靴 vs 瓶",
+  "image": {
+    "path": "assets/words/boot.jpg",
+    "alt": "一只棕色皮靴",
+    "caption": "boot · 脚的盒子",
+    "source": "generated",
+    "primary_sense": "leather boot footwear（靴子）",
+    "must_show": [
+      "靴子",
+      "鞋面",
+      "鞋底"
+    ],
+    "must_not_show": [
+      "bottle",
+      "瓶子",
+      "玻璃瓶"
+    ],
+    "confusable_with": [
+      "bottle"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "checker",
+      "notes": "目视确认是靴不是瓶",
+      "reviewed_at": "2026-10-19T10:59:35+08:00"
+    }
+  },
+  "content_review": {
+    "status": "approved",
+    "claims": {
+      "core_key": "bo",
+      "lemma_fits_key": "boot starts with bo",
+      "basic_one_liner": "脚的盒子——靴子包住脚",
+      "image_primary_sense": "leather boot footwear（靴子）",
+      "not_confused_with": [
+        "bottle"
+      ]
+    },
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "checker",
+    "notes": "boot↔bo↔图一致",
+    "reviewed_at": "2026-10-19T10:59:35+08:00"
+  },
+  "updated_at": "2026-10-19T10:59:35+08:00"
+}

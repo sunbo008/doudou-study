@@ -1,0 +1,67 @@
+{
+  "id": "bo",
+  "key": "bo",
+  "prototype": "box",
+  "name": "盒子",
+  "def": "有边界、能装东西的空间",
+  "members": [
+    "boat",
+    "body",
+    "book",
+    "boot",
+    "bottle",
+    "bow",
+    "bowl",
+    "box"
+  ],
+  "updated_at": "2026-10-19T14:12:06+08:00",
+  "image": {
+    "path": "assets/cores/bo.jpg",
+    "alt": "一只开口的纸箱，能看见内部空间",
+    "caption": "bo ---- box（盒子）· 核意象锚点",
+    "source": "generated",
+    "prompt": "open empty cardboard box, plain background, photorealistic",
+    "primary_sense": "open cardboard box（开口盒子·词核）",
+    "must_show": [
+      "开口纸箱",
+      "可见内部空间"
+    ],
+    "must_not_show": [
+      "书",
+      "船",
+      "碗作为主物"
+    ],
+    "confusable_with": [
+      "book",
+      "boat",
+      "bowl"
+    ],
+    "review": {
+      "status": "approved",
+      "checklist": {
+        "primary_object_match": true,
+        "must_show_ok": true,
+        "must_not_show_ok": true,
+        "presentation_ok": true,
+        "child_recognizable": true
+      },
+      "reviewer": "human+agent-backfill",
+      "notes": "词核盒子：开口箱，能看见可装的空间",
+      "reviewed_at": "2026-10-19T10:41:11+08:00"
+    }
+  },
+  "content_review": {
+    "status": "approved",
+    "checklist": {
+      "core_key_ok": true,
+      "lemma_on_core_ok": true,
+      "basic_matches_lemma": true,
+      "image_matches_sense": true,
+      "chains_coherent": true,
+      "child_clear": true
+    },
+    "reviewer": "human+agent-backfill",
+    "notes": "核展示 bo ---- box（盒子）；关键音形键 bo",
+    "reviewed_at": "2026-10-19T10:45:33+08:00"
+  }
+}
